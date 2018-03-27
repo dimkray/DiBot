@@ -6,9 +6,11 @@ verify_ssl = true
 
 [packages]
 
+pytelegrambotapi = "*"
 vk_api = "*"
 apiai = "*"
 geopy = "*"
+geolocation-python = "*"
 urllib3 = "*"
 certifi = "*"
 wikipedia = "*"
