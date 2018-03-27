@@ -34,60 +34,60 @@ def GetInfo():
                              {'user_ids':Fixer.UserID,'fields':'about,activities,bdate,books,career,city,connections,contacts,counters,country,domain,education,exports,home_town,interests'})
         if response:
             user = response[0]
-            print(user)
-            print(user['first_name'])
+            #print(user)
+            #print(user['first_name'])
             Fixer.Name = user['first_name']
-            print(user['last_name'])
+            #print(user['last_name'])
             Fixer.Family = user['last_name']
             if 'about' in user:
-                print('Обо мне: ' + user['about'])
+                #print('Обо мне: ' + user['about'])
                 Fixer.About = user['about']
             if 'activities' in user:
                 Fixer.Inteserts.append(user['activities'])
-                print('Деятельность: ' + user['activities'])
-            print('ДР: ' + user['bdate'])
+                #print('Деятельность: ' + user['activities'])
+            #print('ДР: ' + user['bdate'])
             Fixer.BirthDay = user['bdate']
             if 'books' in user:
                 Fixer.Inteserts.append(user['books'])
-                print('Книги: ' + user['books'])
+                #print('Книги: ' + user['books'])
             if 'career' in user:
                 if 'company' in user['career']:
                     Fixer.Contacts['компания'] = user['career']['company']
-                    print('Компания: ' + user['career']['company'])
+                    #print('Компания: ' + user['career']['company'])
                 if 'position' in user['career']:
                     Fixer.Contacts['вакансия'] = user['career']['position']
-                    print('Вакансия: ' + user['career']['position'])
+                    #print('Вакансия: ' + user['career']['position'])
             if 'city' in user:
                 Fixer.Contacts['город'] = user['city']['title']
                 Processor.coordinates(user['city']['title'])
                 Fixer.X = Fixer.Coords[0]
                 Fixer.Y = Fixer.Coords[1]
-                print('координаты: ' + Fixer.Y +', '+ Fixer.X)
-                print('город: ' + user['city']['title'])
+                #print('координаты: ' + Fixer.Y +', '+ Fixer.X)
+                #print('город: ' + user['city']['title'])
             if 'connections' in user:
                 for connect in user['connections']:
                     Fixer.Contacts[connect] = user['connections'][connect]
-                    print(connect+': '+user['connections'][connect])
+                    #print(connect+': '+user['connections'][connect])
             if 'contacts' in user:
                 if 'mobile_phone' in user['contacts']:
                     Fixer.Phone = user['contacts']['mobile_phone']
-                    print('Тел.: ' + user['contacts']['mobile_phone'])
+                    #print('Тел.: ' + user['contacts']['mobile_phone'])
                 if 'home_phone' in user['contacts']:
                     Fixer.Contacts['телефон'] = user['contacts']['home_phone']
-                    print('Тел.: ' + user['contacts']['home_phone'])
+                    #print('Тел.: ' + user['contacts']['home_phone'])
             Fixer.Things.append('Друзья: ' + str(user['counters']['friends']))
-            print('Друзья: ' + str(user['counters']['friends']))
+            #print('Друзья: ' + str(user['counters']['friends']))
             Fixer.Things.append('Группы: ' + str(user['counters']['pages']))
-            print('Группы: ' + str(user['counters']['pages']))
+            #print('Группы: ' + str(user['counters']['pages']))
             Fixer.Contacts['страна'] = user['country']['title']
-            print('Страна: ' + user['country']['title'])
+            #print('Страна: ' + user['country']['title'])
             Fixer.Contacts['VK'] = user['domain']
-            print('Страничка: ' + user['domain'])
+            #print('Страничка: ' + user['domain'])
             if 'interests' in user:
                 m = Processor.params(user['interests'],', ')
                 for im in m:
                     Fixer.Inteserts.append(im)
-                print('Интересы: ' + user['interests'])
+                #print('Интересы: ' + user['interests'])
             return True
     except Exception as e:
         print('Ошибка доступа к информации пользователя '+Fixer.UserID+': '+str(e))
