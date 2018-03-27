@@ -286,11 +286,11 @@ def strcleaner(text):
 mCompliment = []
 wCompliment = []
 try:
-    f = open('DB/mCompliment.txt')
+    f = open('DB/mCompliment.txt', encoding='utf-8')
     for line in f:
         mCompliment.append(line.replace('\n',''))
     f.close()
-    f = open('DB/wCompliment.txt')
+    f = open('DB/wCompliment.txt', encoding='utf-8')
     for line in f:
         wCompliment.append(line.replace('\n',''))
     f.close()
