@@ -17,7 +17,7 @@ trSt = {'': 0, 'unknown': 0, 'train_station': 1, 'platform': 1, 'station': 1, 'b
 # Загрузка базы городов/станций
 try:
     print('Загрузка базы stations.txt...')
-    f = open('DB\\stations.txt')
+    f = open('DB/stations.txt')
     db = []
     for line in f:
         words = line.strip().split(' : ')
