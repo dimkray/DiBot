@@ -7,7 +7,7 @@ db = []
 
 try:
     print('Загрузка базы anecdotes.txt...')
-    f = open('DB\\anecdotes.txt')
+    f = open('DB/anecdotes.txt')
     for line in f:
         db.append(line.replace('\\','\n'))
     f.close()
