@@ -1,0 +1,19 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+
+
+[packages]
+
+vk_api = "*"
+apiai = "*"
+geopy = "*"
+urllib3 = "*"
+certifi = "*"
+wikipedia = "*"
+
+
+[requires]
+
+python_version = "3.6"
