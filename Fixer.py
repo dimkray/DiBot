@@ -286,16 +286,16 @@ def strcleaner(text):
 mCompliment = []
 wCompliment = []
 try:
-    f = open('DB\\mCompliment.txt')
+    f = open('DB/mCompliment.txt')
     for line in f:
         mCompliment.append(line.replace('\n',''))
     f.close()
-    f = open('DB\\wCompliment.txt')
+    f = open('DB/wCompliment.txt')
     for line in f:
         wCompliment.append(line.replace('\n',''))
     f.close()
 except Exception as e:
-    Fixer.errlog('Ошибка при загрузке комплиментов: ' + str(e))
+    errlog('Ошибка при загрузке комплиментов: ' + str(e))
 	
 #Save(Commands,'Commands')
 #Save(Word1,'Word1')
