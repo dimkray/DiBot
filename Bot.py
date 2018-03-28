@@ -124,6 +124,13 @@ if __name__ == '__main__':
                 try:
                     print(item)
                     text = item[u'body']
+                    sgeo = item[u'coordinates']
+                    print(sgeo)
+                    if u'place' in item:
+                        print(item[u'place']['latitude'])
+                        print(item[u'place']['longitude'])
+                        print(item[u'place']['country'])
+                        print(item[u'place']['city'])
                     if text[0] == '~': break # включён тихий режим сообщения
                     Fixer.ChatID = item[u'user_id']
                     # Идентификатор юзера
