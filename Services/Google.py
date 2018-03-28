@@ -54,7 +54,7 @@ class Google:
     # Сервис поиска универсальной карты (с маршрутами или обозначениями)
     def Search(text, bmap=False):
         try:
-            data = URL.GetData('https://www.google.ru/search',stext=text,textparam='q',brequest=False, bsave=True)
+            data = URL.GetData('https://www.google.ru/search',stext=text,textparam='q',brequest=False)
             if data[0] != '#':
                 # поиск карты
                 if bmap:
@@ -76,19 +76,22 @@ class Google:
                         print('#bug: none map')
                 # поиск текста
                 ftext = URL.Find(data,'href="/search?newwindow', sstart=':', send='+', ball=True)
+                #atext = URL.Find(data,' target="_blank">', sstart='>', send='<', ball=True)
                 if ftext[0] != '#':
                     s = 'Статья или информация по теме:\n'
+                    #s += atext[0]
                     s += ftext[0]
                     data = URL.GetData(ftext[0], brequest=False)
                     if data[0] != '#':
                         text = URL.Find(data,'<p>', sstart='>', send='</p>', ball=True)
-                        for ss in text:
-                            s += '\n' + ss
-                            if len(s) > 500: s += '...'; break
+                        if text[0] != '#':
+                            for ss in text:
+                                s += '\n' + ss
+                                if len(s) > 500: s += '...'; break
                     i = 1; sl = ''
                     for ss in ftext:
                         i += 1
-                        if i > 2: sl += '\n' + ss
+                        if i > 2: sl += '\n' + ss # '\n' + atext[i-1] + '\n' + ss
                         if i > 8: break
                     Fixer.htext = sl #назначаем гиперссылку
                     return s

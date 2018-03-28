@@ -270,7 +270,13 @@ def wiki(text, send=False):
     Fixer.htext = '"https://ru.wikipedia.org/wiki/' + pages[0] + '"'
     Fixer.log('Cервиса Wikipedia ответил: ' + Fixer.htext)
     return Wiki.MiniContent(pages[0])
-
+	
+# ---------------------------------------------------------
+# сервис wiki-more
+def wikimore(text):
+    Fixer.log('Старт сервиса Wikipedia.More: ' + text)
+    return Wiki.More(Fixer.Page)
+	
 # ---------------------------------------------------------
 # сервис geowiki
 def geowiki(text, send=False):
@@ -586,8 +592,7 @@ def FormMessage(text):
                 if response[1:11] == 'geowiki1: ': tsend = geowiki1(response[11:], send=True)
                 # Запуск сервиса Wikipedia - поиск дополнительной информации 
                 # #wikimore: <название>
-                if response[1:12] == 'wiki-more: ':
-                    tsend = 'Я бы показал ещё один раздел статьи... Но я пока не умею догружать сервис Wikipedia.org :('
+                if response[1:12] == 'wiki-more: ': tsend = wikimore(response[12:])
                 # Запуск сервиса Google
                 if response[1:12] == 'google-map:': tsend = google(text, map=True)
                 if response[1:8] == 'google:': tsend = google(text)
@@ -638,7 +643,7 @@ def FormMessage(text):
             # Не удалось ответить
             s = text
             # Попробуем найти в вики
-            if len(text) < 18 and text.find('?') < 0: 
+            if len(text) < 25 and text.find('?') < 0: 
                 s = wiki(text)
                 if s[0] != '#':
                     return s

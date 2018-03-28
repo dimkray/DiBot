@@ -53,13 +53,29 @@ class Wiki:
         try:
             rez = wikipedia.page(spage)
             if rez.content == '': return '#problem: 404'
+            Fixer.LastPage.append(Fixer.Page)
+            Fixer.Page = spage
             num = rez.content.find('\n==')
             text = rez.content[0:num] #.encode('utf8')
+            Fixer.WikiStart = num
             return text
         except Exception as e:
             Fixer.errlog('Ошибка в сервисе Wikipedia.MiniContent!: ' + str(e))
             return '#bug: ' + str(e)             
 
+    # Минимальный контент статьи - первый абзац
+    def More(spage):
+        try:
+            rez = wikipedia.page(spage)
+            if rez.content == '': return '#problem: 404'
+            num = rez.content.find('\n==', Fixer.WikiStart+1)
+            text = rez.content[Fixer.WikiStart:num] #.encode('utf8')
+            Fixer.WikiStart = num
+            return text
+        except Exception as e:
+            Fixer.errlog('Ошибка в сервисе Wikipedia.More!: ' + str(e))
+            return '#bug: ' + str(e)  
+			
     # Произвольная статья в Wikipedia
     def PageRandom():
         try:

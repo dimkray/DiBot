@@ -18,7 +18,7 @@ bNotice = True
 bAI = True # Признак включения сервиса ИИ
 
 # текущая версия
-Version = 20180323
+Version = 20180328
 
 # общие фиксаторы
 Time = []     # фиксация времени
@@ -88,6 +88,7 @@ LastSt2 = []
 LastTr = []
 
 # сервис Wikipedia
+WikiStart = 0
 Page = 'Москва'
 LastPage = []
 

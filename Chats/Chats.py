@@ -5,7 +5,7 @@ class Chat:
     # Функция записи данных о текущем пользователе (по id chat)
     def Save():
         try:
-            data = { 'version': 20180323,
+            data = { 'version': 20180328,
                      'chat': [Fixer.Time, Fixer.Chat, Fixer.Response],
                      'user': [Fixer.UserID, Fixer.Name, Fixer.Family, Fixer.BirthDay, Fixer.Age,
                      Fixer.Type, Fixer.Thema, Fixer.LastThema, Fixer.Service, Fixer.LastService,
@@ -17,7 +17,7 @@ class Chat:
                      Fixer.LastLang1, Fixer.LastLang2],
                      'rasp': [Fixer.nameSt, Fixer.region, Fixer.iTr, Fixer.St1, Fixer.St2, 
                      Fixer.trDate, Fixer.LastSt1, Fixer.LastSt2, Fixer.LastTr],
-                     'wiki': [Fixer.Page, Fixer.LastPage],
+                     'wiki': [Fixer.Page, Fixer.LastPage, Fixer.WikiStart],
                      'rate': [Fixer.Valute, Fixer.LastValute],
                      'notes': Fixer.Notes}
             f = open('Chats\\' + str(Fixer.ChatID) + '.chat', 'wb')
@@ -91,6 +91,7 @@ class Chat:
             d = data['wiki']
             Fixer.Page = d[0]
             Fixer.LastPage = d[1]
+            if Fixer.Version >= 20180328: Fixer.WikiStart = d[2]
             
             d = data['rate']
             Fixer.Valute = d[0]
