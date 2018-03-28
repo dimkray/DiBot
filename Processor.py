@@ -189,8 +189,8 @@ def FormRasp(s):
 
 # ---------------------------------------------------------
 # сервис Яндекс.Расписание
-def timetable(text):
-    Bot.SendMessage('Секундочку! Ищу расписание транспорта в сервисе Яндекс.Расписания...')
+def timetable(text, send=False):
+    if send: Bot.SendMessage('Секундочку! Ищу расписание транспорта в сервисе Яндекс.Расписания...')
     Fixer.log('Передача сервису Yandex.Rasp: ' + text)
     tsend = Yandex.FindRasp(text)
     Fixer.log('Yandex.Rasp: ' + tsend)
@@ -262,9 +262,9 @@ def coordinates(text):
 
 # ---------------------------------------------------------
 # сервис wiki
-def wiki(text):
+def wiki(text, send=False):
     Fixer.log('Старт сервиса Wikipedia: ' + text)
-    Bot.SendMessage('Секундочку! Ищу информацию в Википедии...')
+    if send: Bot.SendMessage('Секундочку! Ищу информацию в Википедии...')
     pages = Wiki.SearchPage(text)
     if len(pages) == 0: return 'Я поискал информацию в Википедии, но ничего не нашёл. Можешь уточнить запрос?'
     Fixer.htext = '"https://ru.wikipedia.org/wiki/' + pages[0] + '"'
@@ -273,7 +273,7 @@ def wiki(text):
 
 # ---------------------------------------------------------
 # сервис geowiki
-def geowiki(text):
+def geowiki(text, send=False):
     try:
         text += ' '
         rad = str(text[:text.find(' ',10)])
@@ -281,7 +281,7 @@ def geowiki(text):
         Fixer.errlog('Ошибка в определении радиуса: '+text[:text.find(' ',10)])
         rad = 1000
     Fixer.log('Старт сервиса WikipediaGeo: ' + text)
-    Bot.SendMessage('Секундочку! Ищу ближайшие достопримечательности по Википедии...')
+    if send: Bot.SendMessage('Секундочку! Ищу ближайшие достопримечательности по Википедии...')
     pages = Wiki.GeoSearch(Fixer.X, Fixer.Y, resnom=10, rad=rad)
     if len(pages) == 0 or pages[0] == '#': return 'Я поискал достопримечательности в Википедии, но ничего не нашёл. Может стоит величить радиус поиска?'
     s = 'Нашёл следующие достопримечательности:\n'
@@ -294,7 +294,7 @@ def geowiki(text):
 
 # ---------------------------------------------------------
 # сервис geowiki1
-def geowiki1(text):
+def geowiki1(text, send=False):
     try:
         text += ' '
         rad = str(text[:text.find(' ',11)])
@@ -302,7 +302,7 @@ def geowiki1(text):
         Fixer.errlog('Ошибка в определении радиуса: '+text[:text.find(' ',11)])
         rad = 3000
     Fixer.log('Старт сервиса WikipediaGeo1: ' + text)
-    Bot.SendMessage('Секундочку! Ищу ближайшую достопримечательность по Википедии...')
+    if send: Bot.SendMessage('Секундочку! Ищу ближайшую достопримечательность по Википедии...')
     response = Wiki.GeoFirstMe(rad)
     if response[0] == '#': return 'В радиусе '+str(rad)+' метров не нашёл ни одной достопримечательности :('
     pages = Wiki.GeoSearch(Fixer.X, Fixer.Y, resnom=10, rad=rad)
@@ -311,9 +311,9 @@ def geowiki1(text):
 
 # ---------------------------------------------------------
 # сервис google
-def google(text):
+def google(text, map=False):
     Fixer.log('Старт сервиса Google.Search: ' + text)
-    stext = Google.Search(text)
+    stext = Google.Search(text, bmap=map)
     Fixer.log('Cервис Google.Search ответил: ' + stext)
     if stext[0:6] == '#bug: ':
         Fixer.log('Исправление для следующего цикла: ' + stext)						
@@ -516,10 +516,6 @@ def FormMessage(text):
     cl = 0
     while cl < 3:
         cl += 1
-        #Fixer.log('Процессор: ' + text)
-        print(Fixer.Context)
-        print(Fixer.Service)
-        print(Fixer.bAI)
         # Автовключение сервиса
         if text[0] == '#': Fixer.bAI = False # принудительно отключаем ИИ        
         # Включение сервиса принудительной контекстной зависимости
@@ -572,7 +568,7 @@ def FormMessage(text):
                 # Запуск сервиса Acquaintance
                 if response[1:14] == 'acquaintance:': tsend = acquaintance()
                 # Запуск сервиса Яндекс.Расписание
-                if response[1:12] == 'timetable: ': tsend = timetable(response[12:])
+                if response[1:12] == 'timetable: ': tsend = timetable(response[12:], send=True)
                 # Запуск сервиса Яндекс.Переводчик
                 if response[1:12] == 'translate: ': tsend = translate(response[12:])    
                 # Запуск сервиса Яндекс поиск объектов
@@ -581,19 +577,20 @@ def FormMessage(text):
                 if response[1:14] == 'coordinates: ': tsend = coordinates(response[14:])
                 # Запуск сервиса Wikipedia - поиск информации 
                 # #wiki: <название>
-                if response[1:7] == 'wiki: ': tsend = wiki(response[7:])
+                if response[1:7] == 'wiki: ': tsend = wiki(response[7:], send=True)
                 # Запуск сервиса Wikipedia - поиск ближайших достопримечательностей 
                 # #geowiki: <радиус, метры>
-                if response[1:10] == 'geowiki: ': tsend = geowiki(response[10:])
+                if response[1:10] == 'geowiki: ': tsend = geowiki(response[10:], send=True)
                 # Запуск сервиса Wikipedia - поиск ближайшей достопримечательности
                 # #geowiki1: <радиус, метры>
-                if response[1:11] == 'geowiki1: ': tsend = geowiki1(response[11:])
+                if response[1:11] == 'geowiki1: ': tsend = geowiki1(response[11:], send=True)
                 # Запуск сервиса Wikipedia - поиск дополнительной информации 
                 # #wikimore: <название>
                 if response[1:12] == 'wiki-more: ':
                     tsend = 'Я бы показал ещё один раздел статьи... Но я пока не умею догружать сервис Wikipedia.org :('
                 # Запуск сервиса Google
-                if response[1:9] == 'google: ': tsend = google(response[9:])
+                if response[1:12] == 'google-map:': tsend = google(text, map=True)
+                if response[1:8] == 'google:': tsend = google(text)
                 # Запуск сервиса Weather
                 if response[1:10] == 'weather: ': tsend = weather(response[10:])
                 # Запуск сервиса TimeZone
@@ -637,17 +634,25 @@ def FormMessage(text):
                 Fixer.log('Ответ пользователю: ' + response)
                 Fixer.Service = 'ai'
                 return response
-        else:
-            
+        else: # не удалось ответить
             # Не удалось ответить
-            s = Fixer.strcleaner(text)
+            s = text
             # Попробуем найти в вики
-            if len(text) < 24: s = wiki(text)
-            if s[0] != '#':
-                return s
-            else:
-                Fixer.htext = ''
-                s = text
+            if len(text) < 18 and text.find('?') < 0: 
+                s = wiki(text)
+                if s[0] != '#':
+                    return s
+                else:
+                    Fixer.htext = ''
+                    s = text
+            # Попробуем найти в поисковике Google
+            if len(text) < 40 and text.find('. ') < 0: 
+                s = google(text)
+                if s[0] != '#':
+                    return s
+                else:
+                    Fixer.htext = ''
+            s = Fixer.strcleaner(text)
             # Ищем среди новых диалогов
             for i in Fixer.NewDialogs:
                 if i == s: return random.choice(Fixer.NewDialogs[i]) # удалось найти среди новых диалогов

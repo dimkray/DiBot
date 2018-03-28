@@ -52,24 +52,46 @@ class Google:
             return '#bug: ' + str(e)
 
     # Сервис поиска универсальной карты (с маршрутами или обозначениями)
-    def Search(text):
+    def Search(text, bmap=False):
         try:
-            data = URL.GetData('https://www.google.ru/search',stext=text,textparam='q',brequest=False)
+            data = URL.GetData('https://www.google.ru/search',stext=text,textparam='q',brequest=False, bsave=True)
             if data[0] != '#':
-                ftext = URL.Find(data,'https://maps.google.ru/maps?q=','"',ball=False)
+                # поиск карты
+                if bmap:
+                    ftext = URL.Find(data,'https://maps.google.ru/maps?q=', send='"', ball=False)
+                    if ftext[0] != '#':
+                        ftext = ftext.replace('%2B','%20')
+                        Fixer.htext = ftext #назначаем гиперссылку
+                        #Fixer.htext = Google.Short(Fixer.htext) # делаем её короткой
+                        # Поиск картинки
+                        #start = d.find('/maps/vt/data')
+                        #if start > 0: # признак картинки к карте
+                        #    end = d.find('"',start)
+                        #    ftext = 'https://www.google.ru' + d[start+5:end]
+                        #    print(ftext)
+                        #    return ftext
+                        #else: # если картинки нет
+                        return 'Я нашёл ответ по карте Google! Открывай ниже ссылку!'
+                    else:
+                        print('#bug: none map')
+                # поиск текста
+                ftext = URL.Find(data,'href="/search?newwindow', sstart=':', send='+', ball=True)
                 if ftext[0] != '#':
-                    ftext = ftext.replace('%2B','%20')
-                    Fixer.htext = ftext #назначаем гиперссылку
-                    #Fixer.htext = Google.Short(Fixer.htext) # делаем её короткой
-                    
-                    #start = d.find('/maps/vt/data')
-                    #if start > 0: # признак картинки к карте
-                    #    end = d.find('"',start)
-                    #    ftext = 'https://www.google.ru' + d[start+5:end]
-                    #    print(ftext)
-                    #    return ftext
-                    #else: # если картинки нет
-                    return 'Я нашёл ответ! Открывай ниже ссылку!'
+                    s = 'Я нашёл ответ при помощи поисковика Google!\n'
+                    s += ftext[0] + '\n'
+                    data = URL.GetData(ftext[0], brequest=False, bsave=True)
+                    if data[0] != '#':
+                        text = URL.Find(data,'<p>', sstart='>', send='</p>', ball=True)
+                        for ss in text:
+                            s += '\n' + ss
+                            if len(s) > 500: s += '...'; break
+                    i = 1; sl = ''
+                    for ss in ftext:
+                        i += 1
+                        if i > 1: sl += '\n' + ss
+                        if i > 8: break
+                    Fixer.htext = sl #назначаем гиперссылку
+                    return s
                 else:
                     print('#bug: none')
                     return '#bug: none'

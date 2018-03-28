@@ -28,7 +28,7 @@ class URL:
             print('#bug: ' + str(e))        
         
     # Получение html/основного текста по запросу
-    def GetData(shttp, stext = '', textparam = '', params = {}, brequest = True):
+    def GetData(shttp, stext = '', textparam = '', params = {}, brequest = True, bsave = False):
         try:
             stext = stext.replace(' ','+')
             stext = format(quote(stext))
@@ -59,10 +59,11 @@ class URL:
             if status != requests.codes.ok:
                 return '#problem: ' + str(r.status_code)
             else:
-                # Для тестирования
-                with open('url.html','w', encoding='utf-8') as f:
-                    f.write(d)
-                f.close()
+                if bsave:
+                    # Для тестирования
+                    with open('url.html','w', encoding='utf-8') as f:
+                        f.write(d)
+                    f.close()
                 return d
         except Exception as e:
             Fixer.errlog('Ошибка в сервисе URL.GetData!: ' + str(e))
@@ -83,10 +84,11 @@ class URL:
                     else: 
                         end = start + len(sfind)
                     ftext = data[start+len(sstart):end]
+                    if ftext.find('<') >= 0: continue
                     if ball == False: return ftext
                     mtext.append(ftext)
                 else:
-                    return '#bug: none'
+                    if len(mtext) == 0: return '#bug: none'
             return mtext
         except Exception as e:
             Fixer.errlog('Ошибка в сервисе URL.Find!: ' + str(e))
