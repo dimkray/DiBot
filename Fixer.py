@@ -172,7 +172,7 @@ def Load(name):
 # Функция записи словаря в байты
 def SaveB(dictionary, name):
     try:
-        f = open('DB/' + name + '.db', 'wb', encoding='utf-8')
+        f = open('DB/' + name + '.db', 'wb')
         pickle.dump(dictionary, f)
         f.close()
         return True
@@ -185,7 +185,7 @@ def LoadB(name):
     try:
         dictionary = {}
         if Exists('DB/' + name + '.db') == False: return dictionary
-        f = open('DB/' + name + '.db', 'rb', encoding='utf-8')
+        f = open('DB/' + name + '.db', 'rb')
         dictionary = pickle.load(f)
         f.close()
         return dictionary
