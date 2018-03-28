@@ -71,15 +71,15 @@ class Google:
                         #    print(ftext)
                         #    return ftext
                         #else: # если картинки нет
-                        return 'Я нашёл ответ по карте Google! Открывай ниже ссылку!'
+                        return 'Я нашёл ответ! Открывай ниже ссылку!'
                     else:
                         print('#bug: none map')
                 # поиск текста
                 ftext = URL.Find(data,'href="/search?newwindow', sstart=':', send='+', ball=True)
                 if ftext[0] != '#':
-                    s = 'Я нашёл ответ при помощи поисковика Google!\n'
-                    s += ftext[0] + '\n'
-                    data = URL.GetData(ftext[0], brequest=False, bsave=True)
+                    s = 'Статья или информация по теме:\n'
+                    s += ftext[0]
+                    data = URL.GetData(ftext[0], brequest=False)
                     if data[0] != '#':
                         text = URL.Find(data,'<p>', sstart='>', send='</p>', ball=True)
                         for ss in text:
@@ -88,7 +88,7 @@ class Google:
                     i = 1; sl = ''
                     for ss in ftext:
                         i += 1
-                        if i > 1: sl += '\n' + ss
+                        if i > 2: sl += '\n' + ss
                         if i > 8: break
                     Fixer.htext = sl #назначаем гиперссылку
                     return s
