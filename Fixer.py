@@ -201,6 +201,8 @@ def Dialog(key):
         return random.choice(dialogs[key])
     else:
         errlog('Ошибка в сервисе Fixer.Dialog - не найден ключ:' + key)
+	print(dialogs)
+	print(dialogs[key])
         return key		
 	
 # ---------------------------------------------------------
