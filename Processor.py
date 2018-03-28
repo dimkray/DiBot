@@ -502,6 +502,28 @@ def notes(text):
     return s
 
 # ---------------------------------------------------------
+# сервис setlocation
+def setlocation(text):
+    from geolocation.main import GoogleMaps
+    try:
+        Fixer.log('Старт сервиса SetLocation: ' + text)
+        params = getparams(text, separator=',')
+        Fixer.LastX.append(Fixer.X)
+        Fixer.LastY.append(Fixer.Y)
+        Fixer.Y = params[0]
+        Fixer.X = params[1]
+        mes = 'Хорошо! Установлены координаты: ' + Fixer.Y + ', ' + Fixer.X + '.\n'
+        # Сервис Google.Geocoding
+        my_location = GoogleMaps(api_key=config.GMaps_key).search(lat=Fixer.Y, lng=Fixer.X).first()
+        mes += my_location.formatted_address #+ '\n'
+        Fixer.Address = my_location.formatted_address
+        Fixer.LastAddress.append(Fixer.Address)
+        return mes
+    except Exception as e:
+        Fixer.errlog('Ошибка в сервисе SetLocation!: ' + str(e))
+        return '#bug: ' + str(e)
+	
+# ---------------------------------------------------------
 # сервис correction
 def correction(text):
     Fixer.log('Старт сервиса Correction: ' + text)
@@ -622,6 +644,8 @@ def FormMessage(text):
                 # сервис геолокации Телеграм
                 # #location: <текст>
                 if response[1:11] == 'location: ': return '#LOC! ' + response[11:]
+                # Сервис установки координат
+                if response[1:14] == 'setlocation: ': tsend = setlocation(response[11:])
                 # Сервис корректировки ответов
                 if response[1:13] == 'correction: ': tsend = correction(response[13:])
                 ### обработка результатов сервисов ###
