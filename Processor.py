@@ -240,14 +240,15 @@ def translate(text):
 # сервис Яндекс поиск объектов
 def yaobject(text):
     Fixer.log('Старт сервиса Yandex.Object: ' + text)
-    n1 = text.find(' : ')
-    ttext = text[:n1]
-    rad = text[n1+3:]
+    param = getparams(text)
+    ttext = param[0]
+    rad = '2'
+    if len(param) > 1: rad = param[1]
     try:
         drad = int(rad)
     except:
-        if rad == 'near': drad = 1
-        else: drad = 5
+        if rad == 'near': drad = 2
+        else: drad = 100
     tsend = Yandex.Objects(ttext, Xloc=Fixer.X, Yloc=Fixer.Y, dr=drad)
     Fixer.log('Yandex.Object ответил: ' + tsend)
     return tsend

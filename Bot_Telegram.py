@@ -14,8 +14,7 @@ import PreProcessor
 import Processor
 
 import telebot
-from geolocation.main import GoogleMaps
-from geolocation.distance_matrix.client import DistanceMatrixApiClient
+#from geolocation.distance_matrix.client import DistanceMatrixApiClient
 from telebot import types
 from Services.Yandex import Yandex
 from Chats.Chats import Chat
@@ -141,6 +140,7 @@ def default_test(message):
 
 @bot.message_handler(content_types=["location"])
 def location(message):
+    from geolocation.main import GoogleMaps
     try:
         if Chat.Load() == False: print('Данные не найдены')
         Fixer.X = message.location.longitude

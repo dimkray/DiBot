@@ -397,9 +397,11 @@ class Yandex:
                         'rspn': fix, #Признак «жесткого» ограничения области поиска, 1 - ограничить поиск
                         'results': 500}                
             r = requests.get(http, params=payload)
+            print(payload)
             if r.status_code == requests.codes.ok:      
                 Fixer.Obj = []
                 data = r.json()
+                #print(data)
                 for ft in data['features']:
                     if 'CompanyMetaData' in ft['properties']: # Если это организация
                         address = ''; url = ''; cats = ''; tels = ''; hours = ''
@@ -435,16 +437,18 @@ class Yandex:
             gObj = 0; oObj = 0
             for i in Fixer.Obj:
                 if i[0]: oObj +=1 # число организаций
-                else: qObj +=1 # число геогр. объектов
+                else: gObj +=1 # число геогр. объектов				
             sorg = ''; sobj = ''; sand = ''
             if oObj > 0: sorg = str(oObj) + ' организаций/ию'
             if gObj > 0: sobj = str(gObj) + ' географических/ий объект/ов'
             if oObj != 0 and gObj != 0: sand = ' и '
             if oObj == 0 and gObj == 0:
-                rez = 'Не нашёл ни одного объекта с названием "'+text+'" в радиусе '+str(dr)+'км :(\nМожет надо указать другие параметры поиска?'
-            rez = 'Нашёл ' + sorg + sand + sobj + '!\n'
-            if oObj + gObj > 10: rez += 'Из них будут показаны 10 ближайших:'
-            
+                rez = 'Не нашёл ни одного объекта с названием "'+text+'" в радиусе '+str(dr)+'км :(\nМожет надо указать другие параметры поиска? Либо задать больший радуис поиска, указав дополнительно ...в пределах 500 км, например.'
+            print(oObj)
+            print(gObj)
+            rez = 'Нашёл ' + sorg + sand + sobj + ' в радиусе '+ str(dr) + ' км.\n'
+            #print(Fixer.Obj)
+            if oObj + gObj > 5: rez += 'Из них будут показаны 5 ближайших:'
             srez = []; dis = 0; stext = ''
             for i in Fixer.Obj:
                 if i[0]:

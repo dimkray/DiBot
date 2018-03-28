@@ -108,6 +108,26 @@ def SendMessage(text):
     if Fixer.UserID != Author: SendAuthor('~Уведомление: бот пишет пользователю VK '+Fixer.UserID+': ' + text)
     return True
 
+# сервис локации
+def location(scoords):
+    from geolocation.main import GoogleMaps
+    try:
+        poz = scoords.find(' ')
+        Fixer.Y = float(scoords[:poz])
+        Fixer.X = float(scoords[poz:])
+        mes = 'Твои координаты: ' + str(Fixer.Y) + ', ' + str(Fixer.X) + '\n'
+        Fixer.LastX.append(Fixer.X)
+        Fixer.LastY.append(Fixer.Y)
+        # Сервис Google.Geocoding
+        my_location = GoogleMaps(api_key=config.GMaps_key).search(lat=Fixer.Y, lng=Fixer.X).first()
+        mes += my_location.formatted_address #+ '\n'
+        Fixer.Address = my_location.formatted_address
+        Fixer.LastAddress.append(Fixer.Address)
+        return mes
+    except Exception as e:
+        Fixer.errlog('Ошибка в сервисе Google.Location!: ' + str(e))
+        return '#bug: ' + str(e) 
+
 if __name__ == '__main__':
     Fixer.log('--------------------------------------------')   
     Fixer.log('Запуск VK-Бота')   
@@ -124,14 +144,8 @@ if __name__ == '__main__':
                 try:
                     print(item)
                     text = item[u'body']
-##                    sgeo = item[u'coordinates']
-##                    print(sgeo)
-##                    if u'place' in item:
-##                        print(item[u'place']['latitude'])
-##                        print(item[u'place']['longitude'])
-##                        print(item[u'place']['country'])
-##                        print(item[u'place']['city'])
-                    if text[0] == '~': break # включён тихий режим сообщения
+                    if text != '':
+                        if text[0] == '~': break # включён тихий режим сообщения
                     Fixer.ChatID = item[u'user_id']
                     # Идентификатор юзера
                     Fixer.UserID = str(Fixer.ChatID)
@@ -145,30 +159,57 @@ if __name__ == '__main__':
                     Fixer.Mess = Home
                     # Бот начинает писать текст
                     vk.method('messages.setActivity', {'user_id':Fixer.ChatID, 'type':u'typing'})
-                    # Препроцессорный обработчик
-                    request = PreProcessor.ReadMessage(text)
-                    Fixer.log('Препроцессор ответил: ' + request)
-                    # Процессорный обработчик
-                    request = Processor.FormMessage(request)
-                    Fixer.log('Процессор ответил: ' + request)
-                    if request[0] == '#': # Требуется постпроцессорная обработка
-                        if request[1:6] == 'LOC! ': # Требуется определить геолокацию
-                            # !Доработать блок!
-                            request = Fixer.Dialog('no_location')
-                        elif request[1:6] == 'bug: ':
-                            request =Fixer.Dialog('bug') + '\nКод ошибки: '+request[6:]
-                        else:
-                            request = 'Что-то пошло не так: '+request
-                        SendMessage(request)
-                    else: # Постпроцессорная обработка не требуется
-                        Fixer.log('Сообщение пользователю: ' + request)
-                        if Fixer.Service != '': Fixer.LastService.append(Fixer.Service)
-                        SendMessage(request)
-                    if Fixer.htext != '': # если есть гипперссылка
-                        Fixer.log('Сообщение пользователю: ' + Fixer.htext)
-                        Fixer.htext = 'Ссылка: ' + Fixer.htext.replace(' ','%20')
-                        SendMessage(Fixer.htext)
-                        Fixer.htext = ''
+                    # Поиск текущей локации пользователя
+                    if u'geo' in item:
+                        geo = item[u'geo']
+                        s = ''
+                        if u'coordinates' in geo:
+                            s = location(geo[u'coordinates']) + '\n'
+                        if u'place' in geo:
+                            if u'country' in geo[u'place']: s += geo[u'place'][u'country'] + ', '
+                            if u'city' in geo[u'place']: s += geo[u'place'][u'city']
+                        if text == '': SendMessage(s)
+                    # Поиск стикеров и вложений
+                    iphoto = 0
+                    if u'attachments' in item:
+                        for att in item[u'attachments']: # иттератор по вложениям
+                            if att[u'type'] == u'sticker': # найден стикер
+                                SendMessage('Сорян. Я не умею распознавать стикеры.'); break
+                            elif att[u'type'] == u'photo': # найдено фото
+                                iphoto += 1
+                            else: # другой тип вложения
+                                if text == '': SendMessage('В данных типах вложениях я не разбираюсь :('); break
+                    if text == '':
+                        s = 'Пустое сообщение'
+                        if iphoto == 1: s = 'Одно фото во вложении. В будующем смогу провести анализ фото :)'
+                        elif iphoto > 1: s = 'Найдено '+str(iphoto)+ ' изображений/фото во вложении.'
+                        SendMessage(s)
+                        break
+                    else:
+                        # Препроцессорный обработчик
+                        request = PreProcessor.ReadMessage(text)
+                        Fixer.log('Препроцессор ответил: ' + request)
+                        # Процессорный обработчик
+                        request = Processor.FormMessage(request)
+                        Fixer.log('Процессор ответил: ' + request)
+                        if request[0] == '#': # Требуется постпроцессорная обработка
+                            if request[1:6] == 'LOC! ': # Требуется определить геолокацию
+                                # !Доработать блок!
+                                request = Fixer.Dialog('no_location')
+                            elif request[1:6] == 'bug: ':
+                                request =Fixer.Dialog('bug') + '\nКод ошибки: '+request[6:]
+                            else:
+                                request = 'Что-то пошло не так: '+request
+                            SendMessage(request)
+                        else: # Постпроцессорная обработка не требуется
+                            Fixer.log('Сообщение пользователю: ' + request)
+                            if Fixer.Service != '': Fixer.LastService.append(Fixer.Service)
+                            SendMessage(request)
+                        if Fixer.htext != '': # если есть гипперссылка
+                            Fixer.log('Сообщение пользователю: ' + Fixer.htext)
+                            Fixer.htext = 'Ссылка: ' + Fixer.htext.replace(' ','%20')
+                            SendMessage(Fixer.htext)
+                            Fixer.htext = ''
                     Chat.Save()                    
                 except Exception as e:
                     SendMessage('Ой! Я чуть не завис :( Есть ошибка в моём коде: ' + str(e))
