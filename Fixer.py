@@ -149,7 +149,7 @@ def Exists(path):
 # Функция записи словаря
 def Save(dictionary, name):
     try:
-        f = open('DB\\' + name + '.json', 'w')
+        f = open('DB/' + name + '.json', 'w')
         json.dump(dictionary, f, sort_keys=False, ensure_ascii=False)
         f.close()
         return True
@@ -161,8 +161,8 @@ def Save(dictionary, name):
 def Load(name):
     try:
         dictionary = {}
-        if Exists('DB\\' + name + '.json') == False: return dictionary
-        f = open('DB\\' + name + '.json', 'r')
+        if Exists('DB/' + name + '.json') == False: return dictionary
+        f = open('DB/' + name + '.json', 'r')
         dictionary = json.load(f)
         return dictionary
     except Exception as e:
@@ -172,7 +172,7 @@ def Load(name):
 # Функция записи словаря в байты
 def SaveB(dictionary, name):
     try:
-        f = open('DB\\' + name + '.db', 'wb')
+        f = open('DB/' + name + '.db', 'wb')
         pickle.dump(dictionary, f)
         f.close()
         return True
@@ -184,8 +184,8 @@ def SaveB(dictionary, name):
 def LoadB(name):
     try:
         dictionary = {}
-        if Exists('DB\\' + name + '.db') == False: return dictionary
-        f = open('DB\\' + name + '.db', 'rb')
+        if Exists('DB/' + name + '.db') == False: return dictionary
+        f = open('DB/' + name + '.db', 'rb')
         dictionary = pickle.load(f)
         f.close()
         return dictionary
