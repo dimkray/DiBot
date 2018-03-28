@@ -202,7 +202,6 @@ def Dialog(key):
     else:
         errlog('Ошибка в сервисе Fixer.Dialog - не найден ключ:' + key)
         print(dialogs)
-        print(dialogs[key])
         return key		
 	
 # ---------------------------------------------------------
@@ -298,26 +297,26 @@ try:
     f.close()
 except Exception as e:
     errlog('Ошибка при загрузке комплиментов: ' + str(e))
-	
-#Save(Commands,'Commands')
-#Save(Word1,'Word1')
-#Save(KeyWord,'KeyWord')
-#Save(Valutes,'Valutes')
-#Save(valutes,'Valutes2')
-#Save(dialogs,'dialogs')
-#print('Save!')
 
 # Пользовательские настройки сервисов
 Settings = Load('DefSettings')
 
 # Загрузка всех полезных словарей
 Commands = Load('Commands')
+print(Commands)
 Word1 = Load('Word1')
+print(Word1)
 KeyWord = Load('KeyWord')
+print(KeyWord)
 Valutes = Load('Valutes')
+print(Valutes)
 valutes = Load('Valutes2')
+print(valutes)
 dialogs = Load('dialogs')
+print(dialogs)
 NewDialogs = Load('NewDialogs')
+print(NewDialogs)
 Services = Load('Services')
+print(Services)
 Names = Load('Names')
 print('Все словари загружены!')
