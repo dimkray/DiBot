@@ -5,6 +5,19 @@ import certifi
 import urllib3
 from urllib.parse import urlencode
 from urllib.parse import quote
+from bs4 import BeautifulSoup
+
+def cln(text):
+    m = []
+    texts = text.split('\n')
+    for i in texts:
+        i = i.strip()
+        if i != '':
+            m.append(i)
+    text = ''
+    for i in m:
+        text += i + '\n'
+    return text[:-1]
 
 class URL:
     # Возвращает URL
@@ -25,7 +38,20 @@ class URL:
             return shttp
         except Exception as e:
             Fixer.errlog('Ошибка в сервисе URL.GetURL!: ' + str(e))
-            print('#bug: ' + str(e))        
+            print('#bug: ' + str(e))
+
+    # Открывает URL без параметров
+    def OpenURL(url):
+        try:
+            headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:45.0) Gecko/20100101 Firefox/45.0'}
+            r = requests.get(url, headers = headers)
+            # для тестирования
+##          with open('URL.html', 'w', encoding='utf-8') as f:
+##              f.write(r.text) #.decode('cp1251'))
+            return r.text
+        except Exception as e:
+            print('#bug: ' + str(e))
+            return '#bug: ' + str(e)
         
     # Получение html/основного текста по запросу
     def GetData(shttp, stext = '', textparam = '', params = {}, brequest = True, bsave = False):
@@ -40,6 +66,8 @@ class URL:
                 else:
                     r = requests.get(shttp)
                 status = r.status_code
+                #print(shttp)
+                #print(params)
                 if status == requests.codes.ok: d = r.text
             else: # Если через URL
                 if len(params) > 0:
@@ -69,6 +97,7 @@ class URL:
             Fixer.errlog('Ошибка в сервисе URL.GetData!: ' + str(e))
             print('#bug: ' + str(e))               
 
+class Parser: # Класс парсинга
     # Поиск значений в html (если ball то выводится список значений)
     def Find(data, sfind, sstart = '', send = '', ball = True):
         try:
@@ -93,3 +122,22 @@ class URL:
         except Exception as e:
             Fixer.errlog('Ошибка в сервисе URL.Find!: ' + str(e))
             print('#bug: ' + str(e))   
+
+    # Парсинг html
+    def Parse(htmltext, sdiv='div', sclass='', stype='text'):
+        results = []
+        soup = BeautifulSoup(htmltext, 'lxml')
+        if sclass == '': qlist = soup.find_all(sdiv)
+        else: qlist = soup.find_all(sdiv, {'class': sclass})
+        if len(qlist) > 0:
+            for item in qlist:
+                if stype == 'text':
+                    results.append(cln(item.text))
+                elif stype == 'href':
+                    results.append(item.get('href'))
+                else:
+                    results.append(str(item))
+            return results
+        else: # нет
+            results.append('#bug: none')
+            return results

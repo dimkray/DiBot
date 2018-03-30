@@ -274,6 +274,10 @@ class Yandex:
 
             if r.status_code == requests.codes.ok:
                 data = r.json()
+                # сохранение ответа в файл
+                with open('rasp.json', 'w') as f:
+                    json.dump(r.json(), f)
+                f.close()
                 print('Найдено рейсов: ' + str(data['pagination']['total']))
                 rez = '%' + str(data['pagination']['total']) + ' Расписание: ' + trd[stype] + ' на дату ' + sdate + ':\n'
                 for i in data['segments']:

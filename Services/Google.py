@@ -8,7 +8,7 @@ import requests
 import json
 from urllib.parse import urlencode
 from urllib.parse import quote
-from Services.URLParser import URL
+from Services.URLParser import URL, Parser
 
 class Google:
     # Сервис получения коротких гиперссылок
@@ -58,7 +58,7 @@ class Google:
             if data[0] != '#':
                 # поиск карты
                 if bmap:
-                    ftext = URL.Find(data,'https://maps.google.ru/maps?q=', send='"', ball=False)
+                    ftext = Parser.Find(data,'https://maps.google.ru/maps?q=', send='"', ball=False)
                     if ftext[0] != '#':
                         ftext = ftext.replace('%2B','%20')
                         Fixer.htext = ftext #назначаем гиперссылку
@@ -75,15 +75,15 @@ class Google:
                     else:
                         print('#bug: none map')
                 # поиск текста
-                ftext = URL.Find(data,'href="/search?newwindow', sstart=':', send='+', ball=True)
-                #atext = URL.Find(data,' target="_blank">', sstart='>', send='<', ball=True)
+                ftext = Parser.Find(data,'href="/search?newwindow', sstart=':', send='+', ball=True)
+                #atext = Parser.Find(data,' target="_blank">', sstart='>', send='<', ball=True)
                 if ftext[0] != '#':
                     s = 'Статья или информация по теме:\n'
                     #s += atext[0]
                     s += ftext[0]
                     data = URL.GetData(ftext[0], brequest=False)
                     if data[0] != '#':
-                        text = URL.Find(data,'<p>', sstart='>', send='</p>', ball=True)
+                        text = Parser.Find(data,'<p>', sstart='>', send='</p>', ball=True)
                         if text[0] != '#':
                             for ss in text:
                                 s += '\n' + ss
