@@ -239,7 +239,7 @@ def Subs(text):
         if s.lower() == '[location]': ss = str(Y)+','+str(X)
         if s.lower() == '[address]': ss = Address
         if s.lower() == '[valute]': ss = Valute
-        if s.lower() == '[home]': ss = Fixer.Mess
+        if s.lower() == '[home]': ss = Mess
         if s.lower() == '[notes]':
             for i in Notes:
                 ss += i + ': ' + Notes[i] + '\n'
