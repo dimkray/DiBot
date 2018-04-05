@@ -21,6 +21,12 @@ from Chats.Chats import Chat
 def getparams(text, separator='|'):
     if text.find(separator) < 0: # нет текущего сепаратора
         if text.find(' - ') > 0: separator = ' - '
+    if text.find('[R') >= 0: # Признак радиуса интереса
+        poz = text.find('[R')
+        end = text.find(']',poz)
+        print(text[poz+2,end-1])
+        Fixer.Radius = float(text[poz+2,end-1])
+        text = text.replace('[R'+text[poz+2,end-1]+']','') # Убираем радуис интереса
     m = text.split(separator)
     x = 0
     for im in m:
@@ -31,7 +37,7 @@ def getparams(text, separator='|'):
 
 # Работа с сервисами
 # ---------------------------------------------------------
-# сервис AI
+# сервис AI : #ai: всякий бред
 def ai(text):
     print('Запуск AI')
     request = apiai.ApiAI(config.apiAI_key).text_request()
@@ -51,6 +57,9 @@ def task(text):
     Fixer.log('Старт сервиса Task: ' + text)
     Notification.Tasks = Fixer.LoadB('Tasks')
     params = getparams(text)
+    if len(params) < 2: params.append(str(date.today())) # params[1]
+    if len(params) < 3: params.append('2') # params[2]
+    if len(params) < 4: params.append('NULL') # params[3]
     s = ''
     if params[0] == 'alarm':
         s = 'Будильник успешно установлен!'
@@ -237,12 +246,12 @@ def translate(text):
     return tsend
 
 # ---------------------------------------------------------
-# сервис Яндекс поиск объектов
+# сервис Яндекс поиск объектов : #object: objName | Radius
 def yaobject(text):
     Fixer.log('Старт сервиса Yandex.Object: ' + text)
     param = getparams(text)
     ttext = param[0]
-    rad = '2'
+    rad = Fixer.Radius
     if len(param) > 1: rad = param[1]
     try:
         drad = int(rad)
@@ -254,15 +263,16 @@ def yaobject(text):
     return tsend
 
 # ---------------------------------------------------------
-# сервис Яндекс.Координаты
+# сервис Яндекс.Координаты : #coordinates: $geo-city
 def coordinates(text):
     Fixer.log('Старт сервиса Yandex.Координаты: ' + text)
+    if text.strip() == '': text = 'LOCATION'
     tsend = Yandex.Coordinates(text)
     Fixer.log('Yandex.Координаты ответил: ' + tsend)
     return tsend
 
 # ---------------------------------------------------------
-# сервис wiki
+# сервис wiki : #wiki: query 
 def wiki(text, send=False):
     Fixer.log('Старт сервиса Wikipedia: ' + text)
     if send: Bot.SendMessage('Секундочку! Ищу информацию в Википедии...')
@@ -279,14 +289,17 @@ def wikimore(text):
     return Wiki.More(Fixer.Page)
 	
 # ---------------------------------------------------------
-# сервис geowiki
+# сервис geowiki : #geowiki: [radius]
 def geowiki(text, send=False):
-    try:
-        text += ' '
-        rad = str(text[:text.find(' ',10)])
-    except:
-        Fixer.errlog('Ошибка в определении радиуса: '+text[:text.find(' ',10)])
-        rad = 1000
+    if text.strip() == '':
+        rad = Fixer.Radius
+    else:
+        try:
+            text += ' '
+            rad = str(text[:text.find(' ')])
+        except:
+            Fixer.errlog('Ошибка в определении радиуса: '+text[:text.find(' ')])
+            rad = 100
     Fixer.log('Старт сервиса WikipediaGeo: ' + text)
     if send: Bot.SendMessage('Секундочку! Ищу ближайшие достопримечательности по Википедии...')
     pages = Wiki.GeoSearch(Fixer.X, Fixer.Y, resnom=10, rad=rad)
@@ -300,14 +313,17 @@ def geowiki(text, send=False):
     return Wiki.GeoFirstMe(rad)
 
 # ---------------------------------------------------------
-# сервис geowiki1
+# сервис geowiki1 : #geowiki1: [radius]
 def geowiki1(text, send=False):
-    try:
-        text += ' '
-        rad = str(text[:text.find(' ',11)])
-    except:
-        Fixer.errlog('Ошибка в определении радиуса: '+text[:text.find(' ',11)])
-        rad = 3000
+    if text.strip() == '':
+        rad = Fixer.Radius
+    else:
+        try:
+            text += ' '
+            rad = str(text[:text.find(' ')])
+        except:
+            Fixer.errlog('Ошибка в определении радиуса: '+text[:text.find(' ')])
+            rad = 100
     Fixer.log('Старт сервиса WikipediaGeo1: ' + text)
     if send: Bot.SendMessage('Секундочку! Ищу ближайшую достопримечательность по Википедии...')
     response = Wiki.GeoFirstMe(rad)
@@ -317,7 +333,7 @@ def geowiki1(text, send=False):
     return response
 
 # ---------------------------------------------------------
-# сервис google
+# сервис google : #google: query
 def google(text, map=False):
     Fixer.log('Старт сервиса Google.Search: ' + text)
     stext = Google.Search(text, bmap=map)
@@ -327,7 +343,7 @@ def google(text, map=False):
     return stext
 
 # ---------------------------------------------------------
-# сервис weather
+# сервис getcoords
 def getcoords(geocity):
     if geocity.upper() == 'LOCATION':
         Fixer.Coords[0] = Fixer.X
@@ -339,10 +355,12 @@ def getcoords(geocity):
     return s
 
 # ---------------------------------------------------------
-# сервис weather
+# сервис weather : #weather: type:full/short/day/cloud/wind/sun/night/riseset/temp | $geo-city | $date
 def weather(text):
     Fixer.log('Старт сервиса Weather: ' + text)
     params = getparams(text)
+    if len(params) < 2: params.append('Location')
+    if len(params) < 3: params.append(str(Fixer.Date))
     s = getcoords(params[0])
     if s[0] == '#': return 'Не удалось распознать город или найти его координаты :( - ' + s
     m = Weather.Forecast(Fixer.Coords[0], Fixer.Coords[1], params[1])
@@ -390,9 +408,10 @@ def weather(text):
     return stext
 
 # ---------------------------------------------------------
-# сервис timezone
+# сервис timezone : #timezone: [$geo-city]
 def timezone(text):
     Fixer.log('Старт сервиса TimeZone: ' + text)
+    if text.strip() == '': text = 'Location'
     s = getcoords(text)
     if s[0] == '#': return 'Не удалось распознать город или найти его координаты :( - ' + s
     m = Weather.GetLocation(Fixer.Coords[0], Fixer.Coords[1])
@@ -402,9 +421,10 @@ def timezone(text):
     return ss + m[5]
 
 # ---------------------------------------------------------
-# сервис population
+# сервис population : #population: [$geo-city]
 def population(text):
     Fixer.log('Старт сервиса Population: ' + text)
+    if text.strip() == '': text = 'Location'
     s = getcoords(text)
     if s[0] == '#': return 'Не удалось распознать город или найти его координаты :( - ' + s
     m = Weather.GetLocation(Fixer.Coords[0], Fixer.Coords[1])
@@ -414,9 +434,10 @@ def population(text):
     return s
 
 # ---------------------------------------------------------
-# сервис elevation
+# сервис elevation : #elevation: [$geo-city]
 def elevation(text):
     Fixer.log('Старт сервиса Elevation: ' + text)
+    if text.strip() == '': text = 'Location'
     s = getcoords(text)
     if s[0] == '#': return 'Не удалось распознать город или найти его координаты :( - ' + s
     m = Weather.GetLocation(Fixer.Coords[0], Fixer.Coords[1])
@@ -426,10 +447,11 @@ def elevation(text):
     return s
 
 # ---------------------------------------------------------
-# сервис geodistance
+# сервис geodistance : #geodistance: $geo-city1 - [$geo-city2]
 def geodistance(text):
     Fixer.log('Старт сервиса GeoDistance: ' + text)
     params = getparams(text)
+    if len(params) < 2: params.append('Location')
     s = getcoords(params[0])
     if s[0] == '#': return 'Не удалось распознать первый город или найти его координаты :( - ' + s
     x = Fixer.Coords[0]; y = Fixer.Coords[1]
@@ -439,7 +461,7 @@ def geodistance(text):
     return s
 
 # ---------------------------------------------------------
-# сервис anecdote
+# сервис compliment : #compliment:
 def compliment():
     Fixer.log('Старт сервиса Comliment: ')
     if Fixer.Type == 1:
@@ -450,7 +472,7 @@ def compliment():
     return stext
 	
 # ---------------------------------------------------------
-# сервис anecdote
+# сервис anecdote : #anecdote:
 def anecdote():
     Fixer.log('Старт сервиса Fun.Anecdote: ')
     stext = Fun.Anecdote()
@@ -481,7 +503,7 @@ def setrate(text):
     return 'Хорошо! Установлена валюта по-умолчанию: ' + Fixer.Valutes[text]
 
 # ---------------------------------------------------------
-# сервис notes
+# сервис note - #notes: ALL/<Имя раздела> | Текст
 def note(text):
     Fixer.log('Старт сервиса Note: ' + text)
     params = getparams(text)
@@ -489,10 +511,11 @@ def note(text):
     return Fixer.Dialog('note_section') + params[0].upper()
 
 # ---------------------------------------------------------
-# сервис notes
+# сервис notes - #notes: [ALL/<Имя раздела>]
 def notes(text):
+    text = text.strip()
     Fixer.log('Старт сервиса Notes: ' + text)
-    if text.upper() == 'ALL':
+    if text.upper() == 'ALL' or text == '':
         s = Fixer.Dialog('notes_all')
         for snote in Fixer.Notes.values():
             s += '\n' + snote

@@ -5,11 +5,12 @@ class Chat:
     # Функция записи данных о текущем пользователе (по id chat)
     def Save():
         try:
-            data = { 'version': 20180328,
+            data = { 'version': 20180405,
                      'chat': [Fixer.Time, Fixer.Chat, Fixer.Response],
                      'user': [Fixer.UserID, Fixer.Name, Fixer.Family, Fixer.BirthDay, Fixer.Age,
                      Fixer.Type, Fixer.Thema, Fixer.LastThema, Fixer.Service, Fixer.LastService,
-                     Fixer.Phone, Fixer.eMail, Fixer.Contacts, Fixer.Interests, Fixer.Things, Fixer.bNotice],
+                     Fixer.Phone, Fixer.eMail, Fixer.Contacts, Fixer.Interests, Fixer.Things, 
+                     Fixer.bNotice, Fixer.TimeZone],
                      'location': [Fixer.X, Fixer.Y, Fixer.LastX, Fixer.LastY, 
                                   Fixer.Address, Fixer.LastAddress,
                                   Fixer.Coords, Fixer.LastCoords],
@@ -58,6 +59,7 @@ class Chat:
                 Fixer.Interests = d[13]
             if Fixer.Version >= 20180322: Fixer.Things = d[14]
             if Fixer.Version >= 20180323: Fixer.bNotice = d[15]
+            if Fixer.Version >= 20180405: Fixer.TimeZone = d[16]
 			
             d = data['location']
             Fixer.X = d[0]

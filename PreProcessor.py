@@ -9,9 +9,11 @@ def ReadMessage(text):
     # Запуск сервиса Яндекс.Спеллер для исправления пользовательских опечаток
     text = Yandex.Speller(text)
     Fixer.log('Яндекс.Спеллер: ' + text)
+    stext = text.upper()
+    stext = stext.replace('Ё','Е')
     # Поиск совпадений по первому слову
     for word in Fixer.Word1:
-        if word == text[0:len(word)].upper():
+        if word == stext[0:len(word)]:
             poz = len(word)
             text = Fixer.Word1[word] + text[poz:] # убираем первое слово - добавляем сервис #
             Fixer.log('Найдено совпадение по первому слову: ' + text)

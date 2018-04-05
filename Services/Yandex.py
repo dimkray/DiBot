@@ -467,7 +467,7 @@ class Yandex:
             Fixer.sObj = srez
             x = 1
             for i in srez:
-                if x > 10: break
+                if x > 5: break
                 rez += '\n['+str(x)+'] '+ i[1] + '\n'
                 if i[0] > 1:
                     dis = 10 * i[0]

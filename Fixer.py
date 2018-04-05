@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
+from datetime import datetime, date
 import json
 import pickle
 import os
@@ -18,7 +18,7 @@ bNotice = True
 bAI = True # Признак включения сервиса ИИ
 
 # текущая версия
-Version = 20180328
+Version = 20180405
 
 # общие фиксаторы
 Time = []     # фиксация времени
@@ -38,11 +38,16 @@ Type = 0      # 0 - неизвестно, 1 - мужчина, 2 - женщина
 Thema = ''    # текущая тема
 LastThema = []
 Mess = '' # текущий мессенджер
+TimeZone = 3  # часовой пояс пользователя относительно UTF
+
+bNow = False # признак сейчас
+Date = date.today()
 
 Service = '#' # текущий сервис
 Context = False
 LastService = []
 
+Radius = 100 # радиус интресера
 
 def KnowUser(): # возвращает процент информации о пользователе
     rez = 0
