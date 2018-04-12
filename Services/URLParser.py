@@ -46,11 +46,11 @@ class URL:
             headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:45.0) Gecko/20100101 Firefox/45.0'}
             r = requests.get(url, headers = headers)
             # для тестирования
-##          with open('URL.html', 'w', encoding='utf-8') as f:
-##              f.write(r.text) #.decode('cp1251'))
+            #with open('URL.html', 'w', encoding='utf-8') as f:
+            #    f.write(r.text) #.decode('cp1251'))
             return r.text
         except Exception as e:
-            print('#bug: ' + str(e))
+            #print('#bug: ' + str(e))
             return '#bug: ' + str(e)
         
     # Получение html/основного текста по запросу

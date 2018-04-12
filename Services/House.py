@@ -34,9 +34,22 @@ class Booking: # Работа с booking.com
                     name = Parser.Parse(item, sdiv='span', sclass='sr-hotel__name', stype='text')
                     score = Parser.Parse(item, sdiv='span', sclass='review-score-badge', stype='text')
                     price = Parser.Parse(item, sdiv='strong', sclass='price availprice no_rack_rate ', stype='text')
-                    if score[0][0] == '#': score[0] == 'нет оценки'
-                    if price[0][0] == '#': price[0] == 'не указана'
-                    mList.append('Название: %s\nОценка: %s Стоимость от: %s' % (name[0], score[0], price[0]))
+                    sRt = ''
+                    if score[0][0] == '#': score[0] = ''; sRt ='нет оценки'
+                    if price[0][0] == '#': price[0] = 'не указана'
+                    if score[0] != '':
+                        score[0] = score[0].replace(',','.')
+                        if float(score[0]) <= 3: sRt = 'хрень полная!'
+                        elif 3 < float(score[0]) <= 5: sRt = 'отстой'
+                        elif 5 < float(score[0]) <= 6: sRt = 'так себе'
+                        elif 6 < float(score[0]) <= 7: sRt = 'жить можно'
+                        elif 7 < float(score[0]) <= 8: sRt = 'хорошо'
+                        elif 8 < float(score[0]) <= 9: sRt = 'великолепно'
+                        elif 9 < float(score[0]) <= 9.5: sRt = 'потрясающе'
+                        elif 9.5 < float(score[0]) < 10: sRt = 'превосходно'
+                        elif 9 < float(score[0]) == 10: sRt = 'охренительно!'
+                        else: sRt = 'этой оценке не придумали названия'
+                    mList.append('Название: %s\nОценка: %s (%s). Стоимость от: %s' % (name[0], score[0], sRt, price[0]))
             return mList
         except Exception as e:
             Fixer.errlog('Ошибка в сервисе House.Booking!: ' + str(e))

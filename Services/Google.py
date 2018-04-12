@@ -51,6 +51,28 @@ class Google:
             Fixer.errlog('Ошибка в сервисе Google.Short!: ' + str(e))
             return '#bug: ' + str(e)
 
+    # Сервис поиска толкования/определения слова или фразе
+    def Define(text):
+        try:
+            url = URL.GetURL('https://www.google.ru/search', stext='define'+text, textparam='q')
+            Fixer.htext = url
+            data = URL.OpenURL(url)
+            mItems = ['#bug: none define']; tsend = ''
+            if data[0] != '#':
+                mItems = Parser.Parse(data, sdiv='div', sclass='PNlCoe', stype='text')
+            if mItems[0][0] == '#': return 'Не удалось найти определение слову: ' + text
+            if len(mItems) < 2: tsend = mItems[0]
+            else:
+                i = 0
+                for item in mItems:
+                    i += 1
+                    if i > 7: continue # ограничение в 7 значений
+                    tsend += '%i. %s\n' % (i, item)
+            return tsend
+        except Exception as e:
+            Fixer.errlog('Ошибка в сервисе Google.Define!: ' + str(e))
+            return '#bug: ' + str(e)
+
     # Сервис поиска универсальной карты (с маршрутами или обозначениями)
     def Search(text, bmap=False):
         try:

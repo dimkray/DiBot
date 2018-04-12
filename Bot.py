@@ -8,6 +8,8 @@
 # pip install urllib3
 # pip install certifi
 # pip install urllib3[secure]
+# pip install bs4
+# pip install lxml
 
 import config
 import Fixer

@@ -15,12 +15,16 @@ from Services.User import User
 from Services.Rates import Rate
 from Services.Weather import Weather
 from Services.Geo import Geo
+from Services.House import Booking
 from Chats.Chats import Chat
 
 # получение переменных в массив [] из строки переменных для сервиса
 def getparams(text, separator='|'):
     if text.find(separator) < 0: # нет текущего сепаратора
         if text.find(' - ') > 0: separator = ' - '
+        else:
+            if text.find(',') > 0: separator = ','
+            else: separator = ' '
     if text.find('[R') >= 0: # Признак радиуса интереса
         poz = text.find('[R')
         end = text.find(']',poz)
@@ -197,6 +201,35 @@ def FormRasp(s):
     return tstr
 
 # ---------------------------------------------------------
+# сервис Booking : #booking: $geo-city | $checkin | $checkout | $people | $order | $dormitory
+def booking(text, send=False):
+    from datetime import date
+    tformat = '%Y-%m-%d'
+    if send: Bot.SendMessage('Секундочку! Ищу подходящее жильё в сервисе Booking.com...')
+    Fixer.log('Передача сервису Booking.com: ' + text)
+    params = getparams(text)
+    bDorm = True
+    if len(params) < 2: params.append('Now')
+    if len(params) < 3: params.append('Next')
+    if len(params) < 4: params.append('1')
+    if len(params) < 5: params.append('price')
+    if len(params) < 6: params.append('1')
+    if params[1].upper() == 'NOW': date.today().isoformat()
+    if params[2].upper() == 'NEXT': str(date.strpdate(params[1],tformat) + 1)
+    if params[5] != '1': bDorm = False
+    
+    mList = Booking.List(params[0], params[1], params[2], people=float(params[3]), order=params[4], dorm=bDorm)
+    if mList[0] == '#': return mList
+    tsend = 'Найдены следующие варианты:'
+    x = 0
+    for item in mList:
+        x += 1
+        if x > 7: continue # только 7 вариантов
+        tsend += '\n' + item
+    Fixer.log('Booking.com: ' + tsend)
+    return tsend
+
+# ---------------------------------------------------------
 # сервис Яндекс.Расписание
 def timetable(text, send=False):
     if send: Bot.SendMessage('Секундочку! Ищу расписание транспорта в сервисе Яндекс.Расписания...')
@@ -331,6 +364,16 @@ def geowiki1(text, send=False):
     pages = Wiki.GeoSearch(Fixer.X, Fixer.Y, resnom=10, rad=rad)
     Fixer.htext = '"https://ru.wikipedia.org/wiki/' + pages[0] + '"'
     return response
+
+# ---------------------------------------------------------
+# сервис google.Define : #define: word
+def define(text):
+    Fixer.log('Старт сервиса Google.Define: ' + text)
+    stext = Google.Define(text)
+    Fixer.log('Cервис Google.Search ответил: ' + stext)
+    if stext[0:6] == '#bug: ':
+        Fixer.log('Исправление для следующего цикла: ' + stext)						
+    return stext
 
 # ---------------------------------------------------------
 # сервис google : #google: query
@@ -619,6 +662,8 @@ def FormMessage(text):
                 if response[1:6] == 'user-': tsend = user(response[6:])
                 # Запуск сервиса Acquaintance
                 if response[1:14] == 'acquaintance:': tsend = acquaintance()
+                # Запуск сервиса Booking
+                if response[1:9] == 'booking:': tsend = booking(response[9:], send=True) 
                 # Запуск сервиса Яндекс.Расписание
                 if response[1:12] == 'timetable: ': tsend = timetable(response[12:], send=True)
                 # Запуск сервиса Яндекс.Переводчик
@@ -642,6 +687,8 @@ def FormMessage(text):
                 # Запуск сервиса Google
                 if response[1:12] == 'google-map:': tsend = google(text, map=True)
                 if response[1:8] == 'google:': tsend = google(text)
+                # Запуск сервиса Google.Define
+                if response[1:8] == 'define:': tsend = define(response[8:])
                 # Запуск сервиса Weather
                 if response[1:10] == 'weather: ': tsend = weather(response[10:])
                 # Запуск сервиса TimeZone
