@@ -219,6 +219,8 @@
 	"ОТЛАДКА: ": "#fixer: ",
 	"СОХРАНЕННЫЕ КООРДИНАТЫ:": "#fixer: xy ",
 	"КАЛЬКУЛЯТОР: ": "#calculator: ",
+	"ЛОГИ:": "#log: ",
+	"ОШИБКИ:": "#errlog: ",
 	"TRANSLATE: ": "#translate: ",
 	"TIMETABLE: ": "#timetable: ",
 	"COORDINATES: ": "#coordinates: ",
@@ -259,5 +261,10 @@
 	"SETWORD1: ": "#setword1: ",
 	"SETKEYWORD: ": "#setkeyword: ",
 	"FIXER: ": "#fixer: ",
-	"CALCULATOR: ": "#calculator: "
+	"CALCULATOR: ": "#calculator: ",
+	"LOG:": "#log: ",
+	"LOGS:": "#log: ",
+	"ERRLOG:": "#errlog: ",
+	"ERRLOGS:": "#errlog: ",
+	"LOG_ERR:": "#errlog: "
 }

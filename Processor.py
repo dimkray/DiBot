@@ -101,8 +101,9 @@ def answer(text):
     Fixer.log('Старт сервиса Answer: ' + text)
     if text == 'yes':
         Bot.SendMessage('Отлично!')
-        if Fixer.Thema == 'Знакомство': Fixer.Service == 'acquaintance'
-        tsend = User.Acquaintance()
+        if Fixer.Thema == 'Знакомство':
+            Fixer.Service == 'acquaintance'
+            tsend = User.Acquaintance()
     elif text == 'no':
         tsend = 'Хорошо. Значит в другой раз.\nГотов помочь, чем смогу!'
         Fixer.Thema == ''
@@ -469,6 +470,7 @@ def timezone(text):
         print(s)
         return s
     #ss = 'Часовой пояс: '
+    ss = ''
     if float(m[5]) > 0: ss = '+'
     return ss + m[5]
 
@@ -631,6 +633,37 @@ def datetime(location, ttype='datetime'):
         return now.strftime('%Y-%m-%d %H:%M:%S')
 
 # ---------------------------------------------------------
+# сервис log / logerr : число последних записей
+def log(snumber, etype='none'):
+    mlog = []
+    try:
+        if etype == 'err':
+            f = open('log_error.txt', encoding='utf-8')
+            for line in f:
+                mlog.append(line)
+            f.close()
+        else:
+            f = open('log.txt', encoding='utf-8')
+            for line in f:
+                mlog.append(line)
+            f.close()
+        ilen = len(mlog)
+        try:
+            number = int(snumber)
+        except:
+            number = 10
+        if number < 1: number = 1
+        if number > 100: number = 100
+        if ilen < number: start = 0
+        else: start = ilen - number
+        s = ''
+        for i in range(start, ilen):
+            s += '[%i] %s' % (i, mlog[i])
+        return s
+    except Exception as e:
+        Fixer.errlog('Ошибка при загрузке логов: ' + str(e))
+
+# ---------------------------------------------------------
 # Основной обработчик пользовательских запросов
 # ---------------------------------------------------------
 def FormMessage(text):
@@ -749,6 +782,9 @@ def FormMessage(text):
                 if response[1:6] == 'time:': tsend = datetime(response[6:], 'time')
                 if response[1:6] == 'date:': tsend = datetime(response[6:], 'date')
                 if response[1:10] == 'datetime:': tsend = datetime(response[10:])
+                # Сервис логов
+                if response[1:5] == 'log:': tsend = log(response[5:])
+                if response[1:8] == 'errlog:': tsend = log(response[8:], etype='err')
                 ### обработка результатов сервисов ###
                 Fixer.Query = text # сохраняем последний запрос пользователя
                 if tsend == '': tsend = '#problem: null result'
