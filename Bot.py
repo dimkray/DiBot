@@ -36,60 +36,41 @@ def GetInfo():
                              {'user_ids':Fixer.UserID,'fields':'about,activities,bdate,books,career,city,connections,contacts,counters,country,domain,education,exports,home_town,interests'})
         if response:
             user = response[0]
-            #print(user)
-            #print(user['first_name'])
             Fixer.Name = user['first_name']
-            #print(user['last_name'])
             Fixer.Family = user['last_name']
             if 'about' in user:
-                #print('Обо мне: ' + user['about'])
                 Fixer.About = user['about']
             if 'activities' in user:
                 Fixer.Inteserts.append(user['activities'])
-                #print('Деятельность: ' + user['activities'])
-            #print('ДР: ' + user['bdate'])
             Fixer.BirthDay = user['bdate']
             if 'books' in user:
                 Fixer.Inteserts.append(user['books'])
-                #print('Книги: ' + user['books'])
             if 'career' in user:
                 if 'company' in user['career']:
                     Fixer.Contacts['компания'] = user['career']['company']
-                    #print('Компания: ' + user['career']['company'])
                 if 'position' in user['career']:
                     Fixer.Contacts['вакансия'] = user['career']['position']
-                    #print('Вакансия: ' + user['career']['position'])
             if 'city' in user:
                 Fixer.Contacts['город'] = user['city']['title']
                 Processor.coordinates(user['city']['title'])
                 Fixer.X = Fixer.Coords[0]
                 Fixer.Y = Fixer.Coords[1]
-                #print('координаты: ' + Fixer.Y +', '+ Fixer.X)
-                #print('город: ' + user['city']['title'])
             if 'connections' in user:
                 for connect in user['connections']:
                     Fixer.Contacts[connect] = user['connections'][connect]
-                    #print(connect+': '+user['connections'][connect])
             if 'contacts' in user:
                 if 'mobile_phone' in user['contacts']:
                     Fixer.Phone = user['contacts']['mobile_phone']
-                    #print('Тел.: ' + user['contacts']['mobile_phone'])
                 if 'home_phone' in user['contacts']:
                     Fixer.Contacts['телефон'] = user['contacts']['home_phone']
-                    #print('Тел.: ' + user['contacts']['home_phone'])
             Fixer.Things.append('Друзья: ' + str(user['counters']['friends']))
-            #print('Друзья: ' + str(user['counters']['friends']))
             Fixer.Things.append('Группы: ' + str(user['counters']['pages']))
-            #print('Группы: ' + str(user['counters']['pages']))
             Fixer.Contacts['страна'] = user['country']['title']
-            #print('Страна: ' + user['country']['title'])
             Fixer.Contacts['VK'] = user['domain']
-            #print('Страничка: ' + user['domain'])
             if 'interests' in user:
                 m = Processor.params(user['interests'],', ')
                 for im in m:
                     Fixer.Inteserts.append(im)
-                #print('Интересы: ' + user['interests'])
             return True
     except Exception as e:
         print('Ошибка доступа к информации пользователя '+Fixer.UserID+': '+str(e))
@@ -112,18 +93,21 @@ def SendMessage(text):
 
 # сервис локации
 def location(scoords):
-    from geolocation.main import GoogleMaps
+    #from geolocation.main import GoogleMaps
+    from Services.Geo import Geo
     try:
         poz = scoords.find(' ')
         Fixer.Y = float(scoords[:poz])
         Fixer.X = float(scoords[poz:])
-        mes = 'Твои координаты: ' + str(Fixer.Y) + ', ' + str(Fixer.X) + '\n'
         Fixer.LastX.append(Fixer.X)
         Fixer.LastY.append(Fixer.Y)
+        mes = 'Твои координаты: ' + str(Fixer.Y) + ', ' + str(Fixer.X) + '\n'
         # Сервис Google.Geocoding
-        my_location = GoogleMaps(api_key=config.GMaps_key).search(lat=Fixer.Y, lng=Fixer.X).first()
-        mes += my_location.formatted_address #+ '\n'
-        Fixer.Address = my_location.formatted_address
+        #my_location = GoogleMaps(api_key=config.GMaps_key).search(lat=Fixer.Y, lng=Fixer.X).first()
+        #mes += my_location.formatted_address #+ '\n'
+        sAdd = Geo.GetAddress(Fixer.Y, Fixer.X)
+        mes += sAdd
+        Fixer.Address = sAdd
         Fixer.LastAddress.append(Fixer.Address)
         return mes
     except Exception as e:
@@ -147,7 +131,7 @@ if __name__ == '__main__':
                     print(item)
                     text = item[u'body']
                     if text != '':
-                        if text[0] == '~': break # включён тихий режим сообщения
+                        if text[0] == '~': continue # включён тихий режим сообщения
                     Fixer.ChatID = item[u'user_id']
                     # Идентификатор юзера
                     Fixer.UserID = str(Fixer.ChatID)
@@ -170,23 +154,23 @@ if __name__ == '__main__':
                         if u'place' in geo:
                             if u'country' in geo[u'place']: s += geo[u'place'][u'country'] + ', '
                             if u'city' in geo[u'place']: s += geo[u'place'][u'city']
-                        if text == '': SendMessage(s)
+                        if text == '': SendMessage(s); Chat.Save(); continue
                     # Поиск стикеров и вложений
                     iphoto = 0
                     if u'attachments' in item:
                         for att in item[u'attachments']: # иттератор по вложениям
                             if att[u'type'] == u'sticker': # найден стикер
-                                SendMessage('Сорян. Я не умею распознавать стикеры.'); break
+                                SendMessage('Сорян. Я не умею распознавать стикеры.'); continue
                             elif att[u'type'] == u'photo': # найдено фото
                                 iphoto += 1
                             else: # другой тип вложения
-                                if text == '': SendMessage('В данных типах вложениях я не разбираюсь :('); break
+                                if text == '': SendMessage('В данных типах вложениях я не разбираюсь :('); continue
                     if text == '':
-                        s = 'Пустое сообщение'
+                        #s = 'Пустое сообщение'
                         if iphoto == 1: s = 'Одно фото во вложении. В будующем смогу провести анализ фото :)'
                         elif iphoto > 1: s = 'Найдено '+str(iphoto)+ ' изображений/фото во вложении.'
                         SendMessage(s)
-                        break
+                        continue
                     else:
                         # Препроцессорный обработчик
                         request = PreProcessor.ReadMessage(text)
@@ -197,9 +181,11 @@ if __name__ == '__main__':
                         if request[0] == '#': # Требуется постпроцессорная обработка
                             if request[1:6] == 'LOC! ': # Требуется определить геолокацию
                                 # !Доработать блок!
-                                request = Fixer.Dialog('no_location')
+                                request = location(str(Fixer.Y) + ' ' + str(Fixer.X))
+                                request += '\nДля определения более точных координаты в VK, прикрепи и отправь мне текущее местоположение на карте.'
+                                #request = Fixer.Dialog('no_location')
                             elif request[1:6] == 'bug: ':
-                                request =Fixer.Dialog('bug') + '\nКод ошибки: '+request[6:]
+                                request = Fixer.Dialog('bug') + '\nКод ошибки: '+request[6:]
                             else:
                                 request = 'Что-то пошло не так: '+request
                             SendMessage(request)
@@ -214,9 +200,13 @@ if __name__ == '__main__':
                             Fixer.htext = ''
                     Chat.Save()                    
                 except Exception as e:
-                    SendMessage('Ой! Я чуть не завис :( Есть ошибка в моём коде: ' + str(e))
-            Notification.Process() # запуск системы уведомлений
+                    s = str(e)
+                    if s.find('[WinError 10061]') >= 0:
+                        SendMessage('К сожалению, удалённый сервер заблокирован. Есть большая вероятность, что это связано с блокировкой Telegram :(')
+                    else:
+                        SendMessage('Ой! Я чуть не завис :( Есть ошибка в моём коде: ' + s)
+                Notification.Process() # запуск системы уведомлений
         except Exception as e:
-            SendMessage('Ой! Я чуть не завис :( Есть ошибка в моём коде: ' + str(e))  
+            SendMessage('Чуть не завис :( Есть ошибка в моём коде: ' + str(e))  
 
         time.sleep(1)

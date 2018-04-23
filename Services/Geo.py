@@ -95,3 +95,12 @@ class Geo:
         except Exception as e:
             Fixer.errlog('Ошибка в Geo.GetLocation!: ' + str(e))
             return '#bug: ' + str(e)
+
+    # Получение часового пояса по координатам
+    def GetTimezone(xlat,ylon):
+        try:
+            timezone = Geolocator().timezone(str(xlat)+', '+str(ylon))
+            return str(timezone)
+        except Exception as e:
+            Fixer.errlog('Ошибка в Geo.GetTimezone!: ' + str(e))
+            return '#bug: ' + str(e)

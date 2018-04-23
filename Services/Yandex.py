@@ -284,7 +284,8 @@ class Yandex:
                     t1 = i['departure']
                     t1 = t1[t1.find('T') + 1:t1.find('+')]
                     etime = datetime.strptime(sdate+' '+t1,tformat)
-                    if stime == '' or datetime.today() < etime:
+                    now = datetime.utcnow() + timedelta(hours=Fixer.TimeZone)
+                    if stime == '' or now < etime:
                         t1 = t1[:-3]
                         t2 = i['arrival']
                         t2 = t2[t2.find('T') + 1:t2.find('+')]

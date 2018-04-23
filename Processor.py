@@ -20,7 +20,7 @@ from Chats.Chats import Chat
 
 # получение переменных в массив [] из строки переменных для сервиса
 def getparams(text, separator='|'):
-    if text.find(separator) < 0: # нет текущего сепаратора
+    if text.find(separator) < 0 and separator != ';' : # нет текущего сепаратора
         if text.find(' - ') > 0: separator = ' - '
         else:
             if text.find(',') > 0: separator = ','
@@ -388,7 +388,8 @@ def google(text, map=False):
 # ---------------------------------------------------------
 # сервис getcoords
 def getcoords(geocity):
-    if geocity.upper() == 'LOCATION':
+    if geocity.strip() == '': geocity = 'LOCATION'
+    if geocity.strip().upper() == 'LOCATION':
         Fixer.Coords[0] = Fixer.X
         Fixer.Coords[1] = Fixer.Y
         s = 'LOCATION'
@@ -402,30 +403,34 @@ def getcoords(geocity):
 def weather(text):
     Fixer.log('Старт сервиса Weather: ' + text)
     params = getparams(text)
+    print(params)
     if len(params) < 2: params.append('Location')
     if len(params) < 3: params.append(str(Fixer.Date))
-    s = getcoords(params[0])
+    print('{%s}' % params[1])
+    s = getcoords(params[1])
+    print('{%s}' % s)
     if s[0] == '#': return 'Не удалось распознать город или найти его координаты :( - ' + s
     m = Weather.Forecast(Fixer.Coords[0], Fixer.Coords[1], params[1])
     print(m)
+    if m[0] == '#': return m
     stext = ''
-    if params[2] == 'full': # полный прогноз погоды
+    if params[0] == 'full': # полный прогноз погоды
         stext = m[17] + '\n\n' + m[18] + '\n\n' + m[19]
-    elif params[2] == 'day': # полный прогноз погоды (день)
+    elif params[0] == 'day': # полный прогноз погоды (день)
         stext = m[18]
-    elif params[2] == 'night': # полный прогноз погоды (ночь)
+    elif params[0] == 'night': # полный прогноз погоды (ночь)
         stext = m[19]
-    elif params[2] == 'short': # короткий прогноз погоды
+    elif params[0] == 'short': # короткий прогноз погоды
         s = 'Температура от ' + m[10] + ' до ' + m[2] + '\n'
         s += 'Днём: ' + m[3] + '\n'
         s += 'Ночью: ' + m[11]
         stext = s
-    elif params[2] == 'temp': # температура
+    elif params[0] == 'temp': # температура
         stext = 'Температура от ' + m[10] + ' до ' + m[2] + '\n'
-    elif params[2] == 'riseset': # восход и заход солнца
+    elif params[0] == 'riseset': # восход и заход солнца
         stext = 'Рассвет: ' + m[0] + '\n'
         stext += 'Закат: ' + m[1]
-    elif params[2] == 'cloud': # осадки, облачность
+    elif params[0] == 'cloud': # осадки, облачность
         s = 'Днём: ' + m[3]
         s += ', вероятность осадков ' + m[4] + '\n'
         s += 'Объём осадков: ' + m[5] + '\n'
@@ -437,14 +442,14 @@ def weather(text):
         s += 'Продолжительность осадков: ' + m[14] + '\n'
         s += 'Облачность: ' + m[15]
         stext = s
-    elif params[2] == 'wind': # ветер
+    elif params[0] == 'wind': # ветер
         s = 'Днём: ' + m[8]
         s = '\nНочью: ' + m[16]
         stext = s
-    elif params[2] == 'sun': # солнце
+    elif params[0] == 'sun': # солнце
         stext = 'Днём: ' + m[3] + ', солнечные часы - ' + m[9]
     else: # необрабатываемый случай
-        stext = '#problem: {' + params[2] + '}'
+        stext = '#problem: {' + params[0] + '}'
     Fixer.log('Cервис Weather ответил: ' + stext)
     if stext[0:6] == '#bug: ':
         Fixer.log('Исправление для следующего цикла: ' + stext)						
@@ -454,11 +459,15 @@ def weather(text):
 # сервис timezone : #timezone: [$geo-city]
 def timezone(text):
     Fixer.log('Старт сервиса TimeZone: ' + text)
-    if text.strip() == '': text = 'Location'
+    #if text.strip() == '': text = 'Location' - уже есть в getcoords
     s = getcoords(text)
     if s[0] == '#': return 'Не удалось распознать город или найти его координаты :( - ' + s
     m = Weather.GetLocation(Fixer.Coords[0], Fixer.Coords[1])
-    if m[0][0] == '#': return m[0]
+    if m[0][0] == '#':
+        # попытка узнать часовой пояс из Geo
+        s = Geo.GetTimezone(Fixer.Coords[0], Fixer.Coords[1])
+        print(s)
+        return s
     ss = 'Часовой пояс: '
     if float(m[5]) > 0: ss += '+'
     return ss + m[5]
@@ -467,7 +476,7 @@ def timezone(text):
 # сервис population : #population: [$geo-city]
 def population(text):
     Fixer.log('Старт сервиса Population: ' + text)
-    if text.strip() == '': text = 'Location'
+    #if text.strip() == '': text = 'Location' - уже есть в getcoords
     s = getcoords(text)
     if s[0] == '#': return 'Не удалось распознать город или найти его координаты :( - ' + s
     m = Weather.GetLocation(Fixer.Coords[0], Fixer.Coords[1])
@@ -480,7 +489,7 @@ def population(text):
 # сервис elevation : #elevation: [$geo-city]
 def elevation(text):
     Fixer.log('Старт сервиса Elevation: ' + text)
-    if text.strip() == '': text = 'Location'
+    #if text.strip() == '': text = 'Location'-  - уже есть в getcoords
     s = getcoords(text)
     if s[0] == '#': return 'Не удалось распознать город или найти его координаты :( - ' + s
     m = Weather.GetLocation(Fixer.Coords[0], Fixer.Coords[1])
@@ -605,6 +614,23 @@ def correction(text):
     return s
 
 # ---------------------------------------------------------
+# сервис date / time / datetime : location - type
+def datetime(location, ttype='datetime'):
+    Fixer.log('Старт сервиса DateTime: %s | %s' % (location, ttype))
+    #s = Yandex.Coordinates(location)
+    tz = float(timezone(location))
+    import datetime
+    now = datetime.datetime.utcnow() + datetime.timedelta(hours=tz)
+    if ttype == 'time':
+        print('time')
+        return now.strftime('%H:%M:%S')
+    elif ttype == 'date':
+        print('date')
+        return now.strftime('%Y-%m-%d')
+    else:
+        return now.strftime('%Y-%m-%d %H:%M:%S')
+
+# ---------------------------------------------------------
 # Основной обработчик пользовательских запросов
 # ---------------------------------------------------------
 def FormMessage(text):
@@ -716,9 +742,13 @@ def FormMessage(text):
                 # #location: <текст>
                 if response[1:11] == 'location: ': return '#LOC! ' + response[11:]
                 # Сервис установки координат
-                if response[1:14] == 'setlocation: ': tsend = setlocation(response[11:])
+                if response[1:14] == 'setlocation: ': tsend = setlocation(response[14:])
                 # Сервис корректировки ответов
                 if response[1:13] == 'correction: ': tsend = correction(response[13:])
+                # Сервис времени и даты
+                if response[1:6] == 'time:': tsend = datetime(response[6:], 'time')
+                if response[1:6] == 'date:': tsend = datetime(response[6:], 'date')
+                if response[1:10] == 'datetime:': tsend = datetime(response[10:])
                 ### обработка результатов сервисов ###
                 Fixer.Query = text # сохраняем последний запрос пользователя
                 if tsend == '': tsend = '#problem: null result'
@@ -726,6 +756,8 @@ def FormMessage(text):
                     Fixer.log('Cервис не найден: ' + response[0:response.find(':')])
                     return Fixer.Dialog('no_service') + response #[0:response.find(':')])
                 if tsend[0] == '#': # баг или перенаправление на другой сервис
+                    if tsend.find('[WinError 10061]') >= 0:
+                        tsend = 'удалённый сервер заблокирован. Большая вероятность, что это связано с блокировкой Телеграм :('
                     return 'Не удалось обработать запрос: ' + tsend
                 return tsend           
             else:
