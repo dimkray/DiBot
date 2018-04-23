@@ -468,8 +468,8 @@ def timezone(text):
         s = Geo.GetTimezone(Fixer.Coords[0], Fixer.Coords[1])
         print(s)
         return s
-    ss = 'Часовой пояс: '
-    if float(m[5]) > 0: ss += '+'
+    #ss = 'Часовой пояс: '
+    if float(m[5]) > 0: ss = '+'
     return ss + m[5]
 
 # ---------------------------------------------------------
