@@ -8,5 +8,5 @@ def Distance(x1,y1,x2,y2):
     try:
         return math.sqrt((x1 - x2)**2+(y1 - y2)**2)
     except Exception as e:
-        Fixer.errlog('Ошибка в сервисе SMath.Distance!: ' + str(e))
+        Fixer.errlog('SMath.Distance', str(e))
         return '#bug: ' + str(e) 

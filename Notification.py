@@ -36,12 +36,12 @@ def Process():
             Fixer.ChatID = t[:t.find(':')]
             Chat.Load() # загрузка данных пользователя
             bChange = True
-            Fixer.log('Запуск задачи "'+t+'"!')
+            Fixer.log('Notification','Запуск задачи "'+t+'"!')
             request = Tasks[t][4]
             if Tasks[t][5] != '':
                 # Процессорный обработчик
                 request = Processor.FormMessage(Tasks[t][5])
-                Fixer.log('Процессор ответил: ' + request)
+                Fixer.log('Processor', request)
             Bot.SendMessage(request)
             if Tasks[t][3] > 1: # Уменьшаем цикл
                 Tasks[t][1] += Tasks[t][2]

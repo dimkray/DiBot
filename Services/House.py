@@ -52,5 +52,5 @@ class Booking: # Работа с booking.com
                     mList.append('Название: %s\nОценка: %s (%s). Стоимость от: %s' % (name[0], score[0], sRt, price[0]))
             return mList
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе House.Booking!: ' + str(e))
+            Fixer.errlog('House.Booking', str(e))
             return '#bug: ' + str(e) 

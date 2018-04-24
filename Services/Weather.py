@@ -35,7 +35,7 @@ class Weather:
                 m.append('#problem: '+ str(r.status_code))
                 return m
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе Weather.GetLocation!: ' + str(e))
+            Fixer.errlog('Weather.GetLocation', str(e))
             return '#bug: ' + str(e) 
     
     def Forecast(x, y, edate='0'):
@@ -121,5 +121,5 @@ class Weather:
                 # Если ошибка - то спец.сообщение с номером ошибки
                 return m.append('#problem: '+ str(r.status_code))
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе Weather.Forecast!: ' + str(e))
+            Fixer.errlog('Weather.Forecast', str(e))
             return '#bug: ' + str(e) 

@@ -36,7 +36,7 @@ def SendMessage(text):
     if Fixer.ChatID == 0: return False
     text = Fixer.Subs(text)
     bot.send_message(Fixer.ChatID, text)
-    Fixer.log('Бот пишет: ' + text)
+    Fixer.log('Bot', text)
     if Fixer.UserID != Author: SendAuthor('~Уведомление: бот пишет пользователю TL '+Fixer.UserID+': ' + text)
     return True
 
@@ -45,7 +45,7 @@ def SendMessage(text):
 @bot.message_handler(commands=["start"])
 def start(message):
     Fixer.ChatID = message.chat.id
-    Fixer.log('Пользователь запустил команду: ' + message.text)
+    Fixer.log('Command', message.text)
     if Fixer.UserID != Author: SendAuthor('~Уведомление: пользователь '+Fixer.UserID+' стартовал бот TL!')
     if Fixer.Name == '':
         smes = 'Приветствую Вас! Давайте общаться :)'
@@ -68,7 +68,7 @@ def start(message):
 @bot.message_handler(commands=["stop"])
 def stop(message):
     Fixer.ChatID = message.chat.id
-    Fixer.log('Пользователь запустил команду: ' + message.text)
+    Fixer.log('Command', message.text)
     smes = 'Хорошо! Больше не буду тебя отвлекать.\nЕсли понадаблюсь - просто напиши мне :)'
     #with Fixer:
         # очистка
@@ -78,10 +78,10 @@ def stop(message):
 @bot.message_handler(commands=["help"])
 def help(message):
     Fixer.ChatID = message.chat.id
-    Fixer.log('Пользователь запустил команду: ' + message.text)
+    Fixer.log('Command', message.text)
     smes = 'Чуть позже расскажу, что я умею и как мной пользоваться :)'
     bot.send_message(message.chat.id, smes)
-    Fixer.log('Бот отвечает: ' + smes)
+    Fixer.log('Bot', smes)
 
 @bot.message_handler(content_types=["text"])
 def default_test(message):
@@ -97,10 +97,10 @@ def default_test(message):
         if Fixer.UserID != Author: SendAuthor('~Уведомление: пользователь TL '+Fixer.UserID+' пишет: ' + message.text)
         # Препроцессорный обработчик
         request = PreProcessor.ReadMessage(message.text)
-        Fixer.log('Препроцессор ответил: ' + request)
+        Fixer.log('PreProcessor', request)
         # Процессорный обработчик
         request = Processor.FormMessage(request)
-        Fixer.log('Процессор ответил: ' + request)
+        Fixer.log('Processor', request)
         # Постпроцессорный обработчик
         #if request[0:7] == 'http://': # текст - это гиперссылка
             #ents = []
@@ -121,13 +121,13 @@ def default_test(message):
         else: # Постпроцессорная обработка не требуется
             # Отправляем сформированое сообщение пользователю
             try:
-                Fixer.log('Сообщение пользователю: ' + request)
+                Fixer.log('SendMessage', request)
             except:
-                Fixer.log('Сообщение пользователю: (Проблемы с кодировкой!)')
+                Fixer.errlog('SendMessage', 'Проблемы с кодировкой!')
             if Fixer.Service != '': Fixer.LastService.append(Fixer.Service)
             SendMessage(request)
         if Fixer.htext != '': # если есть гипперссылка
-            Fixer.log('Сообщение пользователю: ' + Fixer.htext)
+            Fixer.log('HiperText', Fixer.htext)
             Fixer.htext = Fixer.htext.replace(' ','%20')
             ent = [types.MessageEntity('text_link', 10, 100, url=Fixer.htext)]
             message.entities = ent
@@ -157,12 +157,12 @@ def location(message):
         SendMessage(mes)
         Chat.Save()
     except Exception as e:
-        Fixer.errlog('Ошибка в сервисе Google.Location!: ' + str(e))
+        Fixer.errlog('Google.Location', str(e))
         return '#bug: ' + str(e) 
 
 if __name__ == '__main__':
-     Fixer.log('--------------------------------------------')   
-     Fixer.log('Запуск Telegram-Бота')
-     Fixer.log('--------------------------------------------')
+     Fixer.log('Start','--------------------------------------------')   
+     Fixer.log('Start','Запуск Telegram-Бота')
+     Fixer.log('Start','--------------------------------------------')
      bot.polling(none_stop=True)
 

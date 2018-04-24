@@ -34,5 +34,5 @@ def FindDate(text):
         
         return text
     except Exception as e:
-        Fixer.errlog('Ошибка в сервисе DateTime.FindDate!: ' + str(e))
+        Fixer.errlog('DateTime.FindDate', str(e))
         return '#bug: ' + str(e) 

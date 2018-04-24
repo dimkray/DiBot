@@ -63,7 +63,7 @@ class User:
                 Bot.SendMessage('Хорошо! Я это запомнил :)')				
             return User.Acquaintance()
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе User.Info!: ' + str(e))
+            Fixer.errlog('User.Info', str(e))
             return '#bug: ' + str(e)
 
     # сервис знакомства

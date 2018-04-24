@@ -13,7 +13,7 @@ def Geolocator():
     try:
         return GoogleV3(api_key=config.GMaps_key, timeout=1)
     except Exception as e:
-        Fixer.errlog('Ошибка в Geolocator!: ' + str(e))
+        Fixer.errlog('Geolocator', str(e))
         return '#bug: ' + str(e)
 
 # Измерение расстояние от одной точки до другой (по глобальным координатам)

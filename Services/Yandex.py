@@ -30,7 +30,7 @@ try:
     f.close()
     print('База успешно загружена!')
 except Exception as e:
-    Fixer.errlog('Ошибка в сервисе Yandex - при загрузке stations.txt!: ' + str(e))
+    Fixer.errlog('Yandex', 'Ошибка при загрузке stations.txt!: ' + str(e))
 
 # Поиск идентификатора языка
 def FindLang(slang):
@@ -315,7 +315,7 @@ class Yandex:
                 rez += '#https://rasp.yandex.ru/search/?fromId='+st1+'&toId='+st2+'&when='+sdate
             return rez
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе Yandex.FindRasp!: ' + str(e))
+            Fixer.errlog('Yandex.FindRasp', str(e))
             return '#bug: ' + str(e)
     
     # Сервис Яндекс.Спеллер
@@ -346,7 +346,7 @@ class Yandex:
                 rez = '#problem: '+ str(r.status_code)
             return rez
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе Yandex.Speller!: ' + str(e))
+            Fixer.errlog('Yandex.Speller', str(e))
             return '#bug: ' + str(e)
 
     # Сервис Яндекс.Переводчик
@@ -381,7 +381,7 @@ class Yandex:
                 rez = '#problem: '+ str(r.status_code)
             return rez
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе Yandex.Translate!: ' + str(e))
+            Fixer.errlog('Yandex.Translate', str(e))
             return '#bug: ' + str(e)
 
     # Сервис Яндекс поиск объектов/организаций
@@ -445,12 +445,13 @@ class Yandex:
                 else: gObj +=1 # число геогр. объектов				
             sorg = ''; sobj = ''; sand = ''
             if oObj > 0: sorg = str(oObj) + ' организаций/ию'
+            if oObj > 499: sorg = 'более ' + str(oObj) + ' организаций'
             if gObj > 0: sobj = str(gObj) + ' географических/ий объект/ов'
             if oObj != 0 and gObj != 0: sand = ' и '
             if oObj == 0 and gObj == 0:
                 rez = 'Не нашёл ни одного объекта с названием "'+text+'" в радиусе '+str(dr)+'км :(\nМожет надо указать другие параметры поиска? Либо задать больший радуис поиска, указав дополнительно ...в пределах 500 км, например.'
-            print(oObj)
-            print(gObj)
+            #print(oObj)
+            #print(gObj)
             rez = 'Нашёл ' + sorg + sand + sobj + ' в радиусе '+ str(dr) + ' км.\n'
             #print(Fixer.Obj)
             if oObj + gObj > 5: rez += 'Из них будут показаны 5 ближайших:'
@@ -481,7 +482,7 @@ class Yandex:
                 x += 1
             return rez
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе Yandex.Objects!: ' + str(e))
+            Fixer.errlog('Yandex.Objects', str(e))
             return '#bug: ' + str(e)
 
     # Сервис Яндекс.Координаты
@@ -490,12 +491,12 @@ class Yandex:
         try:
             s = eStation(station.upper())
             print(s)
-            if s == '': return '#problem: 0 station'
+            if s == '': return '#problem: не найдено ни одного объекта'
             s = FindStation(s)
-            if s == '': return '#problem: 0 station'
-            if Fixer.Coords[0] == Fixer.Coords[1] == '': return '#poblem: no coordinates'
+            if s == '': return '#problem: не найдено ни одного объекта'
+            if Fixer.Coords[0] == Fixer.Coords[1] == '': return '#poblem: не заданы координаты'
             return Fixer.Coords[1] + ', ' + Fixer.Coords[0]
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе Yandex.Coordinates!: ' + str(e))
+            Fixer.errlog('Yandex.Coordinates', str(e))
             return '#bug: ' + str(e)
         

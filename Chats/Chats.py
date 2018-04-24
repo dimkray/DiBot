@@ -26,7 +26,7 @@ class Chat:
             f.close()
             return data # возвращает текущее состояние для #Fixer
         except Exception as e:
-            Fixer.errlog('Ошибка в Chat.Save!: ' + str(e))
+            Fixer.errlog(Fixer.Process, str(e))
             return '#bug: ' + str(e)
 
     # Функция загрузки данных о текущем пользователе (по id chat)
@@ -105,5 +105,5 @@ class Chat:
             f.close()
             return True
         except Exception as e:
-            Fixer.errlog('Ошибка в Chat.Load!: ' + str(e))
+            Fixer.errlog(Fixer.Process, str(e))
             return False

@@ -29,7 +29,7 @@ class Rate:
             rez = Rate.Vals[valute]['Value'] / Rate.Vals[valute]['Nominal']
             return(str(round(rez, 2)))
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе Rates.RateRub!: ' + str(e))
+            Fixer.errlog('Rates.RateRub', str(e))
             return('#bug: ' + str(e))
 
     # Получение курса валюты из расчёта на 1 рубль
@@ -42,7 +42,7 @@ class Rate:
             rez = Rate.Vals[valute]['Nominal'] / Rate.Vals[valute]['Value']
             return(str(round(rez, 2)))
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе Rates.RateFromRub!: ' + str(e))
+            Fixer.errlog('Rates.RateFromRub', str(e))
             return('#bug: ' + str(e))
         
     # Конвертация одной валюты в другую
@@ -64,6 +64,6 @@ class Rate:
                 rez = rubs * Rate.Vals[valute2]['Nominal'] / Rate.Vals[valute2]['Value']
                 return str(round(rez, 2))
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе Rates.RateRub!: ' + str(e))
+            Fixer.errlog('Rates.RateRub', str(e))
             return('#bug: ' + str(e))
         

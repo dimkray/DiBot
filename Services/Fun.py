@@ -13,7 +13,7 @@ try:
     f.close()
     print('База успешно загружена!')
 except Exception as e:
-    Fixer.errlog('Ошибка при загрузке базы anecdotes!: ' + str(e))
+    Fixer.errlog('Fun', 'Ошибка при загрузке базы anecdotes!: ' + str(e))
 
 class Fun:
     def Anecdote():
@@ -21,5 +21,5 @@ class Fun:
             random.seed()
             return db[random.randint(0, len(db)-1)]
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе Fun.Anecdote!: ' + str(e))
+            Fixer.errlog('Fun.Anecdote', str(e))
             return '#bug: ' + str(e) 

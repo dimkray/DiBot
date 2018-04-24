@@ -37,7 +37,7 @@ class URL:
                 shttp += '?'+req             
             return shttp
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе URL.GetURL!: ' + str(e))
+            Fixer.errlog('URL.GetURL', str(e))
             print('#bug: ' + str(e))
 
     # Открывает URL без параметров
@@ -50,7 +50,7 @@ class URL:
             #    f.write(r.text) #.decode('cp1251'))
             return r.text
         except Exception as e:
-            #print('#bug: ' + str(e))
+            Fixer.errlog('URL.OpenURL', str(e))
             return '#bug: ' + str(e)
         
     # Получение html/основного текста по запросу
@@ -94,7 +94,7 @@ class URL:
                     f.close()
                 return d
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе URL.GetData!: ' + str(e))
+            Fixer.errlog('URL.GetData', str(e))
             print('#bug: ' + str(e))               
 
 class Parser: # Класс парсинга
@@ -120,11 +120,12 @@ class Parser: # Класс парсинга
                     if len(mtext) == 0: return '#bug: none'
             return mtext
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе URL.Find!: ' + str(e))
+            Fixer.errlog('URL.Find', str(e))
             print('#bug: ' + str(e))   
 
     # Парсинг html
     def Parse(htmltext, sdiv='div', sclass='', stype='text'):
+        Fixer.log('URL.Parse')
         results = []
         soup = BeautifulSoup(htmltext, 'lxml')
         if sclass == '': qlist = soup.find_all(sdiv)

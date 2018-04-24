@@ -40,6 +40,10 @@ LastThema = []
 Mess = '' # текущий мессенджер
 TimeZone = 3  # часовой пояс пользователя относительно UTF
 
+Process = '' # текущий процесс
+errProcess = '' #процесс, в котором возникла ошибка
+errMsg = '' #сообщение об ошибке
+
 bNow = False # признак сейчас
 Date = date.today()
 
@@ -109,33 +113,29 @@ sObj = [] # Список преобразованный в строку
 Notes = {} # Записи пользователя
 
 # Запись лога
-def log(s):
+def log(process, s = ''):
     f = open('log.txt', 'a', encoding='utf-8')
+    Process = process
     if s:
         try:
             s = s.replace('\n',' \ ')
-            f.write(str(datetime.today()) + ' ' + UserID + ': ' + s + '\n')
-            print(s)
+            f.write('%s %s {%s}: %s\n' % (str(datetime.today()), UserID, Process, s))
+            print('{%s}: %s' % (Process, s))
         except Exception as e:
             print('Ошибка при попытке записи лога! ' + str(e))
-    else:
-        f.write(str(datetime.today()) + ' ' + UserID + ': Ошибка записи лога!\n')
-        print('Ошибка записи лога!')
     f.close()
 
 # Запись лога ошибок
-def errlog(s):
+def errlog(errprocess, s):
     f = open('log_error.txt', 'a', encoding='utf-8')
-    if s:
-        try:
-            s = s.replace('\n',' \ ')
-            f.write(str(datetime.today()) + ' ' + UserID + ': ' + s + '\n')
-            print(s)
-        except Exception as e:
-            print('Ошибка при попытке записи лога! ' + str(e))
-    else:
-        f.write(str(datetime.today()) + ' ' + UserID + ': Ошибка записи лога!\n')
-        print('Ошибка записи лога!')
+    try:
+        s = s.replace('\n',' \ ')
+        errProcess = errprocess
+        f.write('%s %s {%s}: %s\n' % (str(datetime.today()), UserID, errProcess, s))
+        print('Ошибка! {%s}: %s' % (errProcess, s))
+        errMsg = s
+    except Exception as e:
+        print('Ошибка при попытке записи лога! ' + str(e))
     f.close()
 
 # Запись времени и даты
@@ -160,7 +160,7 @@ def Save(dictionary, name):
         f.close()
         return True
     except Exception as e:
-        errlog('Ошибка в Fixer.Save!: ' + name + '.json ' + str(e))
+        errlog('Fixer.Save', name + '.json - ' + str(e))
         return False
 
 # Функция загрузки словаря
@@ -172,7 +172,7 @@ def Load(name):
         dictionary = json.load(f)
         return dictionary
     except Exception as e:
-        errlog('Ошибка в Fixer.Load!: '+ name + '.json ' + str(e))
+        errlog('Fixer.Load', name + '.json - ' + str(e))
         return dictionary
 
 # Функция записи словаря в байты
@@ -183,7 +183,7 @@ def SaveB(dictionary, name):
         f.close()
         return True
     except Exception as e:
-        errlog('Ошибка в Fixer.SaveB!: ' + name + '.db ' + str(e))
+        errlog('Fixer.SaveB', name + '.db - ' + str(e))
         return False
 
 # Функция загрузки словаря из байт
@@ -196,7 +196,7 @@ def LoadB(name):
         f.close()
         return dictionary
     except Exception as e:
-        errlog('Ошибка в Fixer.LoadB!: '+ name + '.db ' + str(e))
+        errlog('Fixer.LoadB', name + '.db - ' + str(e))
         return dictionary
 
 # ---------------------------------------------------------
@@ -206,8 +206,7 @@ def Dialog(key):
     if key in dialogs:
         return random.choice(dialogs[key])
     else:
-        errlog('Ошибка в сервисе Fixer.Dialog - не найден ключ:' + key)
-        print(dialogs)
+        errlog('Fixer.Dialog', 'не найден ключ: ' + key)
         return key		
 	
 # ---------------------------------------------------------
@@ -251,7 +250,7 @@ def Subs(text):
             ss = ss[:-2]
         if ss != '': text = text.replace(s, ss)
         t = t1 + 1
-    log('Внутренний сервис Fixer.Substitution: ' + text)
+    log('Fixer.Substitution', text)
     return text
 
 # ---------------------------------------------------------
@@ -290,6 +289,7 @@ def strcleaner(text):
     return text
 
 # Загрузка комплиментов
+log('Fixer.Start')
 mCompliment = []
 wCompliment = []
 try:
@@ -302,7 +302,7 @@ try:
         wCompliment.append(line.replace('\n',''))
     f.close()
 except Exception as e:
-    errlog('Ошибка при загрузке комплиментов: ' + str(e))
+    errlog('Fixer.Start', 'Ошибка при загрузке комплиментов: ' + str(e))
 
 # Пользовательские настройки сервисов
 Settings = Load('DefSettings')
@@ -317,4 +317,4 @@ dialogs = Load('dialogs')
 NewDialogs = Load('NewDialogs')
 Services = Load('Services')
 Names = Load('Names')
-print('Все словари загружены!')
+log('Fixer.Start', 'Все словари загружены!')

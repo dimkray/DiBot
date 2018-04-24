@@ -17,7 +17,7 @@ class Wiki:
             rez = wikipedia.search(sname, results = resnum)
             return rez
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе Wikipedia.SearchPage!: ' + str(e))
+            Fixer.errlog('Wikipedia.SearchPage', str(e))
             return '#bug: ' + str(e)        
 
     # Вся информация о статье по типу: content, categories, coordinates, html, images, links
@@ -34,7 +34,7 @@ class Wiki:
             elif stype == 'sections': return rez.sections
             return rez.summary
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе Wikipedia.Page!: ' + str(e))
+            Fixer.errlog('Wikipedia.Page', str(e))
             return '#bug: ' + str(e)         
 
     # Весь текстовый контент статьи
@@ -45,7 +45,7 @@ class Wiki:
             text = rez.content #.encode('utf8')
             return text
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе Wikipedia.FullContent!: ' + str(e))
+            Fixer.errlog('Wikipedia.FullContent', str(e))
             return '#bug: ' + str(e) 
     
     # Минимальный контент статьи - первый абзац
@@ -60,7 +60,7 @@ class Wiki:
             Fixer.WikiStart = num
             return text
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе Wikipedia.MiniContent!: ' + str(e))
+            Fixer.errlog('Wikipedia.MiniContent', str(e))
             return '#bug: ' + str(e)             
 
     # Минимальный контент статьи - первый абзац
@@ -73,7 +73,7 @@ class Wiki:
             Fixer.WikiStart = num
             return text
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе Wikipedia.More!: ' + str(e))
+            Fixer.errlog('Wikipedia.More', str(e))
             return '#bug: ' + str(e)  
 			
     # Произвольная статья в Wikipedia
@@ -82,7 +82,7 @@ class Wiki:
             rez = wikipedia.random()
             return Wiki.MiniContent(rez[0])
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе Wikipedia.PageRandom!: ' + str(e))
+            Fixer.errlog('Wikipedia.PageRandom', str(e))
             return '#bug: ' + str(e)                
 
     # Найти объекты wiki поблизости от location (x, y)
@@ -92,7 +92,7 @@ class Wiki:
             if len(rez) == 0: return '#problem: no objects'
             return rez
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе Wikipedia.GeoSearch!: ' + str(e))
+            Fixer.errlog('Wikipedia.GeoSearch', str(e))
             return '#bug: ' + str(e)
 
     # Найти ближайший объект wiki поблизости от location (x, y) - возвращает MiniContent
@@ -109,7 +109,7 @@ class Wiki:
                     continue
             return 'Не удалось загрузить информацию :('
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе Wikipedia.GeoFirst!: ' + str(e))
+            Fixer.errlog('Wikipedia.GeoFirst', str(e))
             return '#bug: ' + str(e)
 
     # Найти ближайший объект wiki поблизости от меня - возвращает MiniContent
@@ -117,6 +117,6 @@ class Wiki:
         try:
             return Wiki.GeoFirst(Fixer.X, Fixer.Y, rad=rad)
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе Wikipedia.GeoFirstMe!: ' + str(e))
+            Fixer.errlog('Wikipedia.GeoFirstMe', str(e))
             return '#bug: ' + str(e)
 

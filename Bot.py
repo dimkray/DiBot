@@ -87,7 +87,7 @@ def SendMessage(text):
     if Fixer.ChatID == 0: return False
     text = Fixer.Subs(text)
     vk.method('messages.send', {'user_id':Fixer.ChatID,'message':text})
-    Fixer.log('Бот пишет: ' + text)
+    Fixer.log('Bot', text)
     if Fixer.UserID != Author: SendAuthor('~Уведомление: бот пишет пользователю VK '+Fixer.UserID+': ' + text)
     return True
 
@@ -111,13 +111,13 @@ def location(scoords):
         Fixer.LastAddress.append(Fixer.Address)
         return mes
     except Exception as e:
-        Fixer.errlog('Ошибка в сервисе Google.Location!: ' + str(e))
+        Fixer.errlog('Google.Location', str(e))
         return '#bug: ' + str(e) 
 
 if __name__ == '__main__':
-    Fixer.log('--------------------------------------------')   
-    Fixer.log('Запуск VK-Бота')   
-    Fixer.log('--------------------------------------------')	
+    Fixer.log('Start','--------------------------------------------')   
+    Fixer.log('Start','Запуск VK-Бота')   
+    Fixer.log('Start','--------------------------------------------')	
     # бесконечный цикл проверки
     while True:
         try:
@@ -147,6 +147,7 @@ if __name__ == '__main__':
                     vk.method('messages.setActivity', {'user_id':Fixer.ChatID, 'type':u'typing'})
                     # Поиск текущей локации пользователя
                     if u'geo' in item:
+                        Fixer.Process = 'Bot.GetUserLocation'
                         geo = item[u'geo']
                         s = ''
                         if u'coordinates' in geo:
@@ -158,6 +159,7 @@ if __name__ == '__main__':
                     # Поиск стикеров и вложений
                     iphoto = 0
                     if u'attachments' in item:
+                        Fixer.Process = 'Bot.GetUserAttachments'
                         for att in item[u'attachments']: # иттератор по вложениям
                             if att[u'type'] == u'sticker': # найден стикер
                                 SendMessage('Сорян. Я не умею распознавать стикеры.'); continue
@@ -173,11 +175,12 @@ if __name__ == '__main__':
                         continue
                     else:
                         # Препроцессорный обработчик
+                        Fixer.Process = 'Bot.PreProcessor'
                         request = PreProcessor.ReadMessage(text)
-                        Fixer.log('Препроцессор ответил: ' + request)
                         # Процессорный обработчик
+                        Fixer.Process = 'Bot.Processor'
                         request = Processor.FormMessage(request)
-                        Fixer.log('Процессор ответил: ' + request)
+                        Fixer.log('Processor', request)
                         if request[0] == '#': # Требуется постпроцессорная обработка
                             if request[1:6] == 'LOC! ': # Требуется определить геолокацию
                                 # !Доработать блок!
@@ -188,13 +191,13 @@ if __name__ == '__main__':
                                 request = Fixer.Dialog('bug') + '\nКод ошибки: '+request[6:]
                             else:
                                 request = 'Что-то пошло не так: '+request
+                            Fixer.log('PostProcessor', request)
                             SendMessage(request)
                         else: # Постпроцессорная обработка не требуется
-                            Fixer.log('Сообщение пользователю: ' + request)
                             if Fixer.Service != '': Fixer.LastService.append(Fixer.Service)
                             SendMessage(request)
                         if Fixer.htext != '': # если есть гипперссылка
-                            Fixer.log('Сообщение пользователю: ' + Fixer.htext)
+                            Fixer.log('HiperText', Fixer.htext)
                             Fixer.htext = 'Ссылка: ' + Fixer.htext.replace(' ','%20')
                             SendMessage(Fixer.htext)
                             Fixer.htext = ''
@@ -203,10 +206,12 @@ if __name__ == '__main__':
                     s = str(e)
                     if s.find('[WinError 10061]') >= 0:
                         SendMessage('К сожалению, удалённый сервер заблокирован. Есть большая вероятность, что это связано с блокировкой Telegram :(')
+                        Fixer.errlog(Fixer.Process, s)
                     else:
                         SendMessage('Ой! Я чуть не завис :( Есть ошибка в моём коде: ' + s)
                 Notification.Process() # запуск системы уведомлений
         except Exception as e:
-            SendMessage('Чуть не завис :( Есть ошибка в моём коде: ' + str(e))  
+            SendAuthor('Возникла ошибка: ' + str(e))  
+            Fixer.errlog(Fixer.Process, str(e))
 
         time.sleep(1)

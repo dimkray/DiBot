@@ -26,7 +26,7 @@ class Google:
                 rez = '#problem: '+ str(r.status_code)
             return rez
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе Google.Shorten!: ' + str(e))
+            Fixer.errlog('Google.Shorten', str(e))
             return '#bug: ' + str(e)
 
     def Short(url):
@@ -48,7 +48,7 @@ class Google:
                 rez = '#problem: '+ str(r.status_code)
             return rez
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе Google.Short!: ' + str(e))
+            Fixer.errlog('Google.Short', str(e))
             return '#bug: ' + str(e)
 
     # Сервис поиска толкования/определения слова или фразе
@@ -70,7 +70,7 @@ class Google:
                     tsend += '%i. %s\n' % (i, item)
             return tsend
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе Google.Define!: ' + str(e))
+            Fixer.errlog('Google.Define', str(e))
             return '#bug: ' + str(e)
 
     # Сервис поиска универсальной карты (с маршрутами или обозначениями)
@@ -123,5 +123,5 @@ class Google:
             else:
                 return data
         except Exception as e:
-            Fixer.errlog('Ошибка в сервисе Google.Search!: ' + str(e))
+            Fixer.errlog('Google.Search', str(e))
             return '#bug: ' + str(e)            
