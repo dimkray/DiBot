@@ -10,6 +10,7 @@
 # pip install urllib3[secure]
 # pip install bs4
 # pip install lxml
+# pip install feedparser
 
 import config
 import Fixer
