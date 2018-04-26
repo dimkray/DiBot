@@ -221,6 +221,13 @@
 	"КАЛЬКУЛЯТОР: ": "#calculator: ",
 	"ЛОГИ:": "#log: ",
 	"ОШИБКИ:": "#errlog: ",
+	"САЙТ: ": "#site: info ",
+	"САЙТЫ: ": "#site: find ",
+	"RSS-КАНАЛ: ": "#rss ",
+	"ПОДПИСАТЬСЯ: ": "#rss ",
+	"ПОДПИСКА: ": "#rss ",
+	"ПОДПИСАТЬСЯ НА КАНАЛ: ": "#rss ",
+	"КАНАЛ: ": "#rss ",
 	"TRANSLATE: ": "#translate: ",
 	"TIMETABLE: ": "#timetable: ",
 	"COORDINATES: ": "#coordinates: ",
@@ -266,5 +273,9 @@
 	"LOGS:": "#log: ",
 	"ERRLOG:": "#errlog: ",
 	"ERRLOGS:": "#errlog: ",
-	"LOG_ERR:": "#errlog: "
+	"LOG_ERR:": "#errlog: ",
+	"SITE: ": "#site: info ",
+	"SITES: ": "#site: find ",
+	"RSS: ": "#rss: ",
+	"FEED: ": "#rss: "
 }

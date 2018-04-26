@@ -5,7 +5,7 @@ class Chat:
     # Функция записи данных о текущем пользователе (по id chat)
     def Save():
         try:
-            data = { 'version': 20180405,
+            data = { 'version': 20180427,
                      'chat': [Fixer.Time, Fixer.Chat, Fixer.Response],
                      'user': [Fixer.UserID, Fixer.Name, Fixer.Family, Fixer.BirthDay, Fixer.Age,
                      Fixer.Type, Fixer.Thema, Fixer.LastThema, Fixer.Service, Fixer.LastService,
@@ -20,7 +20,8 @@ class Chat:
                      Fixer.trDate, Fixer.LastSt1, Fixer.LastSt2, Fixer.LastTr],
                      'wiki': [Fixer.Page, Fixer.LastPage, Fixer.WikiStart],
                      'rate': [Fixer.Valute, Fixer.LastValute],
-                     'notes': Fixer.Notes}
+                     'notes': Fixer.Notes,
+                     'rss': [Fixer.RSS, Fixer.LastRSS]}
             f = open('Chats\\' + str(Fixer.ChatID) + '.chat', 'wb')
             pickle.dump(data, f)
             f.close()
@@ -100,7 +101,12 @@ class Chat:
             Fixer.LastValute = d[1]
             
             if Fixer.Version >= 20180320:
-                Fixer.Notes = data['notes'] 
+                Fixer.Notes = data['notes']
+            
+            if Fixer.Version >= 20180427:
+                d = data['rss']
+                Fixer.RSS = d[0]
+                Fixer.LastRSS = d[1]
 
             f.close()
             return True

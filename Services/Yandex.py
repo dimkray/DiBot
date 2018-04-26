@@ -14,6 +14,19 @@ trd = {'All':'любой транспорт', 'plane':'самолёт', 'train':
 mounth = ['ЯНВАРЯ', 'ФЕВРАЛЯ', 'МАРТА', 'АПРЕЛЯ', 'МАЯ', 'ИЮНЯ', 'ИЮЛЯ', 'АВГУСТА', 'СЕНТЯБРЯ', 'ОКТЯБРЯ', 'НОЯБРЯ', 'ДЕКАБРЯ']
 trSt = {'': 0, 'unknown': 0, 'train_station': 1, 'platform': 1, 'station': 1, 'bus_station': 2, 'bus_stop': 2, 'airport':3, 'whafr': 4, 'river_port': 4, 'port': 4}
 
+# база сайтов (Яндекс.Каталог)
+try:
+    print('Загрузка базы YandexCatalog.csv...')
+    f = open('DB/YandexCatalog.csv', encoding='utf-8')
+    yacat = []
+    for line in f:
+        words = line.split(';')
+        yacat.append(words)
+    f.close()
+    print('База успешно загружена!')
+except Exception as e:
+    Fixer.errlog('Yandex', 'Ошибка при загрузке YandexCatalog.csv!: ' + str(e))
+
 # Загрузка базы городов/станций
 try:
     print('Загрузка базы stations.txt...')
@@ -498,5 +511,66 @@ class Yandex:
             return Fixer.Coords[1] + ', ' + Fixer.Coords[0]
         except Exception as e:
             Fixer.errlog('Yandex.Coordinates', str(e))
+            return '#bug: ' + str(e)
+
+    # Сервис Яндекс.Каталог
+    # Яндекс.Каталог возвращает информацию о сайте (тиц, раздел, регион)
+    def Catalog(url):
+        try:
+            url = url.lower().strip()
+            if len(url) > 2:
+                mfind = []; s = ''
+                for row in yacat:
+                    if row[0].find(url) >= 0: mfind.append(row)
+                s = 'Найдено совпадений: ' + str(len(mfind))
+                icount = len(mfind)
+                if len(mfind) == 0: return 'Сайт или часть сайта "%s" не найдена :(\nСледует уточнить строку поиска или убедиться, что сайт существует.' % url
+                if len(mfind) > 5: s += '. Но будут показаны первые 5:'; icount = 5
+                else: s += ':'
+                for i in range(0,icount):
+                    s +='\n[%i] %s - %s (ТИЦ: %s)' % (i, mfind[i][0], mfind[i][1], mfind[i][2])
+                    s +='\nРаздел: %s' % mfind[i][3]
+                    for j in range (4,9):
+                        if mfind[i][j].strip() != '':
+                            s +=' -> ' + mfind[i][j]
+                    s +='\nРегион: %s' % mfind[i][9]
+                    for j in range (10,13):
+                        if mfind[i][j].strip() != '':
+                            s +=' -> ' + mfind[i][j]
+                return s
+            else: return 'Строка "%s" для поиска информации по сайту слишком мала!' % url
+        except Exception as e:
+            Fixer.errlog('Yandex.Catalog', str(e))
+            return '#bug: ' + str(e)
+        
+    # Сервис Яндекс.Каталог
+    # Яндекс.Каталог ищет сайт по запросу
+    def FindCatalog(text):
+        try:
+            text = text.lower().strip()
+            if len(text) > 2:
+                mfind = []; s = ''
+                for row in yacat:
+                    for i in range(1,13):
+                        if row[i].lower().find(text) >= 0: mfind.append(row)
+                s = 'Найдено совпадений: ' + str(len(mfind))
+                icount = len(mfind)
+                if len(mfind) == 0: return 'Сайт по поисковой строке "%s" не найден :(' % text
+                if len(mfind) > 5: s += '. Но будут показаны первые 5:'; icount = 5
+                else: s += ':'
+                for i in range(0,icount):
+                    s +='\n[%i] %s - %s (ТИЦ: %s)' % (i, mfind[i][0], mfind[i][1], mfind[i][2])
+                    s +='\nРаздел: %s' % mfind[i][3]
+                    for j in range (4,9):
+                        if mfind[i][j].strip() != '':
+                            s +=' -> ' + mfind[i][j]
+                    s +='\nРегион: %s' % mfind[i][9]
+                    for j in range (10,13):
+                        if mfind[i][j].strip() != '':
+                            s +=' -> ' + mfind[i][j]
+                return s
+            else: return 'Строка "%s" для поиска сайта слишком мала!' % text
+        except Exception as e:
+            Fixer.errlog('Yandex.FindCatalog', str(e))
             return '#bug: ' + str(e)
         

@@ -16,10 +16,12 @@ from Services.Rates import Rate
 from Services.Weather import Weather
 from Services.Geo import Geo
 from Services.House import Booking
+from Services.RSS import RSS
 from Chats.Chats import Chat
 
 # получение переменных в массив [] из строки переменных для сервиса
 def getparams(text, separator='|'):
+    text = text.strip()
     if text.find(separator) < 0 and separator != ';' : # нет текущего сепаратора
         if text.find(' - ') > 0: separator = ' - '
         else:
@@ -303,6 +305,20 @@ def coordinates(text):
     if text.strip() == '': text = 'LOCATION'
     tsend = Yandex.Coordinates(text)
     Fixer.log('Yandex.Координаты', tsend)
+    return tsend
+
+# ---------------------------------------------------------
+# сервис Яндекс.Каталог : #site: type(info/find) - $site/String
+def site(text):
+    Fixer.log('Yandex.Каталог')
+    param = getparams(text)
+    if len(param) < 2: return '#bug: Нет второго параметра'
+    if param[0].lower() == 'info':
+        tsend = Yandex.Catalog(param[1])
+    elif param[0].lower() == 'find':
+        tsend = Yandex.FindCatalog(param[1])
+    else: return '#bug: Параметр "%s" не поддерживается!' % param[0]
+    Fixer.log('Yandex.Каталог', tsend)
     return tsend
 
 # ---------------------------------------------------------
@@ -664,6 +680,42 @@ def log(snumber, etype='none'):
         Fixer.errlog('log','Ошибка при загрузке логов: ' + str(e))
 
 # ---------------------------------------------------------
+# сервис RSS : #rss: rssurl | numberpost(3)
+def rss(text):
+    Fixer.log('RSS')
+    params = getparams(text)
+    params[0] = params[0].lower()
+    if len(params) < 2: params.append('3')
+    titles = RSS.GetTitles(params[0])
+    if titles['status'] == 'ok':
+        stext = '%s\n%s\nЯзык публикации: %s\nАвтор: %s\nСайт: %s\n' % (titles['title'], titles['subtitle'], titles['lang'], titles['author'], titles['link'])
+        posts = RSS.GetPosts(params[0])
+        for i in range(0, int(params[1])):
+            stext += '\n[%i] %s\n%s\n%s\n' % (i, posts[i]['title'], posts[i]['description'], posts[i]['date'])
+        Bot.SendMessage(stext)
+        brss = True
+        for rss in Fixer.RSS:
+            if params[0] == rss['rss']: brss = False
+        smess = ''
+        if brss: # записываем rss-канал
+            drss = {}
+            drss['rss'] = params[0]
+            drss['title'] = titles['title']
+            drss['posts'] = []
+            for post in posts:
+                dpost = {}
+                dpost['len'] = len(post['description'])
+                dpost['date'] = post['date']
+                drss['posts'].append(dpost)
+            Fixer.RSS.append(drss)
+            Fixer.LastRSS.append(params[0])
+            smess = 'RSS-канал "%s" успешно поключен!\nНовости канала будут приходить по мере их поступления.' % titles['title']
+        else: smess = 'RSS-канал "%s" был схранён ранее.'
+        return smess
+    else: return 'указанная ссылка не является RSS-каналом.'
+                
+            
+# ---------------------------------------------------------
 # Основной обработчик пользовательских запросов
 # ---------------------------------------------------------
 def FormMessage(text):
@@ -731,6 +783,8 @@ def FormMessage(text):
                 if response[1:9] == 'object: ': tsend = yaobject(response[9:])
                 # Запуск сервиса Яндекс.Координаты
                 if response[1:14] == 'coordinates: ': tsend = coordinates(response[14:])
+                # Запуск сервиса Яндекс.Каталог
+                if response[1:7] == 'site: ': tsend = site(response[7:])
                 # Запуск сервиса Wikipedia - поиск информации 
                 # #wiki: <название>
                 if response[1:7] == 'wiki: ': tsend = wiki(response[7:], send=True)
@@ -785,6 +839,8 @@ def FormMessage(text):
                 # Сервис логов
                 if response[1:5] == 'log:': tsend = log(response[5:])
                 if response[1:8] == 'errlog:': tsend = log(response[8:], etype='err')
+                # Сервис RSS
+                if response[1:5] == 'rss:': tsend = rss(response[5:])
                 ### обработка результатов сервисов ###
                 Fixer.Query = text # сохраняем последний запрос пользователя
                 if tsend == '': tsend = '#problem: null result'
