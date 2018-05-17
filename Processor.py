@@ -57,34 +57,52 @@ def ai(text):
 # ---------------------------------------------------------
 # сервис Task : #task: type | time | times | Notice/Service
 def task(text):
-    Fixer.log('Task', 'Старт сервиса: ' + text)
+    Fixer.log('Task', text)
     import Notification
     from datetime import date, datetime, timedelta
     tformat = '%Y-%m-%d %H:%M:%S'
     Notification.Tasks = Fixer.LoadB('Tasks')
     params = getparams(text)
-    if len(params) < 2: params.append(str(date.today())) # params[1]
+    params[0] = params[0].lower()
+    if len(params) < 2: params.append(datetime.today().strftime('%H:%M:%S')) # params[1]
     if len(params) < 3: params.append('2') # params[2]
     if len(params) < 4: params.append('NULL') # params[3]
-    s = ''
+    s = '';
+    delta = timedelta(days=1) # дельта по умолчанию - сутки
     if params[0] == 'alarm':
         s = 'Будильник успешно установлен!'
     elif params[0] == 'alarmlater':
         s = 'Отложенное уведомление успешно установлено!'
+    elif params[0] == 'rss':
+        s = 'Подписка на RSS-канал успешно активирована!'
+        delta = timedelta(minutes=1)
+    elif params[0] == 'del':
+        Fixer.SaveB({}, 'Tasks')
+        s = 'Все задания успешно удалены!'
+        return s
+    elif params[0] == 'all': # показать все задания
+        s = 'Список заданий:'
+        i = 0
+        for itask in Notification.Tasks:
+            s += '\n[%i] %s' % ( i, str(itask) )
+            i += 1
+        if i == 0: s += '\n( список пуст )'
+        else: s += '\n\nМожно удалить все задания командой "task-del: all"'
+        return s
     else:
-        s = 'Неизвестная задача '+params[0]+'!'
+        s = 'Неизвестная задача "%s"!' % params[0]
         return s
     m = [] # наполняем массив
-    smsg = params[0] +'-'+ str(random.randint(100000, 999999))
+    smsg = params[0] +'-'+ str(random.randint(100000, 999999)) # key
     skey = str(Fixer.ChatID) +':'+ smsg
-    etime = datetime.strptime(str(date.today())+' '+params[1],tformat)
+    etime = datetime.strptime(str(date.today())+' '+params[1],tformat) + timedelta(hours=Fixer.TimeZone)
     if etime < datetime.today():
         etime = etime + timedelta(days=1)
-    s += '\nНазвание: '+smsg+'\nСообщение\\сервис: '+params[3]+'\nВремя срабатывания: '+str(etime)+'\nКоличество повторений: '+params[2]
+    s += '\nНазвание: '+smsg+'\nСообщение\\сервис: '+params[3]+'\nВремя срабатывания: '+str(etime + timedelta(hours=Fixer.TimeZone))+'\nКоличество повторений: '+params[2]
     m.append(Fixer.bNotice) # 0 - вкл/выкл уведомление пользователя
     m.append(etime) # 1 - дата-время срабатывания задачи
-    m.append(timedelta(days=1)) # 2 - дельта следующего срабатывания / по умолчанию 1 день для alarm
-    m.append(int(params[2])) # 3 - количество раз срабатывания (при -1 бесконечный цикл)	
+    m.append(delta) # 2 - дельта следующего срабатывания / по умолчанию 1 день для alarm
+    m.append(int(params[2])) # 3 - количество раз срабатывания (при 0/-1 бесконечный цикл)	
     scode = params[3]
     if params[3].upper() == 'NULL': 
         params[3] = smsg+'\nТы просил меня отправить сообщение в '+str(etime)
@@ -92,6 +110,7 @@ def task(text):
     m.append(params[3]) # 4 - сообщение при уведомлении
     m.append(scode) # 5 - запускаемый сервис	
     Notification.Tasks[skey] = m
+    #print(m)
     Fixer.SaveB(Notification.Tasks, 'Tasks') # Сохранение задач
     Fixer.log('Processor.Task', s)
     return s
@@ -684,14 +703,14 @@ def log(snumber, etype='none'):
 def rss(text):
     Fixer.log('RSS')
     params = getparams(text)
-    params[0] = params[0].lower()
+    params[0] = params[0].lower() # форматирование строки
     if len(params) < 2: params.append('3')
     titles = RSS.GetTitles(params[0])
     if titles['status'] == 'ok':
-        stext = '%s\n%s\nЯзык публикации: %s\nАвтор: %s\nСайт: %s\n' % (titles['title'], titles['subtitle'], titles['lang'], titles['author'], titles['link'])
+        stext = '%s\n%s\nЯзык публикации: %s\nАвтор: %s\nСайт: %s' % (titles['title'], titles['subtitle'], titles['lang'], titles['author'], titles['link'])
         posts = RSS.GetPosts(params[0])
         for i in range(0, int(params[1])):
-            stext += '\n[%i] %s\n%s\n%s\n' % (i, posts[i]['title'], posts[i]['description'], posts[i]['date'])
+            stext += '\n\n[%s]\n%s\n(%s)\n%s' % (posts[i]['title'], posts[i]['description'], posts[i]['date'], posts[i]['link'])
         Bot.SendMessage(stext)
         brss = True
         for rss in Fixer.RSS:
@@ -710,11 +729,65 @@ def rss(text):
             Fixer.RSS.append(drss)
             Fixer.LastRSS.append(params[0])
             smess = 'RSS-канал "%s" успешно поключен!\nНовости канала будут приходить по мере их поступления.' % titles['title']
-        else: smess = 'RSS-канал "%s" был схранён ранее.'
+            from datetime import datetime, timedelta
+            now = (datetime.today() + timedelta(minutes=1)).strftime('%H:%M:%S') # форматирование времени
+            task('RSS | ' + now + ' | 0 | #rss-news: ' + params[0])
+        else: smess = 'RSS-канал "%s" был сохранён ранее.' % titles['title']
+
         return smess
     else: return 'указанная ссылка не является RSS-каналом.'
-                
-            
+
+# ---------------------------------------------------------
+# сервис RSS-news : #rss-news: rssurl
+def rssnews(url):
+    Fixer.log('RSS-News')
+    url = url.strip().lower() # форматирование строки
+    s = '#null' # 'Не удалось найти rss-канал в подписке: ' + url
+    oldposts = [] # поиск старых постов
+    iRSS = 0
+    for rss in Fixer.RSS:
+        if url == rss['rss']:
+            oldposts = rss['posts']
+            s = 'Новости rss-канала "%s":' % rss['title']
+            posts = RSS.GetNewPosts(url, oldposts)
+            if len(posts) > 0:
+                for post in posts:
+                    s += '\n\n[%s]\n%s\n(%s)\n%s' % (post['title'], post['description'], post['date'], post['link'])
+                    dpost = {} # запись новостей
+                    dpost['len'] = len(post['description'])
+                    dpost['date'] = post['date']
+                    Fixer.RSS[iRSS]['posts'].append(dpost) # добавление в Fixer
+                #print(Fixer.RSS)
+                Chat.Save()
+            else:
+                s = '#null'
+            break
+        iRSS += 1
+    return s
+
+# ---------------------------------------------------------
+# сервис RSS-all : #rss-all: 
+def rssall():
+    Fixer.log('RSS-all')
+    s = 'Список всех подключённых rss-каналов:'
+    iRSS = 0
+    for rss in Fixer.RSS:
+        s += '\n[%i] %s - %s' % (iRSS, rss['rss'], rss['title'])
+        iRSS += 1
+    if iRSS == 0: s += '\n( список пуст )'
+    else: s += '\n\nМожно удалить лишние каналы командой "rss-del: №"'
+    return s
+
+# ---------------------------------------------------------
+# сервис RSS-del : #rss-del: №
+def rssdel(text):
+    Fixer.log('RSS-del')
+    text = text.strip() # форматирование строки
+    irss = int(text)
+    s = 'Удаление канала "%s" прошло успешно!' % Fixer.RSS[irss]['title']
+    del(Fixer.RSS[irss])
+    return s
+
 # ---------------------------------------------------------
 # Основной обработчик пользовательских запросов
 # ---------------------------------------------------------
@@ -754,13 +827,13 @@ def FormMessage(text):
                 t = response.find('#')
                 Bot.SendMessage(response[:t])
                 response = response[t:]
-            Fixer.log('ai', 'Сообщение ИИ: ' + response)
+            #Fixer.log('ai', 'Сообщение ИИ: ' + response)
             tsend = '*' # проверка на обработку сервисом
             if response[0] == '#': # Признак особой обработки - запуск определённого сервиса
                 if Fixer.Service != response[1:response.find(': ')]: # Сброс контекста если вызван другой сервис
                     Fixer.Context = False
                 Fixer.Service = response[1:response.find(': ')]
-                print('Текущий сервис: {' + Fixer.Service + '}')
+                #print('Текущий сервис: {' + Fixer.Service + '}')
                 # Запуск сервиса Task (Задача для уведомления пользователя)
                 if response[1:7] == 'task: ': tsend = task(response[7:])
                 # Запуск сервиса Answer (Диалог с пользователем)
@@ -841,9 +914,13 @@ def FormMessage(text):
                 if response[1:8] == 'errlog:': tsend = log(response[8:], etype='err')
                 # Сервис RSS
                 if response[1:5] == 'rss:': tsend = rss(response[5:])
+                if response[1:10] == 'rss-news:': tsend = rssnews(response[10:])
+                if response[1:9] == 'rss-all:': tsend = rssall()
+                if response[1:9] == 'rss-del:': tsend = rssdel(response[9:])
                 ### обработка результатов сервисов ###
                 Fixer.Query = text # сохраняем последний запрос пользователя
                 if tsend == '': tsend = '#problem: null result'
+                if tsend == '#null': return '' # для пустых уведомлений
                 if tsend[0] == '*': 
                     Fixer.log('Processor', 'Cервис не найден: ' + response[0:response.find(':')])
                     return Fixer.Dialog('no_service') + response #[0:response.find(':')])

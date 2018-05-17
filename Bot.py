@@ -210,7 +210,7 @@ if __name__ == '__main__':
                         Fixer.errlog(Fixer.Process, s)
                     else:
                         SendMessage('Ой! Я чуть не завис :( Есть ошибка в моём коде: ' + s)
-                Notification.Process() # запуск системы уведомлений
+            Notification.Process() # запуск системы уведомлений
         except Exception as e:
             SendAuthor('Возникла ошибка: ' + str(e))  
             Fixer.errlog(Fixer.Process, str(e))
