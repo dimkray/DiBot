@@ -1,9 +1,0 @@
-2018-03-27 17:18:28.927869 : Ошибка при загрузке комплиментов: 'charmap' codec can't decode byte 0x98 in position 671: character maps to <undefined>
-2018-03-27 17:18:30.462869 : Ошибка в сервисе Yandex - при загрузке stations.txt!: 'charmap' codec can't decode byte 0x98 in position 823: character maps to <undefined>
-2018-03-27 17:18:31.410869 : Ошибка при загрузке базы anecdotes!: 'charmap' codec can't decode byte 0x98 in position 3980: character maps to <undefined>
-2018-03-27 17:23:49.776869 : Ошибка при загрузке комплиментов: 'encode' is an invalid keyword argument for this function
-2018-03-27 17:23:51.223869 : Ошибка в сервисе Yandex - при загрузке stations.txt!: 'encode' is an invalid keyword argument for this function
-2018-03-27 17:23:51.975869 : Ошибка при загрузке базы anecdotes!: 'encode' is an invalid keyword argument for this function
-2018-03-27 17:26:04.344869 : Ошибка при загрузке комплиментов: 'encode' is an invalid keyword argument for this function
-2018-03-27 17:26:05.804869 : Ошибка в сервисе Yandex - при загрузке stations.txt!: 'encode' is an invalid keyword argument for this function
-2018-03-27 17:26:06.608869 : Ошибка при загрузке базы anecdotes!: 'encode' is an invalid keyword argument for this function
