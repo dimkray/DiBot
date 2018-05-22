@@ -322,3 +322,5 @@ NewDialogs = Load('NewDialogs')
 Services = Load('Services')
 Names = Load('Names')
 log('Fixer.Start', 'Все словари загружены!')
+
+#import CreateDB
