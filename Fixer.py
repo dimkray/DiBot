@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime, date
-from DB.SQLite import SQL
 import json
 import pickle
 import os
@@ -324,4 +323,5 @@ Services = Load('Services')
 Names = Load('Names')
 log('Fixer.Start', 'Все словари загружены!')
 
-#import CreateDB
+# Создание базы данных
+# import DB.CreateDB

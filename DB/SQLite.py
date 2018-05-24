@@ -12,9 +12,8 @@ def Read(table, colname, value, colValue = '*', bLike = False, bOne = False, bFi
     cursor = conn.cursor()
     if isinstance(value, str): value = '"'+value+'"'
     else: value = str(value)
-    slike = '='
-    if bLike: slike = 'LIKE'
-    sql = 'SELECT %s FROM %s WHERE %s %s %s' % (colValue, table, colname, slike, value)
+    if bLike: sql = 'SELECT %s FROM %s WHERE UPPER(%s) LIKE %s' % (colValue, table, colname, value)
+    else: sql = 'SELECT %s FROM %s WHERE %s = %s' % (colValue, table, colname, value)
     result = [] # создаём пустой масив
     Fixer.log('SQLite.Read', sql)
     try:
@@ -73,9 +72,17 @@ class SQL:
         i = 0
         for key in drows:
             sql += key
-            if drows[key] == 'integer' or drows[key] == 'int': sql += ' integer'
-            elif drows[key] == 'real': sql += ' real'
-            else: sql += ' text'
+            sval = drows[key].lower()
+            if sval.find('int') == 0: sql += ' INTEGER'
+            elif sval.find('real') == 0 or sval.find('float') == 0: sql += ' REAL'
+            elif sval.find('bool') == 0: sql += ' BOOLEAN'
+            elif sval.find('blob') == 0: sql += ' BLOB'
+            elif sval.find('char') == 0: sql += ' CHAR'
+            else: sql += ' TEXT'
+            if sval.find('(') > 0 and sval.find(')') > sval.find('('): sql += sval[sval.find('('):sval.find(')')+1]
+            if sval.find(' pk') > 0 or sval.find(' primary key') > 0: sql += ' PRIMARY KEY'
+            if sval.find(' nn') > 0 or sval.find(' not null') > 0: sql += ' NOT NULL'
+            if sval.find(' u') > 0 or sval.find(' unique') > 0: sql += ' UNIQUE'
             i += 1
             if i == len(drows): sql += ')'
             else: sql += ', '
@@ -147,10 +154,10 @@ class SQL:
             conn.commit()
             Fixer.log('SQLite.WriteBlock', 'Добавлено строк: %d' % cursor.rowcount)
             conn.close()
-            return True
+            return 'OK'
         except Exception as e: # ошибка при записи
             conn.close()
-            return False 
+            return '#bug: ' + str(e)
 
     # Получение числа строк (rows)
     def Count(table):
@@ -275,7 +282,7 @@ class SQL:
                 conn.commit()
                 Fixer.log('SQLite.sql', 'Изменено строк: %d' % cursor.rowcount)
             conn.close()
-            return 'OK'
+            return result
         except Exception as e: # ошибка при чтении
             conn.close()
-            return '#bug: ' + str(e)
+            return result

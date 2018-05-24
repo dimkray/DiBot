@@ -21,7 +21,7 @@ GMAA : Агадир : Agadir :  : MA :  : GMAA
 АГЗ : Агрыз :  : ТГ : РФ :  :  
 АДМ : Адамовка :  : ОБ : РФ :  :  
 ADA : Адана : Adana :  : ТР : ADA : LTAF
-ADD : Аддис Абеба : Addis Ababa :  : ET : ADD : HAAL
+ADD : Аддис-Абеба : Addis Ababa :  : ET : ADD : HAAL
 ADL : Аделаида : Adelaide :  : AU : ADL : YPAD
 ADE : Аден : Aden :  : YE : ADE : OYAA
 АДК : Аджи-Кабул :  :  : АЗ :  :  
@@ -289,7 +289,7 @@ BFS : Белфаст : Belfast :  : ГБ : BFS : EGAA
 БЦЫ : Бельцы : Beltsy :  : МД : BZY : LUBT
 БЛИ : Беляки :  : КЯ : РФ :  :  
 BEN : Бенгази : Benghazi :  : LY : BEN : HLLB
-BND : Бендер Аббас : Bandar Abbas :  : IR : BND : OIKB
+BND : Бендер-Аббас : Bandar Abbas :  : IR : BND : OIKB
 BWN : Бендер-Сери-Бегаван : Bandar Seri Begawan :  : BN : BWN :  
 BEX : Бенсон : Benson :  : ГБ : BEX : EGUB
 LIME : Бергамо : Bergamo :  : IT :  : LIME
@@ -641,7 +641,7 @@ CAN : Гуанчжоу : Guangzhou :  : ЦН : CAN : ZGGG
 ГЗР : Гузар :  : КЬ : УЗ :  :  
 ESPD : Гуннарн : Gunnarn :  : SE :  : ESPD
 GCI : Гурнсей : Guernsey :  : ГБ : GCI : EGJB
-YYR : Гус Бей : Goose Bay :  : CA : YYR : CYYR
+YYR : Гус-Бей : Goose Bay :  : CA : YYR : CYYR
 ГУС : Гусь-Хрустальный :  : ВЛ : РФ :  :  
 ГЫД : Гыда :  : ТЮ : РФ :  :  
 ГЮМ : Гюмри : Gyoumri :  : АМ : LWN : UGEL
