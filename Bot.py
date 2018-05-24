@@ -205,11 +205,7 @@ if __name__ == '__main__':
                     Chat.Save()                    
                 except Exception as e:
                     s = str(e)
-                    if s.find('[WinError 10061]') >= 0:
-                        SendMessage('К сожалению, удалённый сервер заблокирован. Есть большая вероятность, что это связано с блокировкой Telegram :(')
-                        Fixer.errlog(Fixer.Process, s)
-                    else:
-                        SendMessage('Ой! Я чуть не завис :( Есть ошибка в моём коде: ' + s)
+                    SendMessage('Ой! Я чуть не завис :( Есть ошибка в моём коде: ' + s)
             Notification.Process() # запуск системы уведомлений
         except Exception as e:
             SendAuthor('Возникла ошибка: ' + str(e))  

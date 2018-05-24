@@ -345,7 +345,7 @@ def site(text):
 def wiki(text, send=False):
     Fixer.log('Wikipedia')
     if send: Bot.SendMessage('Секундочку! Ищу информацию в Википедии...')
-    pages = Wiki.SearchPage(text)
+    pages = Wiki.SearchPage(text.strip())
     if len(pages) == 0: return 'Я поискал информацию в Википедии, но ничего не нашёл. Можешь уточнить запрос?'
     Fixer.htext = '"https://ru.wikipedia.org/wiki/' + pages[0] + '"'
     Fixer.log('Wikipedia', Fixer.htext)
@@ -354,7 +354,7 @@ def wiki(text, send=False):
 # ---------------------------------------------------------
 # сервис wiki-more
 def wikimore(text):
-    Fixer.log('Wikipedia.More', text)
+    Fixer.log('Wikipedia.More', text.strip())
     return Wiki.More(Fixer.Page)
 	
 # ---------------------------------------------------------
@@ -406,15 +406,23 @@ def geowiki1(text, send=False):
 # сервис google.Define : #define: word
 def define(text):
     Fixer.log('Google.Define')
-    stext = Google.Define(text)
+    stext = Google.Define(text.strip())
     Fixer.log('Google.Define', stext)					
+    return stext
+
+# ---------------------------------------------------------
+# сервис google.Calc : #calc: formula
+def calc(text):
+    Fixer.log('Google.Calc')
+    stext = Google.Calc(text.strip())
+    Fixer.log('Google.Calc', stext)					
     return stext
 
 # ---------------------------------------------------------
 # сервис google : #google: query
 def google(text, map=False):
     Fixer.log('Google.Search')
-    stext = Google.Search(text, bmap=map)
+    stext = Google.Search(text.strip(), bmap=map)
     Fixer.log('Google.Search', stext)					
     return stext
 
@@ -874,7 +882,9 @@ def FormMessage(text):
                 if response[1:12] == 'google-map:': tsend = google(text, map=True)
                 if response[1:8] == 'google:': tsend = google(text)
                 # Запуск сервиса Google.Define
-                if response[1:8] == 'define:': tsend = define(response[8:])
+                if response[1:9] == 'define: ': tsend = define(response[9:])
+                # Запуск сервиса Google.Calc
+                if response[1:13] == 'calculator: ': tsend = calc(response[13:])
                 # Запуск сервиса Weather
                 if response[1:10] == 'weather: ': tsend = weather(response[10:])
                 # Запуск сервиса TimeZone
@@ -921,12 +931,13 @@ def FormMessage(text):
                 Fixer.Query = text # сохраняем последний запрос пользователя
                 if tsend == '': tsend = '#problem: null result'
                 if tsend == '#null': return '' # для пустых уведомлений
-                if tsend[0] == '*': 
-                    Fixer.log('Processor', 'Cервис не найден: ' + response[0:response.find(':')])
-                    return Fixer.Dialog('no_service') + response #[0:response.find(':')])
+                try: # проверка на корректность ответа
+                    if tsend[0] == '*': 
+                        Fixer.log('Processor', 'Cервис не найден: ' + response[0:response.find(':')])
+                        return Fixer.Dialog('no_service') + response #[0:response.find(':')])
+                except:
+                    tsend = '#bug: responce type [%s] = %s' % (str(type(tsend)),str(tsend))
                 if tsend[0] == '#': # баг или перенаправление на другой сервис
-                    if tsend.find('[WinError 10061]') >= 0:
-                        tsend = 'удалённый сервер заблокирован. Большая вероятность, что это связано с блокировкой Телеграм :('
                     return 'Не удалось обработать запрос: ' + tsend
                 return tsend           
             else:

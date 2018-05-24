@@ -54,7 +54,8 @@ class Google:
     # Сервис поиска толкования/определения слова или фразе
     def Define(text):
         try:
-            url = URL.GetURL('https://www.google.ru/search', stext='define'+text, textparam='q')
+            text = text.strip()
+            url = URL.GetURL('https://www.google.ru/search', stext='define '+text, textparam='q')
             Fixer.htext = url
             data = URL.OpenURL(url)
             mItems = ['#bug: none define']; tsend = ''
@@ -71,6 +72,24 @@ class Google:
             return tsend
         except Exception as e:
             Fixer.errlog('Google.Define', str(e))
+            return '#bug: ' + str(e)
+
+    # Сервис калькулятора
+    def Calc(text):
+        try:
+            text = text.replace(' ','')
+            #text = text.replace('+','%2B')
+            url = URL.GetURL('https://www.google.ru/search', stext=text, textparam='q')
+            Fixer.htext = ''
+            data = URL.OpenURL(url, bsave = True)
+            tsend = '#bug: none calc'
+            if data[0] != '#':
+                mItems = Parser.Parse(data, sdiv='span', sclass='cwcot', stype='text')
+            if mItems[0][0] == '#': return 'Не удалось вычислить: ' + text
+            tsend = mItems[0]
+            return tsend
+        except Exception as e:
+            Fixer.errlog('Google.Calc', str(e))
             return '#bug: ' + str(e)
 
     # Сервис поиска универсальной карты (с маршрутами или обозначениями)
