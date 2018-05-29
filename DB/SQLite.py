@@ -10,6 +10,8 @@ db = 'DB/bot.db'
 def Read(table, colname, value, colValue = '*', bLike = False, bOne = False, bFirst = False):
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
+    value = value.upper()
+    value = value.replace('Ё','Е')
     if isinstance(value, str): value = '"'+value+'"'
     else: value = str(value)
     if bLike: sql = 'SELECT %s FROM %s WHERE UPPER(%s) LIKE %s' % (colValue, table, colname, value)
@@ -30,6 +32,7 @@ def Read(table, colname, value, colValue = '*', bLike = False, bOne = False, bFi
             for row in cursor.fetchall(): # Загрузка всех данных
                 #print(row)
                 if colValue == '*': result.append(row)
+                elif colValue.find(',') > 0: result.append(row)
                 else: result.append(row[0])
         if bFirst: result = result[0]
         conn.close()
@@ -113,7 +116,7 @@ class SQL:
             conn.close()
             return '#bug: ' + str(e) 
 
-    # Запись данных
+    # Запись данных [list]
     def WriteRow(table, mrow):
         Fixer.log('SQLite.WriteRow')
         conn = sqlite3.connect(db)
@@ -130,7 +133,24 @@ class SQL:
         try:
             cursor.execute(sql)
             conn.commit()
-            # Fixer.log('SQLite.WriteRow', 'Добавлено строк: %d' % cursor.rowcount)
+            conn.close()
+            return 'OK'
+        except Exception as e: # проблема с записью
+            conn.close()
+            return '#bug: ' + str(e)
+
+    # Запись данных [dict]
+    def WriteDictRow(table, drow):
+        Fixer.log('SQLite.WriteDictRow')
+        conn = sqlite3.connect(db)
+        cursor = conn.cursor()
+        columns = ', '.join(drow.keys())
+        placeholders = ':'+', :'.join(drow.keys())
+        sql = 'INSERT INTO %s (%s) VALUES (%s)' % (table, columns, placeholders)
+        Fixer.log('SQLite.WriteDictRow', sql)
+        try:
+            cursor.execute(sql, drow)
+            conn.commit()
             conn.close()
             return 'OK'
         except Exception as e: # проблема с записью
@@ -286,3 +306,66 @@ class SQL:
         except Exception as e: # ошибка при чтении
             conn.close()
             return result
+
+# класс поиска данных из БД
+class Finder:
+    # Поиск всех данных по некольким столбцам (like %text%)
+    def FindAll(table, mcols, svalue, returnCol = []):
+        Fixer.log('SQLite.FindAll')
+        rCol = ''
+        if returnCol == []: rCol = '*'
+        else:
+            for col in returnCol:
+                rCol += ', ' + col
+            rCol = rCol[2:]
+        mresult = []
+        for col in mcols:
+            mresult += Read(table, col, svalue, colValue = rCol, bLike = True)
+        return mresult
+
+    # Поиск первой строки по некольким столбцам (like %text%)
+    def Find(table, mcols, svalue, returnCol = []):
+        Fixer.log('SQLite.Find')
+        rCol = ''
+        if returnCol == []: rCol = '*'
+        else:
+            for col in returnCol:
+                rCol += ', ' + col
+            rCol = rCol[2:]
+        mresult = []
+        for col in mcols:
+            mresult += Read(table, col, svalue, colValue = rCol, bLike = True)
+        return mresult[0]
+
+    # Поиск всех данных по некольким столбцам (like %text%) - и отображение items строк
+    def strFind(table, mcols, svalue, returnCol = [], items = 5, sFormat = ''):
+        Fixer.log('SQLite.strFind')
+        m = Finder.FindAll(table, mcols, svalue, returnCol=returnCol)
+        s = ''
+        if len(m) > 0: # если есть результат
+            s = 'Найдено совпадений: ' + str(len(m))
+            if items < len(m): s += '\nБудут показаны первые %i:' % items
+            for i in range(0,items):
+                if sFormat == '': # если не задан формат
+                    if len(returnCol) > 1: # если несколько возвращаемых колонок
+                        row = m[i]
+                        s += '\n[%i] %s:' % (i+1, row[0])
+                        ic = 0
+                        for col in returnCol:
+                            if col == 0: ic += 1; continue
+                            s += '\n%s: %s' % (col, row[ic])
+                            ic += 1              
+                    else: # если одна возвращаемая колонка
+                        s += '\n[%i] %s' % (i, m[0])
+                else: # если задан формат
+                    sitem = sFormat
+                    row = m[i]
+                    while sitem.find('%') >= 0:
+                        x = sitem.find('%')+1
+                        r = int(sitem[x:x+1])
+                        sitem = sitem.replace('%'+str(r), row[r])
+                    s += '\n['+str(i+1)+'] ' + sitem
+        else: s = 'Поиск по строке "%s" не дал результатов :(' % svalue
+        return s
+
+    

@@ -23,8 +23,10 @@ for iname in Fixer.Names:
     mRow.append(Fixer.Names[iname][0])
     mRow.append(Fixer.Names[iname][1])
     mRow.append(Fixer.Names[iname][2])
+    mRow.append(iname.upper().replace('Ё','Е'))
     mNames.append(mRow)
-AddTable('names', {'name': 'text nn u', 'sex': 'bool', 'summ': 'int', 'country': 'text'}, mNames)
+AddTable('names', {'name': 'text nn u', 'sex': 'bool', 'summ': 'int', 'country': 'text',
+                   'nameU': 'text nn u'}, mNames)
 
 # База анекдотов
 
@@ -44,9 +46,10 @@ for item in db:
     mRow.append(i)
     mRow.append(0)
     mRow.append(item)
+    mRow.append(item.upper().replace('Ё','Е'))
     mAnecs.append(mRow)
     i += 1
-AddTable('anecdotes', {'id': 'int kp nn u', 'type': 'int', 'text': 'text nn'}, mAnecs)
+AddTable('anecdotes', {'id': 'int kp nn u', 'type': 'int', 'text': 'text nn', 'textU': 'text nn'}, mAnecs)
 
 # База комплиментов
 
@@ -108,6 +111,8 @@ try:
         words.append(words[1])
         words.append(words[2])
         words.append(words[3])
+        if words[4] == '': words[8] = words[8][3:]
+        else: words[8] = words[8][4:]
         words[0] = words[0].upper() + ' '
         words[0] = words[0].replace('Ё','Е')
         words[1] = words[1].upper()
