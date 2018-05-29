@@ -1,25 +1,43 @@
 # -*- coding: utf-8 -*-
 # Простой сервис универсальных развлечений
 import Fixer
-import random
+from DB.SQLite import SQL, Finder
 
-db = []
-
-try:
-    print('Загрузка базы anecdotes.txt...')
-    f = open('DB/anecdotes.txt', encoding='utf-8')
-    for line in f:
-        db.append(line.replace('\\','\n'))
-    f.close()
-    print('База успешно загружена!')
-except Exception as e:
-    Fixer.errlog('Fun', 'Ошибка при загрузке базы anecdotes!: ' + str(e))
+tb = 'anecdotes'
 
 class Fun:
-    def Anecdote():
+    # произвольный анекдот
+    def Anecdote(iType = -1):
+        import random
         try:
             random.seed()
-            return db[random.randint(0, len(db)-1)]
+            if iType == -1: # тип анекдота - все виды
+                ilen = SQL.Count(tb)
+                i = random.randint(0, ilen-1)
+                return SQL.ReadValue(tb, 'id', i, 'text')
+            else: # тип анекдота - особый
+                m = SQL.ReadValues(tb, 'type', iType, 'text')
+                i = random.randint(0, len(m)-1)
+                return m[i]
         except Exception as e:
             Fixer.errlog('Fun.Anecdote', str(e))
+            return '#bug: ' + str(e)
+
+    # поиск анекдота
+    def FindAnecdote(text):
+        try:
+            return Finder.strFind(tb, ['textU'], text, ['text'])
+        except Exception as e:
+            Fixer.errlog('Fun.FindAnecdote', str(e))
+            return '#bug: ' + str(e)
+
+    # добавление анекдота в базу
+    def AddAnecdote(text, iType = 0):
+        try:
+            ilen = SQL.Count(tb)
+            s = SQL.WriteRow(tb, [ilen, iType, text, text.upper()])
+            if s == 'OK': return 'Анекдот успешно добавлен в базу :)'
+            else: return s
+        except Exception as e:
+            Fixer.errlog('Fun.AddAnecdote', str(e))
             return '#bug: ' + str(e) 

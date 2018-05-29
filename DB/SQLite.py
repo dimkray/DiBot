@@ -10,9 +10,9 @@ db = 'DB/bot.db'
 def Read(table, colname, value, colValue = '*', bLike = False, bOne = False, bFirst = False):
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
-    value = value.upper()
-    value = value.replace('Ё','Е')
-    if isinstance(value, str): value = '"'+value+'"'
+    if isinstance(value, str):
+        value = '"'+value.upper()+'"'
+        value = value.replace('Ё','Е')
     else: value = str(value)
     if bLike: sql = 'SELECT %s FROM %s WHERE UPPER(%s) LIKE %s' % (colValue, table, colname, value)
     else: sql = 'SELECT %s FROM %s WHERE %s = %s' % (colValue, table, colname, value)
