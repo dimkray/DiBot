@@ -9,21 +9,21 @@ def getpar(text, separator=','):
 
 class User:
     # ообработка основной информации о пользователе
-    def Info(text):
+    def Info(param, text):
         try:
-            if text[:5] == 'age: ': # возраст
+            if param == 'age': # возраст
                 try:
-                    Fixer.Age = int(text[5:])
+                    Fixer.Age = int(text)
                     s = str(Fixer.Age) +Fixer.Dialog('age_get')
                     if Fixer.Age < 10: s = 'Какой-то ты совсем маленький!'
                     if Fixer.Age > 100: s = 'Ух, ты! Да ты видел Ленина!'
                     Bot.SendMessage(s)
                 except:
                     return 'Хм... Не понял... Напиши лучше свой возраст цифрами.'
-            if text[:6] == 'name: ': # Имя
-                Fixer.Name = text[6:]
+            if param == 'name': # Имя
+                Fixer.Name = text
                 Bot.SendMessage('Тебя зовут ' + Fixer.Name +'! Хорошо! Запомнил :)')
-            if text[:6] == 'type: ': # Тип
+            if param == 'type': # Тип
                 s = text[6:8]
                 if s.lower() == 'да' or s.lower() == 'аг' or s.lower() == 'му':
                     Fixer.Type = 1
@@ -32,33 +32,33 @@ class User:
                     Fixer.Type = 2
                     s = 'женщина'
                 Bot.SendMessage('Хорошо! Понял, что '+s+' :)')
-            if text[:10] == 'birthday: ': # День Рождения
-                Fixer.BirthDay = text[10:]
+            if param == 'birthday': # День Рождения
+                Fixer.BirthDay = text
                 Bot.SendMessage('Хорошо! Запомнил и непременно поздравлю в этот день! :)')
-            if text[:8] == 'family: ': # Фамилия
-                Fixer.Family = text[8:]
+            if param == 'family': # Фамилия
+                Fixer.Family = text
                 Bot.SendMessage(Fixer.Name +' '+ Fixer.Family +'! Хорошо! Запомнил :)')
-            if text[:7] == 'phone: ': # Телефон
-                Fixer.Phone = text[7:]
+            if param == 'phone': # Телефон
+                Fixer.Phone = text
                 Bot.SendMessage('Хорошо! Запомнил :)')
-            if text[:7] == 'email: ': # eMail
-                Fixer.eMail = text[7:]
+            if param == 'email': # eMail
+                Fixer.eMail = text
                 Bot.SendMessage('Хорошо! Запомнил :)')
-            if text[:10] == 'interest: ': # Интересы
-                m = getpar(text[10:])
+            if param == 'interest': # Интересы
+                m = getpar(text)
                 for i in m:
                     i = i.strip().lower()
                     Fixer.Interests.append(i)
                 Bot.SendMessage('Хорошо! Запомнил интересы :)')
-            if text[:9] == 'contact: ': # контакты
-                m = text[9:].split(' | ')
+            if param == 'contact': # контакты
+                m = text.split(' | ')
                 if len(m) == 1:
                     Fixer.Contacts['vk'] = m[0]
                 else:
                     Fixer.Contacts[m[0]] = m[1]
                 Bot.SendMessage('Хорошо! Запомнил контакт :)')	
-            if text[:7] == 'thing: ': # вещи/собсвенность
-                i = text[7:].strip().lower()
+            if param == 'thing': # вещи/собсвенность
+                i = text.strip().lower()
                 Fixer.Interests.append(i)
                 Bot.SendMessage('Хорошо! Я это запомнил :)')				
             return User.Acquaintance()

@@ -21,7 +21,6 @@ from Chats.Chats import Chat
 
 # получение переменных в массив [] из строки переменных для сервиса
 def getparams(text, separator='|'):
-    text = text.strip()
     if text.find(separator) < 0 and separator != ';' : # нет текущего сепаратора
         if text.find(' - ') > 0: separator = ' - '
         else:
@@ -153,9 +152,9 @@ def name(text):
 
 # ---------------------------------------------------------
 # сервис User - #user-<param>: значение
-def user(text):
+def user(param, text):
     Fixer.log('User')
-    tsend = User.Info(text)
+    tsend = User.Info(param, text)
     Fixer.log('User', tsend)
     Fixer.Service == ''
     return tsend
@@ -321,7 +320,7 @@ def yaobject(text):
 # сервис Яндекс.Координаты : #coordinates: $geo-city
 def coordinates(text):
     Fixer.log('Yandex.Координаты')
-    if text.strip() == '': text = 'LOCATION'
+    if text == '': text = 'LOCATION'
     tsend = Yandex.Coordinates(text)
     Fixer.log('Yandex.Координаты', tsend)
     return tsend
@@ -361,7 +360,7 @@ def wikimore(text):
 # сервис geowiki : #geowiki: [radius]
 def geowiki(text, send=False):
     Fixer.log('WikipediaGeo')
-    if text.strip() == '':
+    if text == '':
         rad = Fixer.Radius
     else:
         try:
@@ -385,7 +384,7 @@ def geowiki(text, send=False):
 # сервис geowiki1 : #geowiki1: [radius]
 def geowiki1(text, send=False):
     Fixer.log('WikipediaGeo1')
-    if text.strip() == '':
+    if text == '':
         rad = Fixer.Radius
     else:
         try:
@@ -749,7 +748,7 @@ def rss(text):
 # сервис RSS-news : #rss-news: rssurl
 def rssnews(url):
     Fixer.log('RSS-News')
-    url = url.strip().lower() # форматирование строки
+    url = url.lower() # форматирование строки
     s = '#null' # 'Не удалось найти rss-канал в подписке: ' + url
     oldposts = [] # поиск старых постов
     iRSS = 0
@@ -790,11 +789,132 @@ def rssall():
 # сервис RSS-del : #rss-del: №
 def rssdel(text):
     Fixer.log('RSS-del')
-    text = text.strip() # форматирование строки
     irss = int(text)
     s = 'Удаление канала "%s" прошло успешно!' % Fixer.RSS[irss]['title']
     del(Fixer.RSS[irss])
     return s
+
+# ---------------------------------------------------------
+# сервис skill : #skill:
+def skill():
+    Fixer.log('skill')
+    m = [] # массив сервисов
+    for skey in Fixer.Services:
+        m.append(skey)
+    ser = random.choice(m)
+    print(ser)
+    s = 'Сервис "%s" - %s\nАвтор: %s\n' % (Fixer.Services[ser][1], Fixer.Services[ser][4], Fixer.Services[ser][2])
+    s += 'Примеры: '
+    for pr in Fixer.Services[ser][7]:
+        s += '"%s", ' % pr
+    s = s[:-2]
+    return s
+
+# ---------------------------------------------------------
+# Обработчик сервисов - на вход строка с сервисом (#servicename:)
+# ---------------------------------------------------------
+def ServiceProcces(response):
+    ser, send = Fixer.servicefind(response)
+    if ser == '': # не найден сервис в описании
+        return '#problem: Сервис {%s} не зарегестрирован!' % Fixer.Service
+    # Запуск сервиса Task (Задача для уведомления пользователя)
+    if ser == '#task:': tsend = task(send)
+    # Запуск сервиса Answer (Диалог с пользователем)
+    elif ser == '#answer:': tsend = answer(send)
+    # Запуск сервиса Fixer (информация)
+    elif ser == '#fixer:': tsend = fixer(send)
+    # Запуск сервиса Name
+    elif ser == '#name:': tsend = name(send)
+    # Запуск сервиса User
+    elif ser == '#user-age:': tsend = user('age', send)
+    elif ser == '#user-name:': tsend = user('name', send)
+    elif ser == '#user-type:': tsend = user('type', send)
+    elif ser == '#user-birthday:': tsend = user('birthday', send)
+    elif ser == '#user-family:': tsend = user('family', send)
+    elif ser == '#user-phone:': tsend = user('phone', send)
+    elif ser == '#user-email:': tsend = user('email', send)
+    elif ser == '#user-interest:': tsend = user('interest', send)
+    elif ser == '#user-contact:': tsend = user('contact', send)
+    elif ser == '#user-thing:': tsend = user('thing', send)
+    # Запуск сервиса Acquaintance
+    elif ser == '#acquaintance:': tsend = acquaintance()
+    # Запуск сервиса Booking
+    elif ser == '#booking:': tsend = booking(send, send=True) 
+    # Запуск сервиса Яндекс.Расписание
+    elif ser == '#timetable:': tsend = timetable(send, send=True)
+    # Запуск сервиса Яндекс.Переводчик
+    elif ser == '#translate:': tsend = translate(send)    
+    # Запуск сервиса Яндекс поиск объектов
+    elif ser == '#object:': tsend = yaobject(send)
+    # Запуск сервиса Яндекс.Координаты
+    elif ser == '#coordinates:': tsend = coordinates(send)
+    # Запуск сервиса Яндекс.Каталог
+    elif ser == '#site:': tsend = site(send)
+    # Запуск сервиса Wikipedia - поиск информации 
+    # #wiki: <название>
+    elif ser == '#wiki:': tsend = wiki(send, send=True)
+    # Запуск сервиса Wikipedia - поиск ближайших достопримечательностей 
+    # #geowiki: <радиус, метры>
+    elif ser == '#geowiki:': tsend = geowiki(send, send=True)
+    # Запуск сервиса Wikipedia - поиск ближайшей достопримечательности
+    # #geowiki1: <радиус, метры>
+    elif ser == '#geowiki1:': tsend = geowiki1(send, send=True)
+    # Запуск сервиса Wikipedia - поиск дополнительной информации 
+    # #wikimore: <название>
+    elif ser == '#wiki-more:': tsend = wikimore(send)
+    # Запуск сервиса Google
+    elif ser == '#google-map:': tsend = google(send, map=True)
+    elif ser == '#google:': tsend = google(send)
+    # Запуск сервиса Google.Define
+    elif ser == '#define:': tsend = define(send)
+    # Запуск сервиса Google.Calc
+    elif ser == '#calculator:': tsend = calc(send)
+    # Запуск сервиса Weather
+    elif ser == '#weather:': tsend = weather(send)
+    # Запуск сервиса TimeZone
+    elif ser == '#timezone:': tsend = timezone(send)
+    # Запуск сервиса Population
+    elif ser == '#population:': tsend = population(send)
+    # Запуск сервиса Elevation
+    elif ser == '#elevation:': tsend = elevation(send)
+    # Запуск сервиса GeoDistance
+    elif ser == '#geodistance:': tsend = geodistance(send)
+    # Запуск сервиса Fun
+    # #Compliment: 
+    elif ser == '#compliment:': tsend = compliment()
+    # #anecdote: 
+    elif ser == '#anecdote:': tsend = anecdote()
+    # Запуск сервиса Rate
+    # #rate: 
+    elif ser == '#rate: ': tsend = rate(send)
+    elif ser == '#setrate: ': tsend = setrate(send) 
+    # Запуск локального сервиса Notes
+    # #note: 
+    elif ser == '#note:': tsend = note(send)
+    elif ser == '#note-all:': tsend = notes(send)
+    # сервис геолокации Телеграм
+    # #location: <текст>
+    elif ser == '#location:': return '#LOC! ' + send
+    # Сервис установки координат
+    elif ser == '#setlocation:': tsend = setlocation(send)
+    # Сервис корректировки ответов
+    elif ser == '#correction:': tsend = correction(send)
+    # Сервис времени и даты
+    elif ser == '#time:': tsend = datetime(send, 'time')
+    elif ser == '#date:': tsend = datetime(send, 'date')
+    elif ser == '#datetime:': tsend = datetime(send)
+    # Сервис логов
+    elif ser == '#log:': tsend = log(send)
+    elif ser == '#errlog:': tsend = log(send, etype='err')
+    # Сервис RSS
+    elif ser == '#rss:': tsend = rss(send)
+    elif ser == '#rss-news:': tsend = rssnews(send)
+    elif ser == '#rss-all:': tsend = rssall()
+    elif ser == '#rss-del:': tsend = rssdel(send)
+    # Сервис информирования о возможностях
+    elif ser == '#skill:': tsend = skill()
+    else: tsend = '#problem: Сервис {%s} не найден!' % Fixer.Service
+    return tsend
 
 # ---------------------------------------------------------
 # Основной обработчик пользовательских запросов
@@ -842,91 +962,8 @@ def FormMessage(text):
                     Fixer.Context = False
                 Fixer.Service = response[1:response.find(': ')]
                 #print('Текущий сервис: {' + Fixer.Service + '}')
-                # Запуск сервиса Task (Задача для уведомления пользователя)
-                if response[1:7] == 'task: ': tsend = task(response[7:])
-                # Запуск сервиса Answer (Диалог с пользователем)
-                if response[1:9] == 'answer: ': tsend = answer(response[9:])
-                # Запуск сервиса Fixer (информация)
-                if response[1:8] == 'fixer: ': tsend = fixer(response[8:])
-                # Запуск сервиса Name
-                if response[1:7] == 'name: ': tsend = name(response[7:])
-                # Запуск сервиса User
-                if response[1:6] == 'user-': tsend = user(response[6:])
-                # Запуск сервиса Acquaintance
-                if response[1:14] == 'acquaintance:': tsend = acquaintance()
-                # Запуск сервиса Booking
-                if response[1:9] == 'booking:': tsend = booking(response[9:], send=True) 
-                # Запуск сервиса Яндекс.Расписание
-                if response[1:12] == 'timetable: ': tsend = timetable(response[12:], send=True)
-                # Запуск сервиса Яндекс.Переводчик
-                if response[1:12] == 'translate: ': tsend = translate(response[12:])    
-                # Запуск сервиса Яндекс поиск объектов
-                if response[1:9] == 'object: ': tsend = yaobject(response[9:])
-                # Запуск сервиса Яндекс.Координаты
-                if response[1:14] == 'coordinates: ': tsend = coordinates(response[14:])
-                # Запуск сервиса Яндекс.Каталог
-                if response[1:7] == 'site: ': tsend = site(response[7:])
-                # Запуск сервиса Wikipedia - поиск информации 
-                # #wiki: <название>
-                if response[1:7] == 'wiki: ': tsend = wiki(response[7:], send=True)
-                # Запуск сервиса Wikipedia - поиск ближайших достопримечательностей 
-                # #geowiki: <радиус, метры>
-                if response[1:10] == 'geowiki: ': tsend = geowiki(response[10:], send=True)
-                # Запуск сервиса Wikipedia - поиск ближайшей достопримечательности
-                # #geowiki1: <радиус, метры>
-                if response[1:11] == 'geowiki1: ': tsend = geowiki1(response[11:], send=True)
-                # Запуск сервиса Wikipedia - поиск дополнительной информации 
-                # #wikimore: <название>
-                if response[1:12] == 'wiki-more: ': tsend = wikimore(response[12:])
-                # Запуск сервиса Google
-                if response[1:12] == 'google-map:': tsend = google(text, map=True)
-                if response[1:8] == 'google:': tsend = google(text)
-                # Запуск сервиса Google.Define
-                if response[1:9] == 'define: ': tsend = define(response[9:])
-                # Запуск сервиса Google.Calc
-                if response[1:13] == 'calculator: ': tsend = calc(response[13:])
-                # Запуск сервиса Weather
-                if response[1:10] == 'weather: ': tsend = weather(response[10:])
-                # Запуск сервиса TimeZone
-                if response[1:11] == 'timezone: ': tsend = timezone(response[11:])
-                # Запуск сервиса Population
-                if response[1:13] == 'population: ': tsend = population(response[13:])
-                # Запуск сервиса Elevation
-                if response[1:12] == 'elevation: ': tsend = elevation(response[12:])
-                # Запуск сервиса GeoDistance
-                if response[1:14] == 'geodistance: ': tsend = geodistance(response[14:])
-                # Запуск сервиса Fun
-                # #Compliment: 
-                if response[1:12] == 'compliment:': tsend = compliment()
-                # #anecdote: 
-                if response[1:10] == 'anecdote:': tsend = anecdote()
-                # Запуск сервиса Rate
-                # #rate: 
-                if response[1:7] == 'rate: ': tsend = rate(response[7:])
-                if response[1:7] == 'setrate: ': tsend = setrate(response[10:]) 
-                # Запуск локального сервиса Notes
-                # #note: 
-                if response[1:7] == 'note: ': tsend = note(response[7:])
-                if response[1:8] == 'notes: ': tsend = notes(response[8:])
-                # сервис геолокации Телеграм
-                # #location: <текст>
-                if response[1:11] == 'location: ': return '#LOC! ' + response[11:]
-                # Сервис установки координат
-                if response[1:14] == 'setlocation: ': tsend = setlocation(response[14:])
-                # Сервис корректировки ответов
-                if response[1:13] == 'correction: ': tsend = correction(response[13:])
-                # Сервис времени и даты
-                if response[1:6] == 'time:': tsend = datetime(response[6:], 'time')
-                if response[1:6] == 'date:': tsend = datetime(response[6:], 'date')
-                if response[1:10] == 'datetime:': tsend = datetime(response[10:])
-                # Сервис логов
-                if response[1:5] == 'log:': tsend = log(response[5:])
-                if response[1:8] == 'errlog:': tsend = log(response[8:], etype='err')
-                # Сервис RSS
-                if response[1:5] == 'rss:': tsend = rss(response[5:])
-                if response[1:10] == 'rss-news:': tsend = rssnews(response[10:])
-                if response[1:9] == 'rss-all:': tsend = rssall()
-                if response[1:9] == 'rss-del:': tsend = rssdel(response[9:])
+                ### Запуск обработчика сервисов ###
+                tsend = ServiceProcces(response)
                 ### обработка результатов сервисов ###
                 Fixer.Query = text # сохраняем последний запрос пользователя
                 if tsend == '': tsend = '#problem: null result'

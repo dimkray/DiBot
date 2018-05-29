@@ -254,8 +254,36 @@ def Subs(text):
             ss = ss[:-2]
         if ss != '': text = text.replace(s, ss)
         t = t1 + 1
-    log('Fixer.Substitution', text)
+    #log('Fixer.Substitution', text)
     return text
+
+# ---------------------------------------------------------
+# вн.сервис strfind - поиск строки и обрезка по найденному (регистронезависимый)
+def strfind(text, mfind, poz = 0):
+    textU = text.upper()
+    for sfind in mfind:
+        ilen = len(sfind)
+        if poz >= 0: # если ищем по тексту в определённой позиции
+            if textU.find(sfind.upper()) == poz:
+                return sfind, (text[:poz] + text[poz+ilen:]).strip() # вырезание
+        else: # если ищем везде
+            if textU.find(sfind.upper()) >= 0:
+                while textU.find(sfind.upper()) >= 0:
+                    text = text[:poz] + text[poz+ilen:] # вырезание
+                    textU = text.upper()
+                return sfind, text.strip()
+    return '', text # ничего не нашлось
+
+# ---------------------------------------------------------
+# вн.сервис servicefind - поиск сервиса и обрезка по найденному (регистронезависимый)
+def servicefind(text):
+    m = [] # массив сервисов
+    for skey in Services:
+        m.append('#%s:' % skey)
+        if len(Services[skey][9]) > 0: # если есть подсервисы
+            for subser in Services[skey][9]:
+                m.append('#%s-%s:' % (skey, subser))
+    return strfind(text, m) # поиск сервиса
 
 # ---------------------------------------------------------
 # вн.сервис strcleaner - упрощение строки (убирает все лишние символы)
@@ -291,6 +319,35 @@ def strcleaner(text):
     text = text.replace('/','')
     text = text.replace('  ',' ')
     return text
+
+# ---------------------------------------------------------
+# вн.сервис strformat - преобразование результата в форматированный текст
+def strformat(mresult, items = 5, sformat = '', nameCol = []):
+    if len(mresult) > 0: # если есть результат
+        s = 'По запросу найдено объектов: ' + str(len(mresult))
+        if items < len(mresult): s += '\nБудут показаны первые %i:' % items
+        for i in range(0,items):
+            if sformat == '': # если не задан формат
+                if len(nameCol) > 1: # если несколько возвращаемых колонок
+                    row = mresult[i]
+                    s += '\n[%i] %s:' % (i+1, row[0])
+                    ic = 0
+                    for col in returnCol:
+                        if col == 0: ic += 1; continue
+                        s += '\n%s: %s' % (col, row[ic])
+                        ic += 1              
+                else: # если одна возвращаемая колонка
+                    s += '\n[%i] %s' % (i+1, mresult[i])
+            else: # если задан формат
+                sitem = sformat
+                row = mresult[i]
+                while sitem.find('%') >= 0:
+                    x = sitem.find('%')+1
+                    r = int(sitem[x:x+1])
+                    sitem = sitem.replace('%'+str(r), row[r])
+                s += '\n['+str(i+1)+'] ' + sitem
+    else: s = 'По данному запросу нет результата :('
+    return s
 
 # Загрузка комплиментов
 log('Fixer.Start')

@@ -12,12 +12,12 @@ with Profiler() as p:
     stest = Fun.FindAnecdote('%хрен%')
 print('Fun.FindAnecdote:\n[%s]' % stest)
 
-with Profiler() as p:
-    s = '''— Теперь у меня — безлимит!
-        — Поздравляю!
-        — Сломался счетчик воды. Пришел сантехник и снял его на неделю, в ремонт.
-        — Скачаешь мне два ведра горячей воды, пока халява?'''
-    stest = Fun.AddAnecdote('', 1)
-print('Fun.AddAnecdote:\n[%s]' % stest)
+##with Profiler() as p:
+##    s = '''— Теперь у меня — безлимит!
+##        — Поздравляю!
+##        — Сломался счетчик воды. Пришел сантехник и снял его на неделю, в ремонт.
+##        — Скачаешь мне два ведра горячей воды, пока халява?'''
+##    stest = Fun.AddAnecdote(s, 1)
+##print('Fun.AddAnecdote:\n[%s]' % stest)
 
 import time; time.sleep(5)

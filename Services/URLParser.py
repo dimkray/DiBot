@@ -55,17 +55,15 @@ class URL:
             return '#bug: ' + str(e)
         
     # Получение html/основного текста по запросу
-    def GetData(shttp, stext = '', textparam = '', params = {}, brequest = True, bsave = False):
+    def GetData(shttp, stext = '', textparam = '', params = {}, headers = {}, brequest = True, bsave = False):
         try:
             stext = stext.replace(' ','+')
             stext = format(quote(stext))
             if len(textparam) > 0: params[textparam] = stext
             status = 0; d = '' # Данные для ответа
             if brequest: # Если через request
-                if len(params) > 0:
-                    r = requests.get(shttp, params=params)
-                else:
-                    r = requests.get(shttp)
+                r = requests.get(shttp, params=params, headers=headers)
+                print(shttp)
                 status = r.status_code
                 #print(shttp)
                 #print(params)
