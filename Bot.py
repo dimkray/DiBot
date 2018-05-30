@@ -18,6 +18,7 @@ import time
 import vk_api
 import PreProcessor
 import Processor
+import PostProcessor
 import Notification
 
 from Chats.Chats import Chat
@@ -183,15 +184,11 @@ if __name__ == '__main__':
                         request = Processor.FormMessage(request)
                         Fixer.log('Processor', request)
                         if request[0] == '#': # Требуется постпроцессорная обработка
-                            if request[1:6] == 'LOC! ': # Требуется определить геолокацию
+                            request = PostProcessor.ErrorProcessor(request)
+                            if request[:6] == '#LOC! ': # Требуется определить геолокацию
                                 # !Доработать блок!
                                 request = location(str(Fixer.Y) + ' ' + str(Fixer.X))
                                 request += '\nДля определения более точных координаты в VK, прикрепи и отправь мне текущее местоположение на карте.'
-                                #request = Fixer.Dialog('no_location')
-                            elif request[1:6] == 'bug: ':
-                                request = Fixer.Dialog('bug') + '\nКод ошибки: '+request[6:]
-                            else:
-                                request = 'Что-то пошло не так: '+request
                             Fixer.log('PostProcessor', request)
                             SendMessage(request)
                         else: # Постпроцессорная обработка не требуется
@@ -205,7 +202,8 @@ if __name__ == '__main__':
                     Chat.Save()                    
                 except Exception as e:
                     s = str(e)
-                    SendMessage('Ой! Я чуть не завис :( Есть ошибка в моём коде: ' + s)
+                    Fixer.errlog(Fixer.Process, str(e))
+                    SendMessage(PostProcessor.ErrorProcessor('#critical: ' + s))
             Notification.Process() # запуск системы уведомлений
         except Exception as e:
             SendAuthor('Возникла ошибка: ' + str(e))  

@@ -45,13 +45,17 @@ def getparams(text, separator='|'):
 # сервис AI : #ai: всякий бред
 def ai(text):
     Fixer.log('Processor.AI', 'Запуск AI')
-    request = apiai.ApiAI(config.apiAI_key).text_request()
-    request.lang = 'ru' # На каком языке будет послан запрос
-    request.session_id = Fixer.UserID #'BatlabAIBot' # ID Сессии диалога (нужно, чтобы потом учить бота)
-    # Запуск сервиса Google Dialogflow для обработки пользовательского запроса (ИИ)
-    request.query = text # Посылаем запрос к ИИ с сообщением от юзера
-    responseJson = json.loads(request.getresponse().read().decode('utf-8'))
-    return responseJson['result']['fulfillment']['speech'] # Разбираем JSON и вытаскиваем ответ
+    try:
+        request = apiai.ApiAI(config.apiAI_key).text_request()
+        request.lang = 'ru' # На каком языке будет послан запрос
+        request.session_id = Fixer.UserID #'BatlabAIBot' # ID Сессии диалога (нужно, чтобы потом учить бота)
+        # Запуск сервиса Google Dialogflow для обработки пользовательского запроса (ИИ)
+        request.query = text # Посылаем запрос к ИИ с сообщением от юзера
+        responseJson = json.loads(request.getresponse().read().decode('utf-8'))
+        return responseJson['result']['fulfillment']['speech'] # Разбираем JSON и вытаскиваем ответ
+    except Exception as e:
+        Fixer.errlog(Fixer.Process, str(e))
+        return '#bug: ' + str(e)
 
 # ---------------------------------------------------------
 # сервис Task : #task: type | time | times | Notice/Service
@@ -185,7 +189,9 @@ def fixer(text):
     elif s == 'LASTSERVICE': return str(Fixer.LastService)
     elif s == 'LASTST1': return str(Fixer.LastSt1)
     elif s == 'LASTST2': return str(Fixer.LastSt2)
-    else: return '#bug: неизвестный параметр: ' + s
+    else:
+        Fixer.errProcess = Fixer.Process
+        return '#err: неизвестный параметр: ' + s
 
 # ---------------------------------------------------------
 # Обработка результатов сервиса Яндекс.Расписание
@@ -330,12 +336,16 @@ def coordinates(text):
 def site(text):
     Fixer.log('Yandex.Каталог')
     param = getparams(text)
-    if len(param) < 2: return '#bug: Нет второго параметра'
+    if len(param) < 2:
+        Fixer.errProcess = Fixer.Process	
+        return '#err: Нет второго параметра'
     if param[0].lower() == 'info':
         tsend = Yandex.Catalog(param[1])
     elif param[0].lower() == 'find':
         tsend = Yandex.FindCatalog(param[1])
-    else: return '#bug: Параметр "%s" не поддерживается!' % param[0]
+    else: 
+        Fixer.errProcess = Fixer.Process
+        return '#err: Параметр "%s" не поддерживается!' % param[0]
     Fixer.log('Yandex.Каталог', tsend)
     return tsend
 
@@ -418,9 +428,11 @@ def calc(text):
     return stext
 
 # ---------------------------------------------------------
-# сервис google : #google: query
+# сервис google : #google: query / [$responce]
 def google(text, map=False):
     Fixer.log('Google.Search')
+    if text == '$responce': text = Fixer.Query
+    print(text)
     stext = Google.Search(text.strip(), bmap=map)
     Fixer.log('Google.Search', stext)					
     return stext
@@ -706,6 +718,25 @@ def log(snumber, etype='none'):
         Fixer.errlog('log','Ошибка при загрузке логов: ' + str(e))
 
 # ---------------------------------------------------------
+# сервис buglog : #buglog: numberStart | numberEnd
+def buglog(text):
+    from DB.SQLite import SQL
+    Fixer.log('buglog')
+    params = getparams(text)
+    if len(params) < 2: params.append(params[0])
+    m = SQL.sql('SELECT * FROM bugs WHERE id >= %s AND id <= %s' % (params[0], params[1]))
+    send = ''
+    if len(m) > 0:
+        for im in m:
+            if im[1] == 1: send += '\nBUG'
+            elif im[1] == 2: send += '\nPORBLEM'
+            else: send += '\nANOTHER'
+            send += '[%i]: %s\nQuery: %s\nProcess: %s\nResponce: %s' % (im[0],im[5],im[2],im[3],im[4])
+    else: # если нет результата
+        send += 'Баги №№ %s - %s не найдены!' % (params[0], params[1])
+    return send
+
+# ---------------------------------------------------------
 # сервис RSS : #rss: rssurl | numberpost(3)
 def rss(text):
     Fixer.log('RSS')
@@ -813,7 +844,7 @@ def skill():
 # ---------------------------------------------------------
 # Обработчик сервисов - на вход строка с сервисом (#servicename:)
 # ---------------------------------------------------------
-def ServiceProcces(response):
+def ServiceProcess(response):
     ser, send = Fixer.servicefind(response)
     if ser == '': # не найден сервис в описании
         return '#problem: Сервис {%s} не зарегестрирован!' % Fixer.Service
@@ -886,8 +917,8 @@ def ServiceProcces(response):
     elif ser == '#anecdote:': tsend = anecdote()
     # Запуск сервиса Rate
     # #rate: 
-    elif ser == '#rate: ': tsend = rate(send)
-    elif ser == '#setrate: ': tsend = setrate(send) 
+    elif ser == '#rate:': tsend = rate(send)
+    elif ser == '#setrate:': tsend = setrate(send) 
     # Запуск локального сервиса Notes
     # #note: 
     elif ser == '#note:': tsend = note(send)
@@ -903,9 +934,10 @@ def ServiceProcces(response):
     elif ser == '#time:': tsend = datetime(send, 'time')
     elif ser == '#date:': tsend = datetime(send, 'date')
     elif ser == '#datetime:': tsend = datetime(send)
-    # Сервис логов
+    # Сервис логов и багов
     elif ser == '#log:': tsend = log(send)
     elif ser == '#errlog:': tsend = log(send, etype='err')
+    elif ser == '#buglog:': tsend = buglog(send)
     # Сервис RSS
     elif ser == '#rss:': tsend = rss(send)
     elif ser == '#rss-news:': tsend = rssnews(send)
@@ -957,15 +989,15 @@ def FormMessage(text):
                 response = response[t:]
             #Fixer.log('ai', 'Сообщение ИИ: ' + response)
             tsend = '*' # проверка на обработку сервисом
-            if response[0] == '#': # Признак особой обработки - запуск определённого сервиса
+            if response[0] == '#' and response[:5] != '#bug:': # Признак особой обработки - запуск определённого сервиса
                 if Fixer.Service != response[1:response.find(': ')]: # Сброс контекста если вызван другой сервис
                     Fixer.Context = False
                 Fixer.Service = response[1:response.find(': ')]
                 #print('Текущий сервис: {' + Fixer.Service + '}')
-                ### Запуск обработчика сервисов ###
-                tsend = ServiceProcces(response)
-                ### обработка результатов сервисов ###
                 Fixer.Query = text # сохраняем последний запрос пользователя
+                ### Запуск обработчика сервисов ###
+                tsend = ServiceProcess(response)
+                ### обработка результатов сервисов ###
                 if tsend == '': tsend = '#problem: null result'
                 if tsend == '#null': return '' # для пустых уведомлений
                 try: # проверка на корректность ответа
@@ -974,8 +1006,6 @@ def FormMessage(text):
                         return Fixer.Dialog('no_service') + response #[0:response.find(':')])
                 except:
                     tsend = '#bug: responce type [%s] = %s' % (str(type(tsend)),str(tsend))
-                if tsend[0] == '#': # баг или перенаправление на другой сервис
-                    return 'Не удалось обработать запрос: ' + tsend
                 return tsend           
             else:
                 # Если ответ ИИ не требует обработки - отсылаем пользователю

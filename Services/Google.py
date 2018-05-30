@@ -82,7 +82,7 @@ class Google:
             url = URL.GetURL('https://www.google.ru/search', stext=text, textparam='q')
             Fixer.htext = ''
             data = URL.OpenURL(url, bsave = True)
-            tsend = '#bug: none calc'
+            tsend = '#err: none calc'
             if data[0] != '#':
                 mItems = Parser.Parse(data, sdiv='span', sclass='cwcot', stype='text')
             if mItems[0][0] == '#': return 'Не удалось вычислить: ' + text

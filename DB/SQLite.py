@@ -39,6 +39,7 @@ def Read(table, colname, value, colValue = '*', bLike = False, bOne = False, bFi
         return result
     except Exception as e: # ошибка при чтении
         conn.close()
+        Fixer.errlog(Fixer.Process, str(e))
         if bFirst and colValue != '*': return '#bug: ' + str(e)
         return result
 
@@ -61,6 +62,7 @@ def Update(table, colname, value, colUpdate, newValue, bLike = False):
         return 'OK'
     except Exception as e: # ошибка при чтении
         conn.close()
+        Fixer.errlog(Fixer.Process, str(e))
         return '#bug: ' + str(e)
 
 # основной класс
@@ -97,6 +99,7 @@ class SQL:
             return 'OK'
         except Exception as e: # возможно таблица создана ранее
             conn.close()
+            Fixer.errlog(Fixer.Process, str(e))
             return '#bug: ' + str(e)  
 
     # Запись данных
@@ -114,6 +117,7 @@ class SQL:
             return 'OK'
         except Exception as e: # проблема с записью
             conn.close()
+            Fixer.errlog(Fixer.Process, str(e))
             return '#bug: ' + str(e) 
 
     # Запись данных [list]
@@ -137,6 +141,7 @@ class SQL:
             return 'OK'
         except Exception as e: # проблема с записью
             conn.close()
+            Fixer.errlog(Fixer.Process, str(e))
             return '#bug: ' + str(e)
 
     # Запись данных [dict]
@@ -155,6 +160,7 @@ class SQL:
             return 'OK'
         except Exception as e: # проблема с записью
             conn.close()
+            Fixer.errlog(Fixer.Process, str(e))
             return '#bug: ' + str(e)
 
     # Запись данных блоками
@@ -177,6 +183,7 @@ class SQL:
             return 'OK'
         except Exception as e: # ошибка при записи
             conn.close()
+            Fixer.errlog(Fixer.Process, str(e))
             return '#bug: ' + str(e)
 
     # Получение числа строк (rows)
@@ -190,7 +197,7 @@ class SQL:
             cursor.execute(sql)
             row = cursor.fetchone()
             #print(row)
-            return row[0]
+            return int(row[0])
         except: # ошибка при чтении
             conn.close()
             return -1
@@ -285,6 +292,7 @@ class SQL:
             return 'OK'
         except Exception as e: # ошибка при чтении
             conn.close()
+            Fixer.errlog(Fixer.Process, str(e))
             return '#bug: ' + str(e)
 
     # Универсальный запрос

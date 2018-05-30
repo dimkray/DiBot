@@ -15,6 +15,7 @@ def GetRSS(urlRSS):
         if d['version'] == '': d['version'] = '#problem: no RSS'
         return d
     except:
+        Fixer.errlog('RSS.GetRSS', str(e))
         d['version'] = '#bug: no URL'
         return d
 

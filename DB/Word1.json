@@ -276,6 +276,8 @@
 	"=": "#calculator: ",
 	"LOG:": "#log: ",
 	"LOGS:": "#log: ",
+	"BUGLOG: ": "#buglog: ",
+	"BUGS: ": "#buglog: ",
 	"ERRLOG:": "#errlog: ",
 	"ERRLOGS:": "#errlog: ",
 	"LOG_ERR:": "#errlog: ",
