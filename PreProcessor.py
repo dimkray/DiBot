@@ -3,6 +3,24 @@
 import Fixer
 from Services.Yandex import Yandex
 
+# мультипроцессор, препроцессорная обработка, препроцессорное автоопределение сервиса
+# возвращаемый формат: [[текст для процессора],[предполагаемый сервис]]
+def MultiProcessor(text):
+    Fixer.log('PreProcessor.MultiProcessor')
+    # происк мультизапроса и выполнение запроса (анализ)
+    bMulti = False
+    if text.find('. ') > 0: bMulti = True
+    if text.find('? ') > 0: bMulti = True
+    if text.find('! ') > 0: bMulti = True
+    if bMulti: # если есть признак мультизапроса
+        mText = []
+        m = text.split('. ')
+        for im in m:
+            im = text.split('. ')
+            #ДОРАБОТАТЬ!!!
+    return False
+        
+
 # препроцессорный обработчик пользовательских запросов
 def ReadMessage(text):
     Fixer.log('PreProcessor.ReadMessage', text)
