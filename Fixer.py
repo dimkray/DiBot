@@ -290,6 +290,8 @@ def servicefind(text):
 def strcleaner(text):
     text = text.strip().lower()
     text = text.replace('ё','е')
+    text = text.replace('«','')
+    text = text.replace('»','')
     text = text.replace('!','')
     text = text.replace('@','')
     text = text.replace('~','')
