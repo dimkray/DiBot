@@ -1,0 +1,218 @@
+# -*- coding: utf-8 -*-
+# Сервис морфологического анализа
+import re
+import Fixer
+import pymorphy2
+
+dic = Fixer.Load('morth') # словарь морфологических определений
+morph = pymorphy2.MorphAnalyzer()
+
+phr = {'NOUN': 1,  # существительное
+       'ADJF': 2,  # прилагательное (полное)
+       'ADJS': 3,  # прилагательное (краткое)
+       'COMP': 4,  # компаратив
+       'VERB': 5,  # глагол (личная форма)
+       'INFN': 6,  # глагол (инфинитив)
+       'PRTF': 7,  # причастие (полное)
+       'PRTS': 8,  # причастие (краткое)
+       'GRND': 9,  # деепричастие
+       'NUMR': 10, # числительное
+       'ADVB': 11, # наречие
+       'NPRO': 12, # местоимение
+       'PRED': 13, # предикатив
+       'PREP': 14, # предлог
+       'CONJ': 20, # союз
+       'PRCL': 15, # частица
+       'INTJ': 16, # междометие
+       'NUMB': 40, # номер/цифра
+       'LATN': 50, # латиница
+       'PNCT': 90, # знак пунктуации
+       'UNKN': 0 } # неизвестное
+
+# Получение отдельных предложений
+def Strings(text):
+    text = text.replace('	','  ') # учитываем табы
+    if text.strip() == '': return ['']
+    poz = 0; newpoz = 0
+    mstr = [] # массив предложений
+    while newpoz <= len(text):
+        x1 = 0; x2 = 0; x3 = 0; x4 = 0
+        if text.find('. ', poz) > 0: x1 = text.find('. ', poz)
+        else: x1 = 1000000
+        if text.find('! ', poz) > 0: x2 = text.find('! ', poz)
+        else: x2 = 1000000
+        if text.find('? ', poz) > 0: x3 = text.find('? ', poz)
+        else: x3 = 1000000
+        if text.find('\n', poz) > 0: x4 = text.find('\n', poz)
+        else: x4 = 1000000    
+        newpoz = min(x1, x2, x3, x4) + 1 # Ищем ближайший разделитель предложения
+        s = text[poz:newpoz].strip()
+        if s != '': mstr.append(s)
+        poz = newpoz
+    return mstr # возвращаем отдельные предложения
+
+# Получение отдельных слов из строки и получение конструкции строки
+def Words(strtext):
+    if strtext.strip() == '': return [], strtext
+    words = re.split('\s|/|\\|\*|"|`|<|>|\]|\[|\}|\{|=|\+|\)|\(|&|\^|#|\~|@|»|«|:|;|,|\.|!|\?|-', strtext)
+    mwords = [] # массив слов
+    text = ''
+    poz = 0; pozold = 0
+    for word in words:
+        s = word.strip()
+        if s != '' and s != '-' and s != '—':
+            poz = row.find(word,poz)
+            text += row[pozold:poz] + '[' + s + ']'
+            poz += len(word); pozold = poz
+            mwords.append(s)
+    text += row[poz:] # окончание предложения
+    return mwords, text # возвращаем отдельные слова и конструкцию слов в запросе
+
+# Получение морфологического анализатора
+def GetMorth(word):
+    if word.strip() == '': return ''
+    word = word.strip().lower() # доработка слова
+    p = morph.parse(word)[0]
+    return p
+
+# --------------------------------------------------------------
+# Основной класс по работе со строковыми запросами
+class Word:
+    # Количество предложений в запросе
+    def StringsCount(text):
+        return len(Strings(text))
+        
+    # Получение всех предложений
+    def GetStrings(text):
+        return Strings(text)
+
+    # Количество слов в запросе
+    def WordsCount(text):
+        mwords, constr = Words(text)
+        return len(mwords)
+        
+    # Получение всех отдельных слов из запроса
+    def GetWords(text):
+        mwords, constr = Words(text)
+        return mwords
+
+    # Получение конструкции слов запроса
+    def GetConstr(text):
+        mwords, constr = Words(text)
+        return constr
+
+    # Получение тэгов по морфологическому анализу слова
+    def Tags(word):
+        p = GetMorth(word)
+        mtags = re.split(',| ', str(p.tag))
+        return mtags
+
+    # Получение морфологического анализа слова
+    def Morth(word):
+        p = GetMorth(word)
+        smorth = '%s - [%s]' % (word, p.normal_form)
+        mtags = re.split(',| ', str(p.tag))
+        for tag in mtags:
+            if dic[tag][1] != '': s = ' {%s}' % dic[dic[tag][1]][0]
+            smorth += '\n - ' + dic[tag][0] + s
+        return smorth
+
+    # Получение нормальной формы слова
+    def Morth(word):
+        if word.strip() == '': return ''
+        word = word.strip().lower() # доработка слова
+        p = morph.parse(word)[0]
+    
+    # Получение типа слова (константа) - см phr
+    def Type(word): 
+        p = GetMorth(word)
+        mtags = re.split(',| ', str(p.tag))
+        for tag in mtags:
+            if dic[tag][1] == 'POST':
+                if tag in phr:
+                    return phr[tag]
+                else:
+                    return 0
+        return 0
+
+    # Получение части речи
+    def TagPart(word): 
+        p = GetMorth(word)
+        if p.tag.POS is not None: return p.tag.POS
+        else 'NONE'
+
+    # Получение признака одушевлённости
+    def TagAnimacy(word): 
+        p = GetMorth(word)
+        if p.tag.animacy is not None: return p.tag.animacy
+        else 'NONE'
+
+    # Получение вида: совершенный или несовершенный
+    def TagAspect(word): 
+        p = GetMorth(word)
+        if p.tag.aspect is not None: return p.tag.aspect
+        else 'NONE'
+
+    # Получение падежа
+    def TagCase(word): 
+        p = GetMorth(word)
+        if p.tag.case is not None: return p.tag.case
+        else 'NONE'
+
+    # Получение рода: мужской, женский, средний
+    def TagGender(word): 
+        p = GetMorth(word)
+        if p.tag.gender is not None: return p.tag.gender
+        else 'NONE'
+
+    # Включённость говорящего в действие
+    def TagInv(word): 
+        p = GetMorth(word)
+        if p.tag.involvement is not None: return p.tag.involvement
+        else 'NONE'
+
+    # Получение наклонения: повелительное, изъявительное
+    def TagMood(word): 
+        p = GetMorth(word)
+        if p.tag.mood is not None: return p.tag.mood
+        else 'NONE'
+
+    # Получение числа: единственное, множественное
+    def TagNumber(word): 
+        p = GetMorth(word)
+        if p.tag.number is not None: return p.tag.number
+        else 'NONE'
+
+    # Получение лица: первое, второе, третье
+    def TagPerson(word): 
+        p = GetMorth(word)
+        if p.tag.person is not None: return p.tag.person
+        else 'NONE'
+
+    # Получение времени: настоящее, прошедшее, будущее
+    def TagTense(word): 
+        p = GetMorth(word)
+        if p.tag.tense is not None: return p.tag.tense
+        else 'NONE'
+
+    # Получение переходности: переходный, непереходный
+    def TagTrans(word): 
+        p = GetMorth(word)
+        if p.tag.transitivity is not None: return p.tag.transitivity
+        else 'NONE'
+
+    # Получение залога: действительный, страдательный
+    def TagVoice(word): 
+        p = GetMorth(word)
+        if p.tag.voice is not None: return p.tag.voice
+        else 'NONE'
+
+    # Склонение слов
+    def inflect(word, dinflect={'nomn'}): # по умолчанию в именительный падеж
+        p = GetMorth(word)
+        try:
+            p = p.inflect(dinflect)
+            return p.word
+        except e as Exception:
+            Fixer.errlog('StrMorth.inflect', str(e))
+            return word
