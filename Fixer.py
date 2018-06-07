@@ -351,6 +351,21 @@ def strformat(mresult, items = 5, sformat = '', nameCol = []):
     else: s = 'По данному запросу нет результата :('
     return s
 
+# ---------------------------------------------------------
+# вн.сервис getparams - получение переменных в массив [] из строки переменных для сервиса
+def getparams(text, separator='|'):
+        if text.find(separator) < 0 and separator != ';' : # нет текущего сепаратора
+            if text.find(' - ') > 0: separator = ' - '
+            else:
+                if text.find(',') > 0: separator = ','
+                else: separator = ' '
+        m = text.split(separator)
+        x = 0
+        for im in m:
+            m[x] = im.strip() # убираем лишние пробелы
+            x += 1
+        return m
+
 # Загрузка комплиментов
 log('Fixer.Start')
 mCompliment = []

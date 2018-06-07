@@ -1,11 +1,20 @@
-import Fixer
-from Services.New_ import Service
+from Profiler import Profiler
+from Tests.Testing import Test, Report
+from Services.Service_ import Service_
 
-stest = input('Введите тестовую фразу: ')
+service = 'Service_'
+
+print('------- Запущены тесты сервиса %s --------' % service)
 
 # здесь тестовая обработка #
-stest = Service.Search(stest)
+with Profiler() as p:
+    # isWork
+    test = Service_.Go('тест')
+    Test.Add(service+'.Function','тестирование функции', test, 0)
 
-print('Результат тестирования: ' + stest)
-
-import time; time.sleep(5)
+print('')
+print('------- Отчёт тестов сервиса %s --------' % service)
+print(Report.WriteAll())
+print('')
+print('------- Найдены ошибки сервиса %s  --------' % service)
+print(Report.WriteFails())

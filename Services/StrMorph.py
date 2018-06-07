@@ -31,42 +31,50 @@ phr = {'NOUN': 1,  # существительное
 
 # Получение отдельных предложений
 def Strings(text):
-    text = text.replace('	','  ') # учитываем табы
-    if text.strip() == '': return ['']
-    poz = 0; newpoz = 0
-    mstr = [] # массив предложений
-    while newpoz <= len(text):
-        x1 = 0; x2 = 0; x3 = 0; x4 = 0
-        if text.find('. ', poz) > 0: x1 = text.find('. ', poz)
-        else: x1 = 1000000
-        if text.find('! ', poz) > 0: x2 = text.find('! ', poz)
-        else: x2 = 1000000
-        if text.find('? ', poz) > 0: x3 = text.find('? ', poz)
-        else: x3 = 1000000
-        if text.find('\n', poz) > 0: x4 = text.find('\n', poz)
-        else: x4 = 1000000    
-        newpoz = min(x1, x2, x3, x4) + 1 # Ищем ближайший разделитель предложения
-        s = text[poz:newpoz].strip()
-        if s != '': mstr.append(s)
-        poz = newpoz
-    return mstr # возвращаем отдельные предложения
+    try:
+        text = text.replace('	','  ') # учитываем табы
+        if text.strip() == '': return []
+        poz = 0; newpoz = 0
+        mstr = [] # массив предложений
+        while newpoz <= len(text):
+            x1 = 0; x2 = 0; x3 = 0; x4 = 0
+            if text.find('. ', poz) > 0: x1 = text.find('. ', poz)
+            else: x1 = 1000000
+            if text.find('! ', poz) > 0: x2 = text.find('! ', poz)
+            else: x2 = 1000000
+            if text.find('? ', poz) > 0: x3 = text.find('? ', poz)
+            else: x3 = 1000000
+            if text.find('\n', poz) > 0: x4 = text.find('\n', poz)
+            else: x4 = 1000000    
+            newpoz = min(x1, x2, x3, x4) + 1 # Ищем ближайший разделитель предложения
+            s = text[poz:newpoz].strip()
+            if s != '': mstr.append(s)
+            poz = newpoz
+        return mstr # возвращаем отдельные предложения
+    except Exception as e:
+        Fixer.errlog('StrMorph.Strings', str(e))
+        return []
 
 # Получение отдельных слов из строки и получение конструкции строки
 def Words(strtext):
-    if strtext.strip() == '': return [], strtext
-    words = re.split('\s|/|\\|\*|"|`|<|>|\]|\[|\}|\{|=|\+|\)|\(|&|\^|#|\~|@|»|«|:|;|,|\.|!|\?|-', strtext)
-    mwords = [] # массив слов
-    text = ''
-    poz = 0; pozold = 0
-    for word in words:
-        s = word.strip()
-        if s != '' and s != '-' and s != '—':
-            poz = strtext.find(word,poz)
-            text += strtext[pozold:poz] + '[' + s + ']'
-            poz += len(word); pozold = poz
-            mwords.append(s)
-    text += strtext[poz:] # окончание предложения
-    return mwords, text # возвращаем отдельные слова и конструкцию слов в запросе
+    try:
+        if strtext.strip() == '': return [], strtext
+        words = re.split('\s|/|\\|\*|"|`|<|>|\]|\[|\}|\{|=|\+|\)|\(|&|\^|#|\~|@|»|«|:|;|,|\.|!|\?|-', strtext)
+        mwords = [] # массив слов
+        text = ''
+        poz = 0; pozold = 0
+        for word in words:
+            s = word.strip()
+            if s != '' and s != '-' and s != '—':
+                poz = strtext.find(word,poz)
+                text += strtext[pozold:poz] + '[' + s + ']'
+                poz += len(word); pozold = poz
+                mwords.append(s)
+        text += strtext[poz:] # окончание предложения
+        return mwords, text # возвращаем отдельные слова и конструкцию слов в запросе
+    except Exception as e:
+        Fixer.errlog('StrMorph.Words', str(e))
+        return [], strtext
 
 # Получение морфологического анализатора
 def GetMorth(word):
@@ -86,8 +94,6 @@ class String:
     def GetStrings(text):
         return Strings(text)
 
-# Основной класс по работе со словами
-class Word:
     # Количество слов в запросе
     def WordsCount(text):
         mwords, constr = Words(text)
@@ -103,11 +109,19 @@ class Word:
         mwords, constr = Words(text)
         return constr
 
+# Основной класс по работе со словами
+class Word:
     # Получение тэгов по морфологическому анализу слова
     def Tags(word):
-        p = GetMorth(word)
-        mtags = re.split(',| ', str(p.tag))
-        return mtags
+        try:
+            if word.strip() == '': return []
+            p = GetMorth(word)
+            print(p)
+            mtags = re.split(',| ', str(p.tag))
+            return mtags
+        except Exception as e:
+            Fixer.errlog('StrMorph.Tags', str(e))
+            return []
 
     # Получение морфологического анализа слова
     def Morth(word):

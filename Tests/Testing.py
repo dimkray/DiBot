@@ -139,7 +139,7 @@ class Test:
         return iTest
 
     # Добавление прочих тестов: iswork, swork, istype
-    def AddSimple(service, name, testvalue, testtype='iswork', time=0, criteries=[]):
+    def AddSimple(service, name, testvalue, testtype = 'iswork', time = 0, criteries = []) -> object:
         iTest = []
         iTest.append(service) # 0 
         iTest.append(name) # 1
@@ -169,8 +169,8 @@ class Report:
         srep = '- NO!!!'
         if iTest[5]: srep = '+ OK!'
         fl = '{:.3f}'.format(iTest[4])
-        ms = '{:.3f}'.format(iTest[6])
-        s = '%s : %s - %s сек {%s} - %s: %s: "%s" = "%s"' % (srep, fl, ms, iTest[0], iTest[1], iTest[7], iTest[2], iTest[3])
+        #ms = '{:.3f}'.format(iTest[6])
+        s = '%s : %s {%s} - %s: %s: "%s" = "%s"' % (srep, fl, iTest[0], iTest[1], iTest[7], iTest[2], iTest[3])
         return s
 
     #Универсальный отчёт по сравнению
