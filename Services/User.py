@@ -68,18 +68,19 @@ class User:
 
     # сервис знакомства
     def Acquaintance():
+        from DB.SQLite import SQL
         Fixer.bAI = False
         Fixer.Context = True
         if Fixer.Name == '' or Fixer.Name == 'человек':
             Fixer.Service = 'user-name'
             return Fixer.Dialog('bot_about')
         if Fixer.Type == 0:
-            for i in Fixer.Names: # попытка определить пол по имени
-                if i.lower() == Fixer.Name.lower():
-                    if Fixer.Names[i][0]: # мужчина
-                        Fixer.Type = 1
-                    else:
-                        Fixer.Type = 2
+            rName = SQL.ReadRow('names', 'nameU', Fixer.Name.upper().replace('Ё','Е'))
+            if len(rName) > 0:
+                if rName[1] == 1: # мужчина
+                    Fixer.Type = 1
+                else:
+                    Fixer.Type = 2
             if Fixer.Type == 0: # если не удалось определить пол по имени
                 Fixer.Service = 'user-type'
                 return 'Извини за нескромный вопрос. Ты мужчина?'

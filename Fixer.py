@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime, date
+from DB.SQLite import SQL
 import json
 import pickle
 import os
@@ -366,21 +367,14 @@ def getparams(text, separator='|'):
             x += 1
         return m
 
-# Загрузка комплиментов
-log('Fixer.Start')
-mCompliment = []
-wCompliment = []
-try:
-    f = open('DB/mCompliment.txt', encoding='utf-8')
-    for line in f:
-        mCompliment.append(line.replace('\n',''))
-    f.close()
-    f = open('DB/wCompliment.txt', encoding='utf-8')
-    for line in f:
-        wCompliment.append(line.replace('\n',''))
-    f.close()
-except Exception as e:
-    errlog('Fixer.Start', 'Ошибка при загрузке комплиментов: ' + str(e))
+# Загрузка таблиц из БД
+log('Fixer.Start', '------ Загрузка данных ------')
+mCompliment = SQL.ReadAll('complimentMan')
+wCompliment = SQL.ReadAll('complimentWoman')
+Valutes = SQL.ReadDict('valutes')
+valutes = SQL.ReadDict('valutes2')
+yaLangs = SQL.ReadDict('yaLangs')
+yaDirLang = SQL.ReadAll('yaDirLang')
 
 # Пользовательские настройки сервисов
 Settings = Load('DefSettings')
@@ -389,12 +383,10 @@ Settings = Load('DefSettings')
 Commands = Load('Commands')
 Word1 = Load('Word1')
 KeyWord = Load('KeyWord')
-Valutes = Load('Valutes')
-valutes = Load('Valutes2')
 dialogs = Load('dialogs')
 NewDialogs = Load('NewDialogs')
 Services = Load('Services')
-Names = Load('Names')
+#Names = Load('Names')
 log('Fixer.Start', 'Все словари загружены!')
 
 # Создание базы данных

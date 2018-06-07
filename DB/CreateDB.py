@@ -17,16 +17,15 @@ mNames = []
 for iname in Fixer.Names:
     mRow = []
     mRow.append(iname)
-    # iSex = 0
-    # if Names[iname][0]: iSex = 1
-    # mRow.append(iSex)
-    mRow.append(Fixer.Names[iname][0])
+    iSex = 0
+    if Fixer.Names[iname][0]: iSex = 1
+    mRow.append(iSex)
     mRow.append(Fixer.Names[iname][1])
     mRow.append(Fixer.Names[iname][2])
     mRow.append(iname.upper().replace('Ё','Е'))
     mNames.append(mRow)
-AddTable('names', {'name': 'text nn u', 'sex': 'bool', 'summ': 'int', 'country': 'text',
-                   'nameU': 'text nn u'}, mNames)
+AddTable('names', {'name': 'text nn u', 'sex': 'int', 'summ': 'int', 'country': 'text',
+                   'nameU': 'text nn'}, mNames)
 
 # База анекдотов
 

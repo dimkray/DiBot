@@ -9,12 +9,14 @@ db = 'DB/bot.db'
 # Чтение по одному критерию (равенство или like)
 def Read(table, colname, value, colValue = '*', bLike = False, bOne = False, bFirst = False):
     conn = sqlite3.connect(db)
-    cursor = conn.cursor()
+    cursor = conn.cursor()  
     if isinstance(value, str):
+        if bLike: value = '%' + value + '%'
         value = '"'+value.upper()+'"'
-        value = value.replace('Ё','Е')
+        value = value.replace('Ё','Е')   
     else: value = str(value)
-    if bLike: sql = 'SELECT %s FROM %s WHERE UPPER(%s) LIKE %s' % (colValue, table, colname, value)
+    if bLike:
+        sql = 'SELECT %s FROM %s WHERE UPPER(%s) LIKE %s' % (colValue, table, colname, value)
     else: sql = 'SELECT %s FROM %s WHERE %s = %s' % (colValue, table, colname, value)
     result = [] # создаём пустой масив
     Fixer.log('SQLite.Read', sql)
@@ -200,6 +202,7 @@ class SQL:
             return int(row[0])
         except: # ошибка при чтении
             conn.close()
+            Fixer.errlog(Fixer.Process, str(e))
             return -1
 
     # Загрузка всей таблицы
@@ -216,9 +219,23 @@ class SQL:
                 result.append(row)
             conn.close()
             return result
-        except: # ошибка при чтении
+        except Exception as e: # ошибка при чтении
             conn.close()
+            Fixer.errlog(Fixer.Process, str(e))
             return result
+
+    # Загрузка всей таблицы в виде словаря
+    def ReadDict(table):
+        m = SQL.ReadAll(table)
+        Fixer.log('SQLite.ReadDict')
+        dic = {}
+        try:
+            for item in m:
+                dic[item[0]] = item[1] # формируем словарь по первым двум колонкам
+            return dic
+        except Exception as e: # ошибка при чтении
+            Fixer.errlog(Fixer.Process, str(e))
+            return dic
 
     # Загрузка по одной строке
     def ReadRowsOne(table, colname, value):
@@ -313,6 +330,7 @@ class SQL:
             return result
         except Exception as e: # ошибка при чтении
             conn.close()
+            Fixer.errlog(Fixer.Process, str(e))
             return result
 
 # класс поиска данных из БД

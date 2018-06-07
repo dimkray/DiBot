@@ -67,7 +67,6 @@ class Weather:
                 data = r.json()
                 Fixer.htext = data['Headline']['Link']
                 for day in data['DailyForecasts']:
-                    print(day['Date'])
                     if day['Date'].find(edate) >= 0:
                         rsun = day['Sun']['Rise']
                         ssun = day['Sun']['Set']
@@ -116,10 +115,11 @@ class Weather:
                         m.append(s) # 17 Общая информация
                         m.append(s1) # 18 День
                         m.append(s2) # 19 Ночь
+                if m == []: return '#problem: нет данных о погоде или не правильно указан запрос'
                 return m
             else:
                 # Если ошибка - то спец.сообщение с номером ошибки
-                return m.append('#problem: '+ str(r.status_code))
+                return '#problem: '+ str(r.status_code)
         except Exception as e:
             Fixer.errlog('Weather.Forecast', str(e))
             return '#bug: ' + str(e) 

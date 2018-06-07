@@ -168,6 +168,7 @@
 	"КОМПЛИМЕНТ:": "#compliment: ",
 	"РАССТОЯНИЕ:": "#geodistance: ",
 	"ДИСТАНЦИЯ:": "#geodistance: ",
+	"ИМЯ: ": "#name: ",
 	"МОЕ ИМЯ: ": "#user-name: ",
 	"МОЯ ФАМИЛИЯ: ": "#user-family: ",
 	"МОЙ ВОЗРАСТ: ": "#user-age: ",

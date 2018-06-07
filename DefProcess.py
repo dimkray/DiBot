@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Сервис по работе с функциями и процедурами
 from Services.Yandex import Yandex
+import Fixer
 import inspect
 
 def getMembers(iclass):
@@ -59,11 +60,7 @@ class Def:
     # Запуск функции из сервиса с аргументами
     def Run(module, nameclass, namedef, *args):
         import importlib, sys
-        #mod_name, func_name = namedef.rsplit('.',1)
-        #print(mod_name)
-        #print(func_name)
         mod = sys.modules[module]
-        #mod = importlib.import_module(mod_name)
         if nameclass != '':
             cl = getattr(mod, nameclass)
             func = getattr(cl, namedef)
@@ -78,7 +75,7 @@ cl = Def.GetClass('Yandex')
 print(Def.GetMembers(cl))
 #print(Def.GetAttrs(cl))
 print(Def.GetArgs(cl.FindRasp))
-print(Def.Run('Services.Yandex', 'Yandex', 'FindRasp', 'Москва - Минск'))
+#print(Def.Run('Services.Yandex', 'Yandex', 'FindRasp', 'Москва - Минск'))
 
 test = input('Введите код: ')
 print(Def.Code(test))

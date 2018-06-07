@@ -18,6 +18,7 @@ from Services.Geo import Geo
 from Services.House import Booking
 from Services.RSS import RSS
 from Chats.Chats import Chat
+from DB.SQLite import SQL
 
 # получение переменных в массив [] из строки переменных для сервиса
 def getparams(text, separator='|'):
@@ -137,18 +138,19 @@ def answer(text):
 # ---------------------------------------------------------
 # сервис Name - #name: имя
 def name(text):
+    text = text.strip()
     Fixer.log('Name')
     s = ''
-    for i in Fixer.Names: # поиск информации по имени
-        if i.lower() == text.lower():
-            s = text + ': '
-            if Fixer.Names[i][0]: # мужчина
-                s += 'мужское имя'
-            else:
-                s += 'женское имя'
-            s += '\nколичество не менее: ' + str(Fixer.Names[i][1])
-            s += '\nстрана распространения: ' + Fixer.Names[i][2]
-    if s == '':
+    rName = SQL.ReadRow('names', 'nameU', text.upper().replace('Ё','Е'))
+    if len(rName) > 0: # если найдено имя
+        s = text + ': '
+        if rName[1] == 1: # мужчина
+            s += 'мужское имя'
+        else:
+            s += 'женское имя'
+        s += '\nколичество не менее: ' + str(rName[2])
+        s += '\nстрана распространения: ' + rName[3]
+    else: # если не найдено имя
         s = 'Не удалось проанализировать имя '+text+' :('
     Fixer.log('Name', s)
     Fixer.Service == ''
@@ -462,8 +464,8 @@ def weather(text):
     s = getcoords(params[1])
     #print('{%s}' % s)
     if s[0] == '#': return 'Не удалось распознать город или найти его координаты :( - ' + s
-    m = Weather.Forecast(Fixer.Coords[0], Fixer.Coords[1], params[1])
-    #print(m)
+    m = Weather.Forecast(Fixer.Coords[0], Fixer.Coords[1], params[2])
+    print(m)
     if m[0] == '#': return m
     stext = ''
     if params[0] == 'full': # полный прогноз погоды
@@ -572,9 +574,9 @@ def geodistance(text):
 def compliment():
     Fixer.log('Comliment')
     if Fixer.Type == 1:
-        stext = random.choice(Fixer.mCompliment)
+        stext = random.choice(Fixer.mCompliment[1])
     else:
-        stext = random.choice(Fixer.wCompliment)
+        stext = random.choice(Fixer.wCompliment[1])
     Fixer.log('Comliment', stext)
     return stext
 	
