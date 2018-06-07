@@ -61,11 +61,11 @@ def Words(strtext):
     for word in words:
         s = word.strip()
         if s != '' and s != '-' and s != '—':
-            poz = row.find(word,poz)
-            text += row[pozold:poz] + '[' + s + ']'
+            poz = strtext.find(word,poz)
+            text += strtext[pozold:poz] + '[' + s + ']'
             poz += len(word); pozold = poz
             mwords.append(s)
-    text += row[poz:] # окончание предложения
+    text += strtext[poz:] # окончание предложения
     return mwords, text # возвращаем отдельные слова и конструкцию слов в запросе
 
 # Получение морфологического анализатора
@@ -77,7 +77,7 @@ def GetMorth(word):
 
 # --------------------------------------------------------------
 # Основной класс по работе со строковыми запросами
-class Word:
+class String:
     # Количество предложений в запросе
     def StringsCount(text):
         return len(Strings(text))
@@ -86,6 +86,8 @@ class Word:
     def GetStrings(text):
         return Strings(text)
 
+# Основной класс по работе со словами
+class Word:
     # Количество слов в запросе
     def WordsCount(text):
         mwords, constr = Words(text)
@@ -139,73 +141,73 @@ class Word:
     def TagPart(word): 
         p = GetMorth(word)
         if p.tag.POS is not None: return p.tag.POS
-        else 'NONE'
+        else: 'NONE'
 
     # Получение признака одушевлённости
     def TagAnimacy(word): 
         p = GetMorth(word)
         if p.tag.animacy is not None: return p.tag.animacy
-        else 'NONE'
+        else: 'NONE'
 
     # Получение вида: совершенный или несовершенный
     def TagAspect(word): 
         p = GetMorth(word)
         if p.tag.aspect is not None: return p.tag.aspect
-        else 'NONE'
+        else: 'NONE'
 
     # Получение падежа
     def TagCase(word): 
         p = GetMorth(word)
         if p.tag.case is not None: return p.tag.case
-        else 'NONE'
+        else: 'NONE'
 
     # Получение рода: мужской, женский, средний
     def TagGender(word): 
         p = GetMorth(word)
         if p.tag.gender is not None: return p.tag.gender
-        else 'NONE'
+        else: 'NONE'
 
     # Включённость говорящего в действие
     def TagInv(word): 
         p = GetMorth(word)
         if p.tag.involvement is not None: return p.tag.involvement
-        else 'NONE'
+        else: 'NONE'
 
     # Получение наклонения: повелительное, изъявительное
     def TagMood(word): 
         p = GetMorth(word)
         if p.tag.mood is not None: return p.tag.mood
-        else 'NONE'
+        else: 'NONE'
 
     # Получение числа: единственное, множественное
     def TagNumber(word): 
         p = GetMorth(word)
         if p.tag.number is not None: return p.tag.number
-        else 'NONE'
+        else: 'NONE'
 
     # Получение лица: первое, второе, третье
     def TagPerson(word): 
         p = GetMorth(word)
         if p.tag.person is not None: return p.tag.person
-        else 'NONE'
+        else: 'NONE'
 
     # Получение времени: настоящее, прошедшее, будущее
     def TagTense(word): 
         p = GetMorth(word)
         if p.tag.tense is not None: return p.tag.tense
-        else 'NONE'
+        else: 'NONE'
 
     # Получение переходности: переходный, непереходный
     def TagTrans(word): 
         p = GetMorth(word)
         if p.tag.transitivity is not None: return p.tag.transitivity
-        else 'NONE'
+        else: 'NONE'
 
     # Получение залога: действительный, страдательный
     def TagVoice(word): 
         p = GetMorth(word)
         if p.tag.voice is not None: return p.tag.voice
-        else 'NONE'
+        else: 'NONE'
 
     # Склонение слов
     def inflect(word, dinflect={'nomn'}): # по умолчанию в именительный падеж
