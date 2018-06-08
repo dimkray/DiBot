@@ -134,10 +134,11 @@ class Word:
         return smorth
 
     # Получение нормальной формы слова
-    def Morth(word):
+    def Normal(word):
         if word.strip() == '': return ''
         word = word.strip().lower() # доработка слова
         p = morph.parse(word)[0]
+        return p.normal_form
     
     # Получение типа слова (константа) - см phr
     def Type(word): 

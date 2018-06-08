@@ -6,6 +6,7 @@ import Fixer
 import Bot
 import apiai, json
 import random
+import defProcess
 
 from Services.Fun import Fun
 from Services.Yandex import Yandex
@@ -947,6 +948,9 @@ def ServiceProcess(response):
     elif ser == '#rss-del:': tsend = rssdel(send)
     # Сервис информирования о возможностях
     elif ser == '#skill:': tsend = skill()
+    # Спецсервис для кодирования
+    elif ser == '#code:': tsend =defProcess.Code(send)
+    # Все остальные случаи
     else: tsend = '#problem: Сервис {%s} не найден!' % Fixer.Service
     return tsend
 

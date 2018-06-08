@@ -1,64 +1,74 @@
 # -*- coding: utf-8 -*-
 # Сервис по работе с функциями и процедурами
-from Services.Yandex import Yandex
 import Fixer
 import inspect
-
-def getMembers(iclass):
-    ret = dir(iclass)
-    if hasattr(iclass,'__bases__'):
-        for base in iclass.__bases__:
-            ret = ret + getMembers(base)
-    return ret
+from Tests.Testing import Test
 
 def uniq(seq): 
     return list(set(seq))
 
-def getAttrs(obj):
+# Полчение списка всех функций указанного класса (включая системные)
+def GetAllMembers(iclass):
+    ret = dir(iclass)
+    if hasattr(iclass,'__bases__'):
+        for base in iclass.__bases__:
+            ret = ret + GetAllMembers(base)
+    return ret
+
+# Получение всех атрибутов указанного класса/объекта (включая системные)
+def GetAllAttrs(obj):
     ret = dir(obj)
     if hasattr(obj,'__class__'):
         ret.append('__class__')
-        ret.extend(getMembers(obj.__class__))
+        ret.extend(GetAllMembers(obj.__class__))
+        print(ret)
         ret = uniq(ret)
+        print(ret)
     return ret
 
-class Def:
-    # Получение указанного класса
-    def GetClass(name):
-        cl = globals()[name]
-        return cl
+# Получение всех активных глобальных объектов (списком)
+def GetGlobals():
+    mlist = []
+    for key in globals():
+        if not key.startswith("__"): mlist.append(key)
+    return mlist
 
-    # Полчение списка всех функций указанного класса
-    def GetMembers(iclass):
-        mlist = []
-        for i in getMembers(iclass):
-            if not i.startswith("__"):
-                mlist.append(i)
-        return mlist
+# Получение указанного класса
+def GetClass(name):
+    cl = globals()[name]
+    return cl
 
-    # Получение всех атрибутов указанного класса
-    def GetAttrs(obj):
-        mlist = []
-        for i in getAttrs(obj):
-            if not i.startswith("__"): mlist.append(i)
-        return mlist
+# Полчение списка всех функций указанного класса
+def GetMembers(iclass):
+    mlist = []
+    for i in GetAllMembers(iclass):
+        if not i.startswith("__"):
+            mlist.append(i)
+    return mlist
 
-    # Получение всех аргументов указанной функции
-    def GetArgs(member):
-        argspec = inspect.getfullargspec(member)
-        print(argspec)
-        return argspec.args
+# Получение всех атрибутов указанного класса
+def GetAttrs(obj):
+    mlist = []
+    for i in GetAllAttrs(obj):
+        if not i.startswith("__"): mlist.append(i)
+    return mlist
 
-    # Запуск кода
-    def Code(code):
-        try:
-            return eval(code)
-        except Exception as e: 
-            Fixer.errlog('Def.Run', str(e))
-            return '#bug: ' + str(e)
+# Получение всех аргументов указанной функции
+def GetArgs(member):
+    argspec = inspect.getfullargspec(member)
+    return argspec.args
 
-    # Запуск функции из сервиса с аргументами
-    def Run(module, nameclass, namedef, *args):
+# Запуск кода
+def Code(code):
+    try:
+        return eval(code)
+    except Exception as e: 
+        Fixer.errlog('Def.Code', str(e))
+        return '#bug: ' + str(e)
+
+# Запуск функции из сервиса с аргументами
+def Run(module, nameclass, namedef, *args):
+    try:
         import importlib, sys
         mod = sys.modules[module]
         if nameclass != '':
@@ -66,16 +76,6 @@ class Def:
             func = getattr(cl, namedef)
         else: func = getattr(mod, namedef)
         return func(*args)
-
-    #def WriteMembers(iclass):
-
-#s = input('название функции')
-cl = Def.GetClass('Yandex')
-
-print(Def.GetMembers(cl))
-#print(Def.GetAttrs(cl))
-print(Def.GetArgs(cl.FindRasp))
-#print(Def.Run('Services.Yandex', 'Yandex', 'FindRasp', 'Москва - Минск'))
-
-test = input('Введите код: ')
-print(Def.Code(test))
+    except Exception as e: 
+        Fixer.errlog('Def.Run', str(e))
+        return '#bug: ' + str(e)

@@ -274,6 +274,7 @@
 	"FIXER: ": "#fixer: ",
 	"CALCULATOR: ": "#calculator: ",
 	"CALC: ": "#calculator: ",
+	"CODE: ": "#code: ",
 	"=": "#calculator: ",
 	"LOG:": "#log: ",
 	"LOGS:": "#log: ",
