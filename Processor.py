@@ -6,7 +6,7 @@ import Fixer
 import Bot
 import apiai, json
 import random
-import defProcess
+import DefProcess
 
 from Services.Fun import Fun
 from Services.Yandex import Yandex
@@ -18,6 +18,7 @@ from Services.Weather import Weather
 from Services.Geo import Geo
 from Services.House import Booking
 from Services.RSS import RSS
+from Services.StrMorph import String, Word
 from Chats.Chats import Chat
 from DB.SQLite import SQL
 
@@ -845,6 +846,19 @@ def skill():
     return s
 
 # ---------------------------------------------------------
+# сервис morph : #morph: слово или предложение
+def morph(text):
+    Fixer.log('morph')
+    s = ''
+    if ' ' in text: # несколько слов
+        words = String.GetWords(text)
+        for word in words:
+            s += Word.Morph(word) + '\n'
+    else:
+        s = Word.Morph(text)
+    return s
+
+# ---------------------------------------------------------
 # Обработчик сервисов - на вход строка с сервисом (#servicename:)
 # ---------------------------------------------------------
 def ServiceProcess(response):
@@ -948,8 +962,10 @@ def ServiceProcess(response):
     elif ser == '#rss-del:': tsend = rssdel(send)
     # Сервис информирования о возможностях
     elif ser == '#skill:': tsend = skill()
+    # Сервис морфологического анализа
+    elif ser == '#morph:': tsend = morph(send)
     # Спецсервис для кодирования
-    elif ser == '#code:': tsend =defProcess.Code(send)
+    elif ser == '#code:': tsend = str(DefProcess.Code(send))
     # Все остальные случаи
     else: tsend = '#problem: Сервис {%s} не найден!' % Fixer.Service
     return tsend

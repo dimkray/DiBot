@@ -124,14 +124,14 @@ class Word:
             return []
 
     # Получение морфологического анализа слова
-    def Morth(word):
+    def Morph(word):
         p = GetMorth(word)
         smorth = '%s - [%s]' % (word, p.normal_form)
         mtags = re.split(',| ', str(p.tag))
         for tag in mtags:
             if dic[tag][1] != '': s = ' {%s}' % dic[dic[tag][1]][0]
             smorth += '\n - ' + dic[tag][0] + s
-        return smorth
+        return smorth + '\n'
 
     # Получение нормальной формы слова
     def Normal(word):

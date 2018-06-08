@@ -22,37 +22,6 @@ mounth = ['ЯНВАРЯ', 'ФЕВРАЛЯ', 'МАРТА', 'АПРЕЛЯ', 'МА�
 trSt = {'': 0, 'unknown': 0, 'train_station': 1, 'platform': 1, 'station': 1,
         'bus_station': 2, 'bus_stop': 2, 'airport':3, 'whafr': 4, 'river_port': 4, 'port': 4}
 
-# база сайтов (Яндекс.Каталог)
-try:
-    print('Загрузка базы YandexCatalog.csv...')
-    f = open('DB/YandexCatalog.csv', encoding='utf-8')
-    yacat = []
-    for line in f:
-        words = line.split(';')
-        yacat.append(words)
-    f.close()
-    print('База успешно загружена!')
-except Exception as e:
-    Fixer.errlog('Yandex', 'Ошибка при загрузке YandexCatalog.csv!: ' + str(e))
-
-### Загрузка базы городов/станций
-##try:
-##    print('Загрузка базы stations.txt...')
-##    f = open('DB/stations.txt', encoding='utf-8')
-##    db = []
-##    for line in f:
-##        words = line.strip().split(' : ')
-##        words[0] = words[0].upper() + ' '
-##        words[0] = words[0].replace('Ё','Е')
-##        words[1] = words[1].upper()
-##        words[2] = words[2].upper()
-##        words[3] = words[3].upper()
-##        db.append(words)
-##    f.close()
-##    print('База успешно загружена!')
-##except Exception as e:
-##    Fixer.errlog('Yandex', 'Ошибка при загрузке stations.txt!: ' + str(e))
-
 # Поиск идентификатора языка
 def FindLang(slang):
     if slang.upper() in Fixer.yaLangs:
@@ -516,24 +485,26 @@ class Yandex:
     # Яндекс.Каталог возвращает информацию о сайте (тиц, раздел, регион)
     def Catalog(url):
         try:
-            url = url.lower().strip()
+            url = url.strip()
             if len(url) > 2:
-                mfind = []; s = ''
-                for row in yacat:
-                    if row[0].find(url) >= 0: mfind.append(row)
-                s = 'Найдено совпадений: ' + str(len(mfind))
+                mfind = SQL.ReadRowsLike('yaCatalog', 'site', url)
                 icount = len(mfind)
-                if len(mfind) == 0: return 'Сайт или часть сайта "%s" не найдена :(\nСледует уточнить строку поиска или убедиться, что сайт существует.' % url
-                if len(mfind) > 5: s += '. Но будут показаны первые 5:'; icount = 5
+                s = 'Найдено совпадений: ' + str(icount)
+                if icount == 0: return 'Сайт или часть сайта "%s" не найдена :(\nСледует уточнить строку поиска или убедиться, что сайт существует.' % url
+                if icount > 5: s += '. Но будут показаны первые 5:'; icount = 5
                 else: s += ':'
+                print(icount)
+                try:
+                    mfind = sorted(mfind, key=lambda st: st[3], reverse=True)
+                except: pass
                 for i in range(0,icount):
-                    s +='\n[%i] %s - %s (ТИЦ: %s)' % (i, mfind[i][0], mfind[i][1], mfind[i][2])
-                    s +='\nРаздел: %s' % mfind[i][3]
-                    for j in range (4,9):
+                    s +='\n[%i] %s - %s (ТИЦ: %s)' % (i+1, mfind[i][1], mfind[i][2], mfind[i][3])
+                    s +='\nРаздел: %s' % mfind[i][4]
+                    for j in range (5, 10):
                         if mfind[i][j].strip() != '':
                             s +=' -> ' + mfind[i][j]
                     s +='\nРегион: %s' % mfind[i][9]
-                    for j in range (10,13):
+                    for j in range (11, 14):
                         if mfind[i][j].strip() != '':
                             s +=' -> ' + mfind[i][j]
                 return s
@@ -546,25 +517,30 @@ class Yandex:
     # Яндекс.Каталог ищет сайт по запросу
     def FindCatalog(text):
         try:
-            text = text.lower().strip()
+            text = text.upper().strip()
             if len(text) > 2:
-                mfind = []; s = ''
-                for row in yacat:
-                    for i in range(1,13):
-                        if row[i].lower().find(text) >= 0: mfind.append(row)
-                s = 'Найдено совпадений: ' + str(len(mfind))
-                icount = len(mfind)
-                if len(mfind) == 0: return 'Сайт по поисковой строке "%s" не найден :(' % text
-                if len(mfind) > 5: s += '. Но будут показаны первые 5:'; icount = 5
+                mfind = []
+                for col in ['site','section','section2','section3','section4',
+                      'section5','section6','region','region2','region3','region4',
+                      'titleU','regionRuU']:
+                    mfind += SQL.ReadRowsLike('yaCatalog', col, text)
+                icount = len(mfind)    
+                s = 'Найдено совпадений: ' + str(icount)
+                if icount == 0: return 'Сайт по поисковой строке "%s" не найден :(' % text
+                if icount > 5: s += '. Но будут показаны первые 5:'; icount = 5
                 else: s += ':'
+                print(icount)
+                try:
+                    mfind = sorted(mfind, key=lambda st: st[3], reverse=True)
+                except: pass
                 for i in range(0,icount):
-                    s +='\n[%i] %s - %s (ТИЦ: %s)' % (i, mfind[i][0], mfind[i][1], mfind[i][2])
-                    s +='\nРаздел: %s' % mfind[i][3]
-                    for j in range (4,9):
+                    s +='\n[%i] %s - %s (ТИЦ: %s)' % (i+1, mfind[i][1], mfind[i][2], mfind[i][3])
+                    s +='\nРаздел: %s' % mfind[i][4]
+                    for j in range (5,10):
                         if mfind[i][j].strip() != '':
                             s +=' -> ' + mfind[i][j]
-                    s +='\nРегион: %s' % mfind[i][9]
-                    for j in range (10,13):
+                    s +='\nРегион: %s' % mfind[i][10]
+                    for j in range (11,14):
                         if mfind[i][j].strip() != '':
                             s +=' -> ' + mfind[i][j]
                 return s
@@ -572,4 +548,4 @@ class Yandex:
         except Exception as e:
             Fixer.errlog('Yandex.FindCatalog', str(e))
             return '#bug: ' + str(e)
-        
+

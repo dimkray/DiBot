@@ -10,8 +10,6 @@ def ErrorProcessor(text):
         bug, text = Fixer.strfind(text, ['#bug:','#problem:','#err:','#critical:'])
         iNum = 0
         if bug != '': # если обработан
-            SQL.Table('bugs',{'id':'int pk nn u', 'type':'int',
-                      'query':'text', 'process':'text', 'responce':'text', 'time':'text'})
             iNum = SQL.Count('bugs')+1 # число строк -> порядковый номер
         if bug == '#bug:':
             SQL.WriteRow('bugs',[iNum, 1, Fixer.Query, Fixer.Process, text, str(datetime.today())])
