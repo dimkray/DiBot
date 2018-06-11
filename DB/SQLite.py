@@ -312,6 +312,23 @@ class SQL:
             Fixer.errlog(Fixer.Process, str(e))
             return '#bug: ' + str(e)
 
+    # Удаление всей таблицы!
+    def Delete(table):
+        Fixer.log('SQLite.Delete')
+        conn = sqlite3.connect(db)
+        cursor = conn.cursor()
+        sql = 'DROP TABLE %s' % (table)
+        Fixer.log('SQLite.Delete', sql)
+        try:
+            cursor.execute(sql)
+            conn.commit()
+            conn.close()
+            return 'OK'
+        except Exception as e: # ошибка при чтении
+            conn.close()
+            Fixer.errlog(Fixer.Process, str(e))
+            return '#bug: ' + str(e)
+
     # Универсальный запрос
     def sql(query):
         Fixer.log('SQLite.sql')
@@ -336,7 +353,7 @@ class SQL:
 # класс поиска данных из БД
 class Finder:
     # Поиск всех данных по некольким столбцам (like %text%)
-    def FindAll(table, mcols, svalue, returnCol = []):
+    def FindAll(table, mcols, svalue, returnCol = [], bLike = True):
         Fixer.log('SQLite.FindAll')
         rCol = ''
         if returnCol == []: rCol = '*'
@@ -346,21 +363,12 @@ class Finder:
             rCol = rCol[2:]
         mresult = []
         for col in mcols:
-            mresult += Read(table, col, svalue, colValue = rCol, bLike = True)
+            mresult += Read(table, col, svalue, colValue = rCol, bLike=bLike)
         return mresult
 
     # Поиск первой строки по некольким столбцам (like %text%)
-    def Find(table, mcols, svalue, returnCol = []):
-        Fixer.log('SQLite.Find')
-        rCol = ''
-        if returnCol == []: rCol = '*'
-        else:
-            for col in returnCol:
-                rCol += ', ' + col
-            rCol = rCol[2:]
-        mresult = []
-        for col in mcols:
-            mresult += Read(table, col, svalue, colValue = rCol, bLike = True)
+    def Find(table, mcols, svalue, returnCol = [], bLike = True):
+        Finder.FindAll(table, mcols, svalue, returnCol, bLike=bLike)
         return mresult[0]
 
     # Поиск всех данных по некольким столбцам (like %text%) - и отображение items строк

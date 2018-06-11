@@ -3,6 +3,7 @@ import Fixer
 import requests
 import certifi
 import urllib3
+import json
 from urllib.parse import urlencode
 from urllib.parse import quote
 from bs4 import BeautifulSoup
@@ -55,20 +56,21 @@ class URL:
             return '#bug: ' + str(e)
         
     # Получение html/основного текста по запросу
-    def GetData(shttp, stext = '', textparam = '', params = {}, headers = {}, brequest = True, bsave = False):
+    def GetData(shttp, stext = '', textparam = '', params = {}, headers = {},
+                brequest = True, bsave = False, bjson = False):
         try:
             stext = stext.replace(' ','+')
             stext = format(quote(stext))
             if len(textparam) > 0: params[textparam] = stext
             status = 0; d = '' # Данные для ответа
             if brequest: # Если через request
-                r = requests.get(shttp, params=params, headers=headers)
+                r = requests.get(shttp, params=params, headers=headers, verify=False)
                 print(shttp)
                 status = r.status_code
-                #print(shttp)
-                #print(params)
-                if status == requests.codes.ok: d = r.text
-            else: # Если через URL
+                if status == requests.codes.ok:
+                    if bjson: d = r.json()
+                    else: d = r.text
+            else: # Если через URLlib
                 if len(params) > 0:
                     req = ''; x = 0
                     for param in params:
@@ -81,14 +83,16 @@ class URL:
                 print(shttp)
                 r = http.request('GET', shttp)
                 status = r.status
-                if status == requests.codes.ok: d = r.data.decode('utf-8','ignore')
+                if status == requests.codes.ok:
+                    d = r.data.decode('utf-8','ignore')
+                    if bjson: d = json.loads(d)
                 
             if status != requests.codes.ok:
                 return '#problem: ' + str(r.status_code)
             else:
                 if bsave:
                     # Для тестирования
-                    with open('url.html','w', encoding='utf-8') as f:
+                    with open('test.html','w', encoding='utf-8') as f:
                         f.write(d)
                     f.close()
                 return d

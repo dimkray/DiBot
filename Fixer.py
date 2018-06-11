@@ -367,6 +367,15 @@ def getparams(text, separator='|'):
             x += 1
         return m
 
+# ---------------------------------------------------------
+# вн.сервис Sort для сортировки двухмерных массивов (сортировка по номеру колонки)
+def Sort(massive, colnum, reverse = False):
+    try:
+        massive = sorted(massive, key=lambda st: st[colnum], reverse=reverse)
+    except: pass
+    return massive
+
+
 # Загрузка таблиц из БД
 log('Fixer.Start', '------ Загрузка данных ------')
 mCompliment = SQL.ReadAll('complimentMan')
@@ -391,3 +400,6 @@ log('Fixer.Start', 'Все словари загружены!')
 
 # Создание базы данных
 # import DB.CreateDB
+
+# Обновление базы данных (из открытых источников)
+# import DB.UpdateDB
