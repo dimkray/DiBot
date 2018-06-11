@@ -17,20 +17,55 @@ def UpdateTable(NameTable, dCols, data):
 # основной блок программы
 #----------------------------------
 
-# База аэропортов IATA
+yn = input('...... Обновить таблицы и загрузить новые данные? Y/N: ')
+if yn == 'Y': 
 
-mAir = IATA.Airport()
-if mAir[0] != '#':
-    Airs = []
-    for air in mAir:
-        mRow = []
-        mRow.append(air['code'])
-        mRow.append(air['name'])
-        mRow.append(air['name'].upper().replace('Ё','Е'))
-        Airs.append(mRow)
-    UpdateTable('IATA_airports', {'code': 'text nn u',
-                                  'name': 'text nn',
-                                  'nameU': 'text nn'}, Airs)
-else: # ошибка!
-    print(mAir)
+    # База аэропортов IATA
+##    mAir = IATA.GetAirport()
+##    if mAir[0] != '#':
+##        Airs = []
+##        for air in mAir:
+##            mRow = []
+##            mRow.append(air['code'])
+##            mRow.append(air['name'])
+##            mRow.append(air['name'].upper().replace('Ё','Е'))
+##            Airs.append(mRow)
+##        #UpdateTable('IATA_airports', {'code': 'text nn u',
+##                                      'name': 'text nn',
+##                                      'nameU': 'text nn'}, Airs)
+##    else: # ошибка!
+##        print(mAir)
 
+    # База городов IATA
+##    mAir = IATA.GetCity()
+##    if mAir[0] != '#':
+##        Airs = []
+##        for air in mAir:
+##            mRow = []
+##            mRow.append(air['code'])
+##            mRow.append(air['name'])
+##            mRow.append(air['name'].upper().replace('Ё','Е'))
+##            Airs.append(mRow)
+##        UpdateTable('IATA_cities', {'code': 'text nn u',
+##                                      'name': 'text nn',
+##                                      'nameU': 'text nn'}, Airs)
+##    else: # ошибка!
+##        print(mAir)
+
+    # База стран IATA
+    mAir = IATA.GetCountry()
+    if mAir[0] != '#':
+        Airs = []
+        for air in mAir:
+            mRow = []
+            mRow.append(air['code'])
+            mRow.append(air['code3'])
+            mRow.append(air['iso_numeric'])
+            mRow.append(air['name'])
+            mRow.append(air['name'].upper().replace('Ё','Е'))
+            Airs.append(mRow)
+        UpdateTable('IATA_countries', {'code': 'text nn u', 'code3': 'text nn',
+                                    'iso': 'text', 'name': 'text nn',
+                                      'nameU': 'text nn'}, Airs)
+    else: # ошибка!
+        print(mAir)

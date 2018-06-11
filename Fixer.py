@@ -325,10 +325,11 @@ def strcleaner(text):
 
 # ---------------------------------------------------------
 # вн.сервис strformat - преобразование результата в форматированный текст
-def strformat(mresult, items = 5, sformat = '', nameCol = []):
+def strformat(mresult, items = 5, sformat = '', nameCol = [], sobj = 'объектов'):
     if len(mresult) > 0: # если есть результат
-        s = 'По запросу найдено объектов: ' + str(len(mresult))
+        s = 'По запросу найдено %s: %i' % ( sobj, len(mresult)) 
         if items < len(mresult): s += '\nБудут показаны первые %i:' % items
+        else: items = len(mresult)
         for i in range(0,items):
             if sformat == '': # если не задан формат
                 if len(nameCol) > 1: # если несколько возвращаемых колонок
@@ -344,10 +345,16 @@ def strformat(mresult, items = 5, sformat = '', nameCol = []):
             else: # если задан формат
                 sitem = sformat
                 row = mresult[i]
+                while sitem.find('%%') >= 0:
+                    x = sitem.find('%%')+2
+                    r = int(sitem[x:x+2])
+                    sitem = sitem.replace('%%'+str(r), str(row[r]))
                 while sitem.find('%') >= 0:
                     x = sitem.find('%')+1
                     r = int(sitem[x:x+1])
-                    sitem = sitem.replace('%'+str(r), row[r])
+                    sitem = sitem.replace('%'+str(r), str(row[r]))
+                while sitem.find('\\%') >= 0:
+                    sitem = sitem.replace('\\%', '%')
                 s += '\n['+str(i+1)+'] ' + sitem
     else: s = 'По данному запросу нет результата :('
     return s

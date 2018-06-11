@@ -18,6 +18,7 @@ from Services.Weather import Weather
 from Services.Geo import Geo
 from Services.House import Booking
 from Services.RSS import RSS
+from Services.IATA import IATA
 from Services.StrMorph import String, Word
 from Chats.Chats import Chat
 from DB.SQLite import SQL
@@ -830,6 +831,32 @@ def rssdel(text):
     return s
 
 # ---------------------------------------------------------
+# сервис IATA : #IATA: №
+def iata(text, stype='code'):
+    Fixer.log('IATA')
+    colsReturn = ['code', 'name', 'cityName', 'timeZone', 'country', 'lat', 'lon',
+                 'runwayLength', 'runwayElevation', 'phone', 'email', 'website']
+    sfrm = '%0 - %1, г. %2, %4 (%3)\nДлина взлётной полосы: %7, высотная отметка: %8\nТелефон: %9, e-mail: %%10\nURL: %%11'
+    s = ''; s2 = ''
+    if stype == 'code':
+        m1 = IATA.Airport(code=text)
+        m2 = IATA.City(code=text)
+        if len(m2) > 0:
+            s += Fixer.strformat(m2, sformat=sfrm, sobj = 'аэропортов в городах') + '\n'
+        s += '\n' + Fixer.strformat(m1, sformat=sfrm, sobj = 'отдельных аэропортов')
+    elif stype == 'air':
+        m = IATA.Airport(name=text)
+        s = Fixer.strformat(m, sformat=sfrm, sobj = 'аэропортов')
+    elif stype == 'city':
+        m = IATA.City(name=text)
+        s = Fixer.strformat(m, sformat=sfrm, sobj = 'аэропортов в городах')
+    elif stype == 'code3':
+        if Word.Type(text) == 50: m = IATA.Country(code=text) # если латиница
+        else: m = IATA.Country(name=text)
+        s = Fixer.strformat(m, sformat='код: %0, код3: %1, iso: %2\nназвание: %3', sobj = 'стран')
+    return s
+
+# ---------------------------------------------------------
 # сервис skill : #skill:
 def skill():
     Fixer.log('skill')
@@ -960,6 +987,11 @@ def ServiceProcess(response):
     elif ser == '#rss-news:': tsend = rssnews(send)
     elif ser == '#rss-all:': tsend = rssall()
     elif ser == '#rss-del:': tsend = rssdel(send)
+    # Сервис IATA
+    elif ser == '#iata:': tsend = iata(send)
+    elif ser == '#iata-air:': tsend = iata(send, 'airport')
+    elif ser == '#iata-city:': tsend = iata(send, 'city')
+    elif ser == '#code3:': tsend = iata(send, 'code3')
     # Сервис информирования о возможностях
     elif ser == '#skill:': tsend = skill()
     # Сервис морфологического анализа

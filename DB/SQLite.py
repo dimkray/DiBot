@@ -368,8 +368,9 @@ class Finder:
 
     # Поиск первой строки по некольким столбцам (like %text%)
     def Find(table, mcols, svalue, returnCol = [], bLike = True):
-        Finder.FindAll(table, mcols, svalue, returnCol, bLike=bLike)
-        return mresult[0]
+        m = Finder.FindAll(table, mcols, svalue, returnCol, bLike=bLike)
+        if len(m) > 0: return m[0]
+        else: return []
 
     # Поиск всех данных по некольким столбцам (like %text%) - и отображение items строк
     def strFind(table, mcols, svalue, returnCol = [], items = 5, sFormat = ''):

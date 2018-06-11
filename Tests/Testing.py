@@ -18,6 +18,7 @@ def strEqual(stest, setalon):
 # Сравнение с эталонным (для массивов)
 def listEqual(mtest, metalon):
     if mtest == metalon: return 1
+    if mtest == []: return 0 
     rez = 0
     fl = 1 / len(mtest)
     i = 0
