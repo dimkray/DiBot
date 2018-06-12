@@ -57,11 +57,13 @@ class URL:
         
     # Получение html/основного текста по запросу
     def GetData(shttp, stext = '', textparam = '', params = {}, headers = {},
-                brequest = True, bsave = False, bjson = False):
-        try:
-            stext = stext.replace(' ','+')
+                brequest = True, bsave = False, bjson = False, google = True):
+        #try:
+            if google == True: stext = stext.replace(' ','+')
             stext = format(quote(stext))
             if len(textparam) > 0: params[textparam] = stext
+            else:
+                if len(stext) > 0: shttp += format(quote(stext))
             status = 0; d = '' # Данные для ответа
             if brequest: # Если через request
                 r = requests.get(shttp, params=params, headers=headers, verify=False)
@@ -88,7 +90,7 @@ class URL:
                     if bjson: d = json.loads(d)
                 
             if status != requests.codes.ok:
-                return '#problem: ' + str(r.status_code)
+                return '#problem: ' + str(status)
             else:
                 if bsave:
                     # Для тестирования
@@ -96,9 +98,9 @@ class URL:
                         f.write(d)
                     f.close()
                 return d
-        except Exception as e:
-            Fixer.errlog('URL.GetData', str(e))
-            print('#bug: ' + str(e))               
+##        except Exception as e:
+##            Fixer.errlog('URL.GetData', str(e))
+##            print('#bug: ' + str(e))               
 
 class Parser: # Класс парсинга
     # Поиск значений в html (если ball то выводится список значений)

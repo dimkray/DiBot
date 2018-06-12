@@ -2,24 +2,22 @@
 # ПреПроцессор - стартовый обработчик пользовательских запросов
 import Fixer
 from Services.Yandex import Yandex
+from Services.Analyzer import TextFinder
+from Services.StrMorph import String, Word
 
 # мультипроцессор, препроцессорная обработка, препроцессорное автоопределение сервиса
 # возвращаемый формат: [[текст для процессора],[предполагаемый сервис]]
 def MultiProcessor(text):
     Fixer.log('PreProcessor.MultiProcessor')
     # происк мультизапроса и выполнение запроса (анализ)
-    bMulti = False
-    if text.find('. ') > 0: bMulti = True
-    if text.find('? ') > 0: bMulti = True
-    if text.find('! ') > 0: bMulti = True
-    if bMulti: # если есть признак мультизапроса
-        mText = []
-        m = text.split('. ')
-        for im in m:
-            im = text.split('. ')
-            #ДОРАБОТАТЬ!!!
-    return False
-        
+    mMulti = String.GetStrings(text)
+    mDel = []; i = 0
+    for item in mMulti: # поиск пустых запросов
+        if item.strip() == '': mDel.append(i)
+        i += 1
+    for iDel in mDel: # удаление пустых запросов
+        del(mMulti[idel])
+    return mMulti
 
 # препроцессорный обработчик пользовательских запросов
 def ReadMessage(text):
@@ -36,7 +34,6 @@ def ReadMessage(text):
             poz = len(word)
             text = Fixer.Word1[word] + text[poz:] # убираем первое слово - добавляем сервис #
             Fixer.log('PreProcessor.Word1', 'Найдено совпадение по первому слову: ' + text)
-            Fixer.bAI = False
             break
     # Поиск совпадений по ключевым словам
     Fixer.log('PreProcessor.KeyWord')
@@ -46,6 +43,11 @@ def ReadMessage(text):
             if ktext.find(word) >= 0:
                 text = Fixer.KeyWord[word] + text # добавляем сервис #
                 Fixer.log('PreProcessor.KeyWord', 'Найдено совпадение по ключевому слову [' + word + ']:' + text)
-                Fixer.bAI = False
                 break
+    # Анализ сообщения
+    Fixer.log('PreProcessor.Analyzer')
+    texttype, count = TextFinder.AnalyzeType(text)
+    if texttype == 50 and count > 1: text = '#translate: русский: ' + text
+    if texttype == 40 and count > 1: text = '#calculator: ' + text
+    if text[0] == '#': Fixer.bAI = False # отключаем искуственный интеллект
     return text

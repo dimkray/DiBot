@@ -169,36 +169,43 @@ if __name__ == '__main__':
                                 iphoto += 1
                             else: # другой тип вложения
                                 if text == '': SendMessage('В данных типах вложениях я не разбираюсь :('); continue
-                    if text == '':
-                        #s = 'Пустое сообщение'
+                    if text == '': # Пустое сообщение (без текста)
                         if iphoto == 1: s = 'Одно фото во вложении. В будующем смогу провести анализ фото :)'
                         elif iphoto > 1: s = 'Найдено '+str(iphoto)+ ' изображений/фото во вложении.'
                         SendMessage(s)
-                        continue
-                    else:
-                        # Препроцессорный обработчик
-                        Fixer.Process = 'Bot.PreProcessor'
-                        request = PreProcessor.ReadMessage(text)
-                        # Процессорный обработчик
-                        Fixer.Process = 'Bot.Processor'
-                        request = Processor.FormMessage(request)
-                        Fixer.log('Processor', request)
-                        if request[0] == '#': # Требуется постпроцессорная обработка
-                            request = PostProcessor.ErrorProcessor(request)
-                            if request[:6] == '#LOC! ': # Требуется определить геолокацию
-                                # !Доработать блок!
-                                request = location(str(Fixer.Y) + ' ' + str(Fixer.X))
-                                request += '\nДля определения более точных координаты в VK, прикрепи и отправь мне текущее местоположение на карте.'
-                            Fixer.log('PostProcessor', request)
-                            SendMessage(request)
-                        else: # Постпроцессорная обработка не требуется
-                            if Fixer.Service != '': Fixer.LastService.append(Fixer.Service)
-                            SendMessage(request)
-                        if Fixer.htext != '': # если есть гипперссылка
-                            Fixer.log('HiperText', Fixer.htext)
-                            Fixer.htext = 'Ссылка: ' + Fixer.htext.replace(' ','%20')
-                            SendMessage(Fixer.htext)
-                            Fixer.htext = ''
+                        continue # пропускаем сообщение
+
+                    # ------------ основная обработка пользовательских сообщений ---------------
+                    else: 
+                        # Мультипроцессорный обработчик - когда в одном сообщении сразу несколько запросов
+                        mProcess = PreProcessor.MultiProcessor(text)
+                        print(mProcess)
+                        for itext in mProcess:
+                            # Препроцессорный обработчик
+                            Fixer.Process = 'Bot.PreProcessor'
+                            request = PreProcessor.ReadMessage(itext)
+                            # Процессорный обработчик
+                            Fixer.Process = 'Bot.Processor'
+                            request = Processor.FormMessage(request)
+                            Fixer.log('Processor', request)
+                            if request[0] == '#': # Требуется постпроцессорная обработка
+                                request = PostProcessor.ErrorProcessor(request)
+                                if request[:6] == '#LOC! ': # Требуется определить геолокацию
+                                    # !Доработать блок!
+                                    request = location(str(Fixer.Y) + ' ' + str(Fixer.X))
+                                    request += '\nДля определения более точных координаты в VK, прикрепи и отправь мне текущее местоположение на карте.'
+                                Fixer.log('PostProcessor', request)
+                                SendMessage(request)
+                            else: # Постпроцессорная обработка не требуется
+                                if Fixer.Service != '': Fixer.LastService.append(Fixer.Service)
+                                SendMessage(request)
+                            if Fixer.htext != '': # если есть гипперссылка/ки
+                                Fixer.log('HiperText', Fixer.htext)
+                                slink = 'Ссылка: ' # если одна ссылка
+                                if '\n' in Fixer.htext: slink = 'Ссылки:'
+                                Fixer.htext = slink + Fixer.htext.replace(' ','%20')
+                                SendMessage(Fixer.htext)
+                                Fixer.htext = ''
                     Chat.Save()                    
                 except Exception as e:
                     s = str(e)

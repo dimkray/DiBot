@@ -10,6 +10,22 @@ from urllib.parse import urlencode
 from urllib.parse import quote
 from Services.URLParser import URL, Parser
 
+# Чтение/парсинг сайта - получение основной информации
+def ReadSite(url):
+    print('Чтение: '+url)
+    s = ''
+    data = URL.GetData(url, brequest=False)
+    if data[0] != '#':
+        text = Parser.Find(data,'<p>', sstart='>', send='</p>', ball=True)
+        if text[0] != '#':
+            for ss in text:
+                s += '\n' + ss
+                if len(s) > 500: s += '...';break
+            s += '\n' + url
+    s += s.replace('&nbsp;','')
+    print('Результат: ' + s)
+    return s      
+
 class Google:
     # Сервис получения коротких гиперссылок
     def Shorten(url):
@@ -92,10 +108,18 @@ class Google:
             Fixer.errlog('Google.Calc', str(e))
             return '#bug: ' + str(e)
 
+    # поиск формы xpdopen
+    def xpdopen(text):
+        m = Parser.Parse(text, sclass='xpdopen', stype='text')
+        if len(m) > 0:
+            print(m[0])
+            return m[0]
+        else: return ''
+
     # Сервис поиска универсальной карты (с маршрутами или обозначениями)
     def Search(text, bmap=False):
         try:
-            data = URL.GetData('https://www.google.ru/search',stext=text,textparam='q',brequest=False)
+            data = URL.GetData('https://www.google.ru/search',stext=text,textparam='q',brequest=False, bsave=True)
             if data[0] != '#':
                 # поиск карты
                 if bmap:
@@ -117,25 +141,23 @@ class Google:
                         print('#bug: none map')
                 # поиск текста
                 ftext = Parser.Find(data,'href="/search?newwindow', sstart=':', send='+', ball=True)
-                #atext = Parser.Find(data,' target="_blank">', sstart='>', send='<', ball=True)
+                atext = Parser.Find(data,'<a href="/url?q=', sstart='q=', send='&', ball=True)
+                s = ''
+                if atext[0] != '#': s = ReadSite(atext[0])
+                if s == '' and ftext[0] != '#':
+                    i = 0
+                    while s == '':
+                        s = ReadSite(ftext[i])
+                        i += 1
+                        if i >= len(ftext): break
                 if ftext[0] != '#':
-                    s = 'Статья или информация по теме:\n'
-                    #s += atext[0]
-                    s += ftext[0]
-                    data = URL.GetData(ftext[0], brequest=False)
-                    if data[0] != '#':
-                        text = Parser.Find(data,'<p>', sstart='>', send='</p>', ball=True)
-                        if text[0] != '#':
-                            for ss in text:
-                                s += '\n' + ss
-                                if len(s) > 500: s += '...'; break
                     i = 1; sl = ''
                     for ss in ftext:
                         i += 1
-                        if i > 2: sl += '\n' + ss # '\n' + atext[i-1] + '\n' + ss
+                        if i > 0: sl += '\n' + ss # '\n' + atext[i-1] + '\n' + ss
                         if i > 8: break
                     Fixer.htext = sl #назначаем гиперссылку
-                    return s
+                if s != '': return s
                 else:
                     print('#bug: none')
                     return '#bug: none'

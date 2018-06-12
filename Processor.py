@@ -19,6 +19,7 @@ from Services.Geo import Geo
 from Services.House import Booking
 from Services.RSS import RSS
 from Services.IATA import IATA
+from Services.Web import Web
 from Services.StrMorph import String, Word
 from Chats.Chats import Chat
 from DB.SQLite import SQL
@@ -1071,27 +1072,30 @@ def FormMessage(text):
             # Не удалось ответить
             s = text
             # Попробуем найти в вики
-            if len(text) < 25 and text.find('?') < 0: 
+            if len(text) < 20 and text.endswith('?') == False: 
                 s = wiki(text)
                 if s[0] != '#':
                     return s
                 else:
                     Fixer.htext = ''
                     s = text
-            # Попробуем найти в поисковике Google
-            if len(text) < 40 and text.find('. ') < 0: 
-                s = google(text)
-                if s[0] != '#':
-                    return s
-                else:
-                    Fixer.htext = ''
+            # Попробуем найти в ответах
+##            elif text.endswith('?'):
+##                s = Web.Otvet(text)
+##                if s[0] != '#': return s
+            # Попробуем найти в поисковике Google 
+            s = google(text)
+            if s[0] != '#':
+                return s
+            else:
+                Fixer.htext = ''
             s = Fixer.strcleaner(text)
             # Ищем среди новых диалогов
             for i in Fixer.NewDialogs:
                 if i == s: return random.choice(Fixer.NewDialogs[i]) # удалось найти среди новых диалогов
-            #Fixer.log('Ответ пользователю: Извини, я тебя не понял...')
-            Bot.SendMessage(Fixer.Dialog('null'))
+            Fixer.log('Ответ пользователю: Извини, я тебя не понял...')
+            # Bot.SendMessage(Fixer.Dialog('null'))
             Fixer.Query = text # сохраняем последний запрос пользователя
-            Fixer.Service = 'correction'
+            #Fixer.Service = 'correction'
             Fixer.bAI = False
-            return Fixer.Dialog('new_dialog')
+            return Fixer.Dialog('null')  # Fixer.Dialog('new_dialog')
