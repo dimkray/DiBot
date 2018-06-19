@@ -378,4 +378,48 @@ class Finder:
         m = Finder.FindAll(table, mcols, svalue, returnCol=returnCol)
         return Fixer.strformat(m, items=items, sformat=sFormat, nameCol=returnCol)
 
+# класс работы с SVN-файлами
+class CSV:
+    # Ручное чтение csv-файла
+    def Reader(fullname, separator=',', items=0, download=1000):
+        symb = '\\"'
+        data = []; table = []; i = 0
+        with open(fullname, "r", encoding='utf-8') as f:
+            for line in f:
+                m = []
+                row = line
+                if row == '': continue
+                row = row.replace(symb,'|^')
+                poz = 0; start = 0; end = 0; bChar = False
+                while poz >= 0: # ручной поиск разделителей
+                    sep = row.find(separator, poz)
+                    start = row.find('"', poz)
+                    if sep < start or start == -1:
+                        start = poz
+                        end = sep
+                        bChar = False
+                    else:
+                        start += 1
+                        end = row.find('"', start+1)
+                        bChar = True
+                    if end == -1: end = len(row); poz = -1
+                    else: poz = end+2 if bChar else end+1
+                    s = row[start:end]
+                    try:
+                        if len(s) > 0:
+                            if s[0] == '"': s = s[1:]
+                            if s[-1] == '"': s = s[:-1]
+                    except:
+                        s = s; print('!!!bug!!! - ' + s)
+                    s = s.replace('|^','"').strip()
+                    if s != '': m.append(s)
+                    else: m.append(None)
+                if i == 0: # шапка
+                    table = m
+                else: data.append(m)
+                i += 1
+                if i != 0 and i > items: break                
+                if i % download == 0:
+                    print('Загружено %i записей...' % i)
+        return data, table
     
