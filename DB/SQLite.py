@@ -381,14 +381,21 @@ class Finder:
 # класс работы с SVN-файлами
 class CSV:
     # Ручное чтение csv-файла
-    def Reader(fullname, separator=',', items=0, download=1000):
-        symb = '\\"'
-        data = []; table = []; i = 0
+    def Reader(fullname, separator=',', items=0, istart=0, download=1000):
+        symb = '\\"'; valcount = 0; row = ''
+        data = []; table = []; i = 0; ist = 0
         with open(fullname, "r", encoding='utf-8') as f:
             for line in f:
+                i += 1
+                if i < istart+1: continue # запуск со старта
+                ist += 1
+                if valcount != 0:
+                    if line.count(separator) < valcount - 1:
+                        row += line.replace('\n','')
+                    else: row = line
+                    if row.count(separator) < valcount - 1: continue
+                else: row = line
                 m = []
-                row = line
-                if row == '': continue
                 row = row.replace(symb,'|^')
                 poz = 0; start = 0; end = 0; bChar = False
                 while poz >= 0: # ручной поиск разделителей
@@ -414,11 +421,12 @@ class CSV:
                     s = s.replace('|^','"').strip()
                     if s != '': m.append(s)
                     else: m.append(None)
-                if i == 0: # шапка
+                if i == 1: # шапка
                     table = m
                 else: data.append(m)
-                i += 1
-                if i != 0 and i > items: break                
+                if valcount == 0: valcount = len(m)
+                row = ''
+                if items != 0 and ist >= items: break
                 if i % download == 0:
                     print('Загружено %i записей...' % i)
         return data, table
