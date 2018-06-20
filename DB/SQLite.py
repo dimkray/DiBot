@@ -186,6 +186,16 @@ class SQL:
             Fixer.errlog(Fixer.Process, str(e))
             return '#bug: ' + str(e)
 
+    # Запись словаря целиком
+    def WriteDictBlock(table, dictionary):
+        mDict = []
+        for key in dictionary:
+            m = []
+            m.append(key)
+            m.append(dictionary[key])
+            mDict.append(m)
+        return SQL.WriteBlock(table, mDict)
+
     # Получение числа строк (rows)
     def Count(table):
         Fixer.log('SQLite.Count')
@@ -329,24 +339,20 @@ class SQL:
 
     # Универсальный запрос
     def sql(query):
-        Fixer.log('SQLite.sql')
+        Fixer.log('SQLite.sql', query)
         conn = sqlite3.connect(Fixer.DB)
         cursor = conn.cursor()
         result = [] # создаём пустой масив
         try:
             cursor.execute(query)
-            for row in cursor.fetchall(): # Загрузка всех данных
-                #print(row)
-                result.append(row)
-            if query.upper().find('UPDATE ') >= 0 or query.upper().find('DELETE ') >= 0:
-                conn.commit()
-                Fixer.log('SQLite.sql', 'Изменено строк: %d' % cursor.rowcount)
+            if query.upper().find('SELECT ') < 0: conn.commit()
+            Fixer.log('SQLite.sql', 'Изменено строк: %d' % cursor.rowcount)
             conn.close()
-            return result
+            return 'OK'
         except Exception as e: # ошибка при чтении
             conn.close()
             Fixer.errlog(Fixer.Process, str(e))
-            return result
+            return '#bug: ' + str(e)
 
 # класс поиска данных из БД
 class Finder:

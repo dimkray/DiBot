@@ -3,6 +3,7 @@ import csv
 import Fixer
 from DB.SQLite import SQL, CSV
 from Services.StrMorph import String, Word
+from DB.Worker import Worker
 
 Fixer.DB = 'DB/egr.db'
 
@@ -156,243 +157,201 @@ def newOpf(text):
 # основной блок программы
 #----------------------------------
 
-orgs = 100000
+items = 100000
 block = 1000000
 
+#try:
 yn = input('...... Обновить таблицу адресов и загрузить новые данные? Y/N: ')
 if yn != 'N': 
 
-# Словарь адресов
+    # Словарь адресов
 
-##    mAddr, mTable = CSV.Reader('DB/address.csv', separator=';', download=orgs)
-##    print(mTable)  
-##
-##    mOrgs = []
-##    iorg = 0
-##    for iOrg in mAddr:
-##        try:
-##            m = []
-##            m.append(iOrg[0]) # guid
-##            m.append(iOrg[3]) # parent_guid
-##            m.append(iOrg[1]) # ao_level
-##            m.append(iOrg[5]) # region_code
-##            m.append(iOrg[6]) # short_name
-##            m.append(iOrg[6].upper().strip()) # type
-##            m.append(iOrg[2]) # name
-##            m.append(iOrg[2].upper().strip()) # nameU
-##            m.append(iOrg[4]) # postalcode
-##            m.append(iOrg[7]) # update_date
-##            mOrgs.append(m)
-##            iorg += 1
-##            if iorg % orgs == 0: print('Обработано %i из %i...' % (iorg, len(mOrgs)))
-##        except Exception as e:
-##            print('!!!Bug - '+str(e)+' : '+str(iOrg))
-##    
-##    UpdateTable('fias_address', {'guid': 'text nn u', 'parent_guid': 'text',
-##        'level': 'int', 'region_code': 'int', 'type_short': 'text', 'type': 'text',
-##        'name': 'text', 'nameU': 'text', 'postalcode': 'text', 'update_date': 'text'}, mOrgs)
-
-#yn = input('...... Обновить таблицы ЕГР и загрузить новые данные? Y/N: ')
-#if yn == 'Y':  
+    for ib in range(0, 2):
+        Worker.ReadBlockCSV('DB/address.csv', iblock=ib)
+        irow = 0
+        for row in Worker.mDataCSV:
+            row.append(row[6].upper().strip()) # type
+            row.append(row[2].upper().strip()) # nameU
+            Worker.mTableCSV.append('type')
+            Worker.mTableCSV.append('nameU')
+            irow += 1
+            if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))       
+        Worker.UpdateBlockCSV('fias_address', {'guid': 'text pk nn u', 'parent_guid': 'text',
+            'level': 'int', 'region_code': 'int', 'type_short': 'text', 'type': 'text',
+            'name': 'text', 'nameU': 'text', 'postalcode': 'text', 'update': 'text'},
+            {'guid': 'ao_guid', 'parent_guid': 'parent_guid', 'level': 'ao_level',
+             'region_code': 'region_code', 'type_short': 'short_name', 'type': 'type',
+             'name': 'formal_name', 'nameU': 'nameU', 'postalcode': 'postal_code', 'update_date':
+             'update_date'}, iblock=ib)
 
     # База адресов
 
-    for iblock in range(0, 12):
-##        mAddr, mTable = CSV.Reader('DB/organization_address.csv', separator=';', items=block, istart=iblock, download=orgs)
+    for ib in range(0, 11):
+        Worker.ReadBlockCSV('DB/organization_address.csv', iblock=ib)
+        UpdateTableCSV('DB/organization_address.csv', 'organizations_address',
+            {'id': 'int pk nn u', 'organization_id': 'text nn',
+            'version_date': 'text', 'grn': 'text', 'grn_date': 'text', 'region_code': 'int',
+            'area_type': 'text', 'area_name': 'text', 
+            'city_type': 'text', 'city_name': 'text',
+            'settlement_type': 'text', 'settlement_name': 'text',
+            'street_type': 'text', 'street_name': 'text',
+            'house': 'text', 'building': 'text', 'flat': 'text',
+            'postcode': 'text', 'fias_house': 'text', 'fias': 'text'}, iblock=ib)
+        
+    Worker.Indexation('fias_address', ['level', 'type', 'nameU', 'postalcode'])
+    Worker.Indexation('organizations_address', ['organization_id'])    
+
+        # База организаций
+
+##        mOrg, mTable = CSV.Reader('DB/organization.csv', separator=';', items=block, istart=iblock*block, download=orgs)
 ##        print(mTable)
 ##
 ##        mOrgs = []
 ##        iorg = 0
-##        for iOrg in mAddr:
+##        for iOrg in mOrg:
 ##            try:
 ##                m = []
 ##                m.append(iOrg[0]) # id
-##                m.append(iOrg[4]) # organization_id
 ##                m.append(iOrg[1]) # version_date
-##                m.append(iOrg[2]) # grn
-##                m.append(iOrg[3]) # grn_date
-##                m.append(iOrg[18]) # region_code
-##                m.append(iOrg[9]) # area_type
-##                m.append(iOrg[10]) # area_name
-##                m.append(iOrg[11]) # city_type
-##                m.append(iOrg[12]) # city_name
-##                m.append(iOrg[13]) # settlement_type
-##                m.append(iOrg[14]) # settlement_name
-##                m.append(iOrg[15]) # street_type
-##                m.append(iOrg[16]) # street_name
-##                m.append(iOrg[19]) # house
-##                m.append(iOrg[20]) # building
-##                m.append(iOrg[21]) # flat
-##                m.append(iOrg[17]) # postcode
-##                m.append(iOrg[5]) # fias_house
-##                m.append(iOrg[6]) # fias
+##                m.append(iOrg[2]) # ogrn
+##                m.append(iOrg[3]) # ogrn_date
+##                m.append(iOrg[4]) # inn
+##                m.append(iOrg[9]) # kpp
+##                m.append(iOrg[5]) # okved
+##                m.append(iOrg[6]) # okved_version
+##
+##                # Обработка имени
+##                name = iOrg[7].upper().replace('  ',' ').strip()
+##                abbr = iOrg[8]
+##                if abbr is not None: abbr = abbr.upper().strip()
+##                m.append(name) # name_full
+##                m.append(abbr) # name_abbr
+##
+##                opf = [None, None]
+##                sname = name
+##                #print(sname)
+##                words = String.GetWords(name) # наименование без ОПФ
+##                #print(words)
+##                # поиск ОПФ - dOpf - в начале и в конце строки
+##                for val in dOpf.values():
+##                    if val in sname:
+##                        if name.find(val+' ') == 0 or sname.find(' '+val) == len(sname)-len(val)-1:
+##                            setOpf(val)
+##                            sname = sname.replace(val,'').strip()
+##                            words = String.GetWords(sname)
+##                            break
+##                            #print('dOpf: ', words)
+##                for key in dOpf:
+##                    if key in words:
+##                        if key == words[0]:
+##                            setOpf(dOpf[key])
+##                            del(words[0])
+##                            break
+##                        if key == words[-1]:
+##                            setOpf(dOpf[key])
+##                            del(words[-1])
+##                            break
+##                        #print('dOpf-key: ', words)
+##                # поиск ОПФ - mOpf - в начале и в конце строки
+##                for iopf in mOpf:
+##                    if iopf in sname:
+##                        if sname.find(iopf+' ') == 0 or sname.find(' '+iopf) == len(sname)-len(iopf)-1:
+##                            setOpf(iopf)
+##                            sname = sname.replace(iopf,'').strip()
+##                            words = String.GetWords(sname)
+##                            break
+##                            #print('mOpf: ', words)
+##                # поиск ОПФ - endOpf
+##                for iopf in endOpf:
+##                    if iopf in words:
+##                        sopf = ''
+##                        end = words.index(iopf); start = 0
+##                        for i in range(end-1,0,-1):
+##                            if Word.Type(words[i]) < 2 or Word.Type(words[i]) > 3:
+##                                start = i + 1; break
+##                        if start == end: continue
+##                        for i in range(start, end+1):
+##                            sopf += words[i]+' '
+##                        sopf = sopf.strip()
+##                        for i in range(start, end+1):
+##                            del(words[start])
+##                        #print('endOpf: ', words)
+##                        setOpf(sopf)
+##                sname = None
+##                if len(words) > 0:
+##                    sname = ''
+##                    cname = String.GetConstr(name)
+##                    #print(cname)
+##                    for word in words:
+##                        try:
+##                            s = cname[cname.find('['+word+']')+len(word)+2]
+##                        except: s = ' '
+##                        sname += word+s
+##                    sname = sname[:-1]
+##                #print('name: ', sname)
+##
+##                m.append(sname) # name
+##                if opf[0] is not None:
+##                    m.append(newOpf(opf[0])) # opf1
+##                else: m.append(None)
+##                if opf[1] is not None:
+##                    m.append(newOpf(opf[1])) # opf2
+##                else: m.append(None)
+##
+##                if iOrg[10] == 'КОПФ': m.append(0) # opf_spr
+##                elif iOrg[10] == 'ОКОПФ': m.append(1)
+##                elif iOrg[10] is None: m.append(None)
+##                else: m.append(100)
+##
+##                m.append(iOrg[11]) # opf
+##
+##                # проверка ОПФ - dOpf - в начале и в конце строки
+##                koef = 0
+##                if abbr is not None:
+##                    words2 = String.GetWords(abbr)
+##                    for key in dOpf:
+##                        if key in words2:
+##                            if key == words2[0]:
+##                                if opf[0] == dOpf[key] or opf[1] == dOpf[key]:
+##                                    koef += 0.4
+##                                    name = name.replace(dOpf[key],'')
+##                                    abbr = abbr.replace(key,'')
+##                                    del(words2[0])
+##                                    break
+##                            if key == words2[-1]:
+##                                if opf[0] == dOpf[key] or opf[1] == dOpf[key]:
+##                                    koef += 0.4
+##                                    name = name.replace(dOpf[key],'')
+##                                    abbr = abbr.replace(key,'')
+##                                    del(words2[-1])
+##                                    break
+##                    name = name.replace('"','').strip()
+##                    abbr = abbr.replace('"','').strip()
+##                    # проверка наименования
+##                    if name == abbr: koef += 0.6
+##                    elif words == words2: koef += 0.5
+##                m.append(koef) # koef
 ##                mOrgs.append(m)
 ##                iorg += 1
 ##                if iorg % orgs == 0: print('Обработано %i из %i...' % (iorg, len(mOrgs)))
 ##            except Exception as e:
 ##                print('!!!Bug - '+str(e)+' : '+str(iOrg))
 ##        
-##        UpdateTable('organizations_address', {'id': 'int nn u', 'organization_id': 'text nn',
-##            'version_date': 'text', 'grn': 'text', 'grn_date': 'text', 'region_code': 'int',
-##            'area_type': 'text', 'area_name': 'text',
-##            'city_type': 'text', 'city_name': 'text',
-##            'settlement_type': 'text', 'settlement_name': 'text',
-##            'street_type': 'text', 'street_name': 'text',
-##            'house': 'text', 'building': 'text', 'flat': 'text',
-##            'postcode': 'text', 'fias_house': 'text', 'fias': 'text'}, mOrgs)
-       
-
-        # База организаций
-
-        mOrg, mTable = CSV.Reader('DB/organization.csv', separator=';', items=block, istart=iblock*block, download=orgs)
-        print(mTable)
-
-        mOrgs = []
-        iorg = 0
-        for iOrg in mOrg:
-            try:
-                m = []
-                m.append(iOrg[0]) # id
-                m.append(iOrg[1]) # version_date
-                m.append(iOrg[2]) # ogrn
-                m.append(iOrg[3]) # ogrn_date
-                m.append(iOrg[4]) # inn
-                m.append(iOrg[9]) # kpp
-                m.append(iOrg[5]) # okved
-                m.append(iOrg[6]) # okved_version
-
-                # Обработка имени
-                name = iOrg[7].upper().replace('  ',' ').strip()
-                abbr = iOrg[8]
-                if abbr is not None: abbr = abbr.upper().strip()
-                m.append(name) # name_full
-                m.append(abbr) # name_abbr
-
-                opf = [None, None]
-                sname = name
-                #print(sname)
-                words = String.GetWords(name) # наименование без ОПФ
-                #print(words)
-                # поиск ОПФ - dOpf - в начале и в конце строки
-                for val in dOpf.values():
-                    if val in sname:
-                        if name.find(val+' ') == 0 or sname.find(' '+val) == len(sname)-len(val)-1:
-                            setOpf(val)
-                            sname = sname.replace(val,'').strip()
-                            words = String.GetWords(sname)
-                            break
-                            #print('dOpf: ', words)
-                for key in dOpf:
-                    if key in words:
-                        if key == words[0]:
-                            setOpf(dOpf[key])
-                            del(words[0])
-                            break
-                        if key == words[-1]:
-                            setOpf(dOpf[key])
-                            del(words[-1])
-                            break
-                        #print('dOpf-key: ', words)
-                # поиск ОПФ - mOpf - в начале и в конце строки
-                for iopf in mOpf:
-                    if iopf in sname:
-                        if sname.find(iopf+' ') == 0 or sname.find(' '+iopf) == len(sname)-len(iopf)-1:
-                            setOpf(iopf)
-                            sname = sname.replace(iopf,'').strip()
-                            words = String.GetWords(sname)
-                            break
-                            #print('mOpf: ', words)
-                # поиск ОПФ - endOpf
-                for iopf in endOpf:
-                    if iopf in words:
-                        sopf = ''
-                        end = words.index(iopf); start = 0
-                        for i in range(end-1,0,-1):
-                            if Word.Type(words[i]) < 2 or Word.Type(words[i]) > 3:
-                                start = i + 1; break
-                        if start == end: continue
-                        for i in range(start, end+1):
-                            sopf += words[i]+' '
-                        sopf = sopf.strip()
-                        for i in range(start, end+1):
-                            del(words[start])
-                        #print('endOpf: ', words)
-                        setOpf(sopf)
-                sname = None
-                if len(words) > 0:
-                    sname = ''
-                    cname = String.GetConstr(name)
-                    #print(cname)
-                    for word in words:
-                        try:
-                            s = cname[cname.find('['+word+']')+len(word)+2]
-                        except: s = ' '
-                        sname += word+s
-                    sname = sname[:-1]
-                #print('name: ', sname)
-
-                m.append(sname) # name
-                if opf[0] is not None:
-                    m.append(newOpf(opf[0])) # opf1
-                else: m.append(None)
-                if opf[1] is not None:
-                    m.append(newOpf(opf[1])) # opf2
-                else: m.append(None)
-
-                if iOrg[10] == 'КОПФ': m.append(0) # opf_spr
-                elif iOrg[10] == 'ОКОПФ': m.append(1)
-                elif iOrg[10] is None: m.append(None)
-                else: m.append(100)
-
-                m.append(iOrg[11]) # opf
-
-                # проверка ОПФ - dOpf - в начале и в конце строки
-                koef = 0
-                if abbr is not None:
-                    words2 = String.GetWords(abbr)
-                    for key in dOpf:
-                        if key in words2:
-                            if key == words2[0]:
-                                if opf[0] == dOpf[key] or opf[1] == dOpf[key]:
-                                    koef += 0.4
-                                    name = name.replace(dOpf[key],'')
-                                    abbr = abbr.replace(key,'')
-                                    del(words2[0])
-                                    break
-                            if key == words2[-1]:
-                                if opf[0] == dOpf[key] or opf[1] == dOpf[key]:
-                                    koef += 0.4
-                                    name = name.replace(dOpf[key],'')
-                                    abbr = abbr.replace(key,'')
-                                    del(words2[-1])
-                                    break
-                    name = name.replace('"','').strip()
-                    abbr = abbr.replace('"','').strip()
-                    # проверка наименования
-                    if name == abbr: koef += 0.6
-                    elif words == words2: koef += 0.5
-                m.append(koef) # koef
-                mOrgs.append(m)
-                iorg += 1
-                if iorg % orgs == 0: print('Обработано %i из %i...' % (iorg, len(mOrgs)))
-            except Exception as e:
-                print('!!!Bug - '+str(e)+' : '+str(iOrg))
-        
-        UpdateTable('organizations', {'id': 'int nn u', 'version_date': 'text',
-            'ogrn': 'text', 'ogrn_date': 'text', 'inn': 'text', 'kpp': 'text',
-            'okved': 'text', 'okved_version': 'int', 'name_full': 'text',
-            'name_abbr': 'text', 'name': 'text', 'opf_name': 'int', 'opf_name2': 'int',
-            'opf_spr': 'int', 'opf': 'int', 'koef': 'float'}, mOrgs)
+##        UpdateTable('organizations', {'id': 'int nn u', 'version_date': 'text',
+##            'ogrn': 'text', 'ogrn_date': 'text', 'inn': 'text', 'kpp': 'text',
+##            'okved': 'text', 'okved_version': 'int', 'name_full': 'text',
+##            'name_abbr': 'text', 'name': 'text', 'opf_name': 'int', 'opf_name2': 'int',
+##            'opf_spr': 'int', 'opf': 'int', 'koef': 'float'}, mOrgs)
         # Индексы: CREATE INDEX ogrn_inn ON organizations (ogrn, inn);
 
-    # Отдельно записываем словарь ОПФ
+# Отдельно записываем словарь ОПФ
 
-    mopf = []
-    for key in tOpf:
-        m = []
-        m.append(key)
-        m.append(tOpf[key])
-        mopf.append(m)
-        
-    UpdateTable('opf_dict', {'id': 'int nn u', 'name': 'text nn'}, mopf)
+##mopf = []
+##for key in tOpf:
+##    m = []
+##    m.append(key)
+##    m.append(tOpf[key])
+##    mopf.append(m)
+##    
+##UpdateTable('opf_dict', {'id': 'int nn u', 'name': 'text nn'}, mopf)
     
