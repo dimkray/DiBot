@@ -5,6 +5,9 @@ import json
 import pickle
 import os
 
+# текущая база данных
+DB = 'DB/bot.db'
+
 # общие фразы
 responses = ['yesno','wait','notice']
 # Загрузка всех словарей в конце файла

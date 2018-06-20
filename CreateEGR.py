@@ -4,6 +4,8 @@ import Fixer
 from DB.SQLite import SQL, CSV
 from Services.StrMorph import String, Word
 
+Fixer.DB = 'DB/egr.db'
+
 opf = [None, None]
 tOpf = {} # словарь организационно-правовых форм
 tDel = [] # Список удалённых таблиц
@@ -381,6 +383,7 @@ if yn != 'N':
             'okved': 'text', 'okved_version': 'int', 'name_full': 'text',
             'name_abbr': 'text', 'name': 'text', 'opf_name': 'int', 'opf_name2': 'int',
             'opf_spr': 'int', 'opf': 'int', 'koef': 'float'}, mOrgs)
+        # Индексы: CREATE INDEX ogrn_inn ON organizations (ogrn, inn);
 
     # Отдельно записываем словарь ОПФ
 

@@ -4,11 +4,9 @@
 import Fixer
 import sqlite3
 
-db = 'DB/bot.db'
-
 # Чтение по одному критерию (равенство или like)
 def Read(table, colname, value, colValue = '*', bLike = False, bOne = False, bFirst = False):
-    conn = sqlite3.connect(db)
+    conn = sqlite3.connect(Fixer.DB)
     cursor = conn.cursor()  
     if isinstance(value, str):
         if bLike: value = '%' + value + '%'
@@ -47,7 +45,7 @@ def Read(table, colname, value, colValue = '*', bLike = False, bOne = False, bFi
 
 # Обновление данных по одному критерию (равенство или like)
 def Update(table, colname, value, colUpdate, newValue, bLike = False):
-    conn = sqlite3.connect(db)
+    conn = sqlite3.connect(Fixer.DB)
     cursor = conn.cursor()
     if isinstance(value, str): value = '"'+value+'"'
     else: value = str(value)
@@ -73,7 +71,7 @@ class SQL:
     # Создание таблицы
     def Table(table, drows):
         Fixer.log('SQLite.Table')
-        conn = sqlite3.connect(db)
+        conn = sqlite3.connect(Fixer.DB)
         cursor = conn.cursor()
         sql = 'CREATE TABLE %s (' % table
         i = 0
@@ -107,7 +105,7 @@ class SQL:
     # Запись данных
     def WriteLine(table, sline):
         Fixer.log('SQLite.WriteLine')
-        conn = sqlite3.connect(db)
+        conn = sqlite3.connect(Fixer.DB)
         cursor = conn.cursor()
         sql = 'INSERT INTO %s VALUES (%s)' % (table, sline)
         Fixer.log('SQLite.WriteLine', sql)
@@ -125,7 +123,7 @@ class SQL:
     # Запись данных [list]
     def WriteRow(table, mrow):
         Fixer.log('SQLite.WriteRow')
-        conn = sqlite3.connect(db)
+        conn = sqlite3.connect(Fixer.DB)
         cursor = conn.cursor()
         sql = 'INSERT INTO %s VALUES (' % table
         i = 0
@@ -149,7 +147,7 @@ class SQL:
     # Запись данных [dict]
     def WriteDictRow(table, drow):
         Fixer.log('SQLite.WriteDictRow')
-        conn = sqlite3.connect(db)
+        conn = sqlite3.connect(Fixer.DB)
         cursor = conn.cursor()
         columns = ', '.join(drow.keys())
         placeholders = ':'+', :'.join(drow.keys())
@@ -168,7 +166,7 @@ class SQL:
     # Запись данных блоками
     def WriteBlock(table, mblock):
         Fixer.log('SQLite.WriteBlock')
-        conn = sqlite3.connect(db)
+        conn = sqlite3.connect(Fixer.DB)
         cursor = conn.cursor()
         num = len(mblock[0])
         sql = 'INSERT INTO %s VALUES (' % table
@@ -191,7 +189,7 @@ class SQL:
     # Получение числа строк (rows)
     def Count(table):
         Fixer.log('SQLite.Count')
-        conn = sqlite3.connect(db)
+        conn = sqlite3.connect(Fixer.DB)
         cursor = conn.cursor()
         sql = 'SELECT count(*) FROM %s' % table
         Fixer.log('SQLite.Count', sql)
@@ -208,7 +206,7 @@ class SQL:
     # Загрузка всей таблицы
     def ReadAll(table):
         Fixer.log('SQLite.ReadAll')
-        conn = sqlite3.connect(db)
+        conn = sqlite3.connect(Fixer.DB)
         cursor = conn.cursor()
         sql = 'SELECT * FROM %s' % table
         result = [] # создаём пустой масив
@@ -295,7 +293,7 @@ class SQL:
     # Удаление данных по одному критерию (равенство)
     def DeleteRow(table, colname, value):
         Fixer.log('SQLite.DeleteRow')
-        conn = sqlite3.connect(db)
+        conn = sqlite3.connect(Fixer.DB)
         cursor = conn.cursor()
         if isinstance(value, str): value = '"'+value+'"'
         else: value = str(value)
@@ -315,7 +313,7 @@ class SQL:
     # Удаление всей таблицы!
     def Delete(table):
         Fixer.log('SQLite.Delete')
-        conn = sqlite3.connect(db)
+        conn = sqlite3.connect(Fixer.DB)
         cursor = conn.cursor()
         sql = 'DROP TABLE %s' % (table)
         Fixer.log('SQLite.Delete', sql)
@@ -332,7 +330,7 @@ class SQL:
     # Универсальный запрос
     def sql(query):
         Fixer.log('SQLite.sql')
-        conn = sqlite3.connect(db)
+        conn = sqlite3.connect(Fixer.DB)
         cursor = conn.cursor()
         result = [] # создаём пустой масив
         try:
