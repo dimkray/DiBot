@@ -178,7 +178,7 @@ if yn != 'N':
             if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))       
         Worker.UpdateBlockCSV('fias_address', {'guid': 'text pk nn u', 'parent_guid': 'text',
             'level': 'int', 'region_code': 'int', 'type_short': 'text', 'type': 'text',
-            'name': 'text', 'nameU': 'text', 'postalcode': 'text', 'update': 'text'},
+            'name': 'text', 'nameU': 'text', 'postalcode': 'text', 'update_date': 'text'},
             {'guid': 'ao_guid', 'parent_guid': 'parent_guid', 'level': 'ao_level',
              'region_code': 'region_code', 'type_short': 'short_name', 'type': 'type',
              'name': 'formal_name', 'nameU': 'nameU', 'postalcode': 'postal_code', 'update_date':
@@ -187,8 +187,7 @@ if yn != 'N':
     # База адресов
 
     for ib in range(0, 11):
-        Worker.ReadBlockCSV('DB/organization_address.csv', iblock=ib)
-        UpdateTableCSV('DB/organization_address.csv', 'organizations_address',
+        Worker.UpdateTableCSV('DB/organization_address.csv', 'organizations_address',
             {'id': 'int pk nn u', 'organization_id': 'text nn',
             'version_date': 'text', 'grn': 'text', 'grn_date': 'text', 'region_code': 'int',
             'area_type': 'text', 'area_name': 'text', 
@@ -196,7 +195,7 @@ if yn != 'N':
             'settlement_type': 'text', 'settlement_name': 'text',
             'street_type': 'text', 'street_name': 'text',
             'house': 'text', 'building': 'text', 'flat': 'text',
-            'postcode': 'text', 'fias_house': 'text', 'fias': 'text'}, iblock=ib)
+            'postcode': 'text', 'fias_house': 'text', 'fias': 'text'})
         
     Worker.Indexation('fias_address', ['level', 'type', 'nameU', 'postalcode'])
     Worker.Indexation('organizations_address', ['organization_id'])    
