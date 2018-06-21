@@ -36,7 +36,7 @@ class Worker:
         return result
 
     # Удаление старой таблицы и формирование новой таблицы (словарь)
-    def UpdateTableDict(NameTable, dictData, dCols = {'key': 'text pk nn u', 'text': 'text'}):
+    def UpdateTableDict(NameTable, dictData, dCols = {'id': 'text pk nn u', 'text': 'text'}):
         print('Удаление старой таблицы-словаря "%s"' % NameTable)
         print('Результат: ' + SQL.Delete(NameTable))
         print('Создание новой таблицы-словаря "%s"' % NameTable)
@@ -57,7 +57,7 @@ class Worker:
 
     # Создание новой таблицы (с удалением старой) на основе таблицы CSV - по блокам
     # dCols - соотношение данных таблицы ДБ с шапкой таблицы CSV: {nameDB: nameCSV}
-    def UpdateBlockCSV(NameTable, dCols, dColsCSV={}, iblock=0):
+    def UpdateBlockCSV(NameTable, dCols, dColsCSV={}):
         indexes = [] # индексы CSV для записи данных в БД
         cols = dCols.keys() # названия полей таблицы БД
         if dColsCSV == {}:
@@ -70,7 +70,7 @@ class Worker:
             for col in cols:
                 try:
                     i = Worker.mTableCSV.index(dColsCSV[col]) # поиск индекса в dColsCSV
-                except: i = -1    
+                except: i = -1   
                 indexes.append(i) 
         data = [] # временное хранилище данных
         for row in Worker.mDataCSV:
@@ -89,7 +89,7 @@ class Worker:
     def UpdateTableCSV(csvFile, NameTable, dCols, dColsCSV={}, blocks=1):
         for iblock in range(0, blocks): # обработка данных блоками
             print('Загружено данных: %i строк' % Worker.ReadBlockCSV(csvFile, iblock=iblock))
-            result = Worker.UpdateBlockCSV(NameTable, dCols=dCols, dColsCSV=dColsCSV, iblock=iblock)
+            result = Worker.UpdateBlockCSV(NameTable, dCols=dCols, dColsCSV=dColsCSV)
         return result
 
     # Индексация таблицы (по завершению загрузки данных в таблицу)
