@@ -155,231 +155,231 @@ if yn != 'N':
 
     # Словарь адресов ФИАС
 
-##    for ib in range(0, 2):
-##        Worker.ReadBlockCSV('DB/address.csv', iblock=ib)
-##        irow = 0
-##        Worker.mTableCSV.append('type')
-##        Worker.mTableCSV.append('nameU')    
-##        for row in Worker.mDataCSV:
-##            row.append(row[6].upper().strip()) # type
-##            row.append(row[2].upper().strip()) # nameU
-##            irow += 1
-##            if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))       
-##        Worker.UpdateBlockCSV('fias_address', {'guid': 'text pk nn u', 'parent_guid': 'text',
-##            'level': 'int', 'region_code': 'int', 'type_short': 'text', 'type': 'text',
-##            'name': 'text', 'nameU': 'text', 'postcode': 'text', 'update_date': 'text'},
-##            {'guid': 'ao_guid', 'parent_guid': 'parent_guid', 'level': 'ao_level',
-##             'region_code': 'region_code', 'type_short': 'short_name', 'type': 'type',
-##             'name': 'formal_name', 'nameU': 'nameU', 'postcode': 'postal_code', 'update_date':
-##             'update_date'})
+    for ib in range(0, 2):
+        Worker.ReadBlockCSV('DB/address.csv', iblock=ib)
+        irow = 0
+        Worker.mTableCSV.append('type')
+        Worker.mTableCSV.append('nameU')    
+        for row in Worker.mDataCSV:
+            row.append(row[6].upper().strip()) # type
+            row.append(row[2].upper().strip()) # nameU
+            irow += 1
+            if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))       
+        Worker.UpdateBlockCSV('fias_address', {'guid': 'text pk nn u', 'parent_guid': 'text',
+            'level': 'int', 'region_code': 'int', 'type_short': 'text', 'type': 'text',
+            'name': 'text', 'nameU': 'text', 'postcode': 'text', 'update_date': 'text'},
+            {'guid': 'ao_guid', 'parent_guid': 'parent_guid', 'level': 'ao_level',
+             'region_code': 'region_code', 'type_short': 'short_name', 'type': 'type',
+             'name': 'formal_name', 'nameU': 'nameU', 'postcode': 'postal_code', 'update_date':
+             'update_date'})
 
 
     # Словарь домов ФИАС
 
-##    for ib in range(0, 28):
-##        Worker.ReadBlockCSV('DB/house.csv', iblock=ib)
-##        irow = 0
-##        for row in Worker.mDataCSV:
-##            if row[2] is not None:
-##                row[2] = row[2].upper() # build_num
-##                if row[2] == '-': row[2] = None
-##                if row[2] == 'НЕТ': row[2] = None
-##            if row[4] is not None:
-##                row[4] = row[4].upper() # house_num
-##            if row[6] is not None:
-##                row[6] = row[6].upper() # structure_num
-##                if row[6] == '-': row[6] = None
-##                if row[6] == 'НЕТ': row[6] = None
-##            irow += 1
-##            if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))       
-##        Worker.UpdateBlockCSV('fias_house', {'guid': 'text pk nn u', 'parent_guid': 'text',
-##            'house': 'text', 'build': 'text', 'struc': 'text', 'postcode': 'text',
-##            'update_date': 'text'},
-##            {'guid': 'house_guid', 'parent_guid': 'ao_guid',
-##            'house': 'house_num', 'build': 'build_num', 'struc': 'structure_num',
-##            'postcode': 'postal_code', 'update_date': 'update_date'})    
+    for ib in range(0, 28):
+        Worker.ReadBlockCSV('DB/house.csv', iblock=ib)
+        irow = 0
+        for row in Worker.mDataCSV:
+            if row[2] is not None:
+                row[2] = row[2].upper() # build_num
+                if row[2] == '-': row[2] = None
+                if row[2] == 'НЕТ': row[2] = None
+            if row[4] is not None:
+                row[4] = row[4].upper() # house_num
+            if row[6] is not None:
+                row[6] = row[6].upper() # structure_num
+                if row[6] == '-': row[6] = None
+                if row[6] == 'НЕТ': row[6] = None
+            irow += 1
+            if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))       
+        Worker.UpdateBlockCSV('fias_house', {'guid': 'text pk nn u', 'parent_guid': 'text',
+            'house': 'text', 'build': 'text', 'struc': 'text', 'postcode': 'text',
+            'update_date': 'text'},
+            {'guid': 'house_guid', 'parent_guid': 'ao_guid',
+            'house': 'house_num', 'build': 'build_num', 'struc': 'structure_num',
+            'postcode': 'postal_code', 'update_date': 'update_date'})    
 
     # Словарь комнат ФИАС
 
-##    for ib in range(0, 26):
-##        Worker.ReadBlockCSV('DB/room.csv', iblock=ib)
-##        irow = 0
-##        for row in Worker.mDataCSV:
-##            if row[1] is not None:
-##                row[1] = row[1].upper() # house_num
-##            if row[5] is not None:
-##                row[5] = row[5].upper() # structure_num
-##                if row[5] == '-': row[5] = None
-##                if row[5] == 'НЕТ': row[5] = None
-##            irow += 1
-##            if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))       
-##        Worker.UpdateBlockCSV('fias_room', {'guid': 'text pk nn u', 'parent_guid': 'text',
-##            'flat': 'text', 'room': 'text', 'postcode': 'text',
-##            'update_date': 'text'},
-##            {'guid': 'room_guid', 'parent_guid': 'house_guid',
-##            'flat': 'flat_number', 'room': 'room_number', 'postcode': 'postal_code',
-##            'update_date': 'update_date'})     
+    for ib in range(0, 26):
+        Worker.ReadBlockCSV('DB/room.csv', iblock=ib)
+        irow = 0
+        for row in Worker.mDataCSV:
+            if row[1] is not None:
+                row[1] = row[1].upper() # house_num
+            if row[5] is not None:
+                row[5] = row[5].upper() # structure_num
+                if row[5] == '-': row[5] = None
+                if row[5] == 'НЕТ': row[5] = None
+            irow += 1
+            if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))       
+        Worker.UpdateBlockCSV('fias_room', {'guid': 'text pk nn u', 'parent_guid': 'text',
+            'flat': 'text', 'room': 'text', 'postcode': 'text',
+            'update_date': 'text'},
+            {'guid': 'room_guid', 'parent_guid': 'house_guid',
+            'flat': 'flat_number', 'room': 'room_number', 'postcode': 'postal_code',
+            'update_date': 'update_date'})     
   
-##
-##    # База организаций
-##
-##    for ib in range(0, 11):
-##        Worker.ReadBlockCSV('DB/organization.csv', iblock=ib)
-##    
-##    mOrgs = []
-##    iorg = 0
-##    Worker.mTableCSV.append('name')
-##    Worker.mTableCSV.append('opf')
-##    Worker.mTableCSV.append('opf2')
-##    Worker.mTableCSV.append('koef')
-##    for iOrg in mOrg:
-##        try:
-##            m = []
-##            m.append(iOrg[0]) # id
-##            m.append(iOrg[1]) # version_date
-##            m.append(iOrg[2]) # ogrn
-##            m.append(iOrg[3]) # ogrn_date
-##            m.append(iOrg[4]) # inn
-##            m.append(iOrg[9]) # kpp
-##            m.append(iOrg[5]) # okved
-##            m.append(iOrg[6]) # okved_version
-##            m.append(name) # name_full
-##            m.append(abbr) # name_abbr
-##            m.append(iOrg[11]) # opf
-##
-##            # Обработка имени
-##            Worker.mDataCSV[7] = Worker.mDataCSV[7].upper().replace('  ',' ').strip()
-##            name = Worker.mDataCSV[7]
-##            abbr = Worker.mDataCSV[8]
-##            if abbr is not None: abbr = abbr.upper().strip()
-##
-##            opf = [None, None]
-##            sname = name
-##            words = String.GetWords(name) # наименование без ОПФ
-##            # поиск ОПФ - dOpf - в начале и в конце строки
-##            for val in dOpf.values():
-##                if val in sname:
-##                    if name.find(val+' ') == 0 or sname.find(' '+val) == len(sname)-len(val)-1:
-##                        setOpf(val)
-##                        sname = sname.replace(val,'').strip()
-##                        words = String.GetWords(sname)
-##                        break
-##            for key in dOpf:
-##                if key in words:
-##                    if key == words[0]:
-##                        setOpf(dOpf[key])
-##                        del(words[0])
-##                        break
-##                    if key == words[-1]:
-##                        setOpf(dOpf[key])
-##                        del(words[-1])
-##                        break
-##            # поиск ОПФ - mOpf - в начале и в конце строки
-##            for iopf in mOpf:
-##                if iopf in sname:
-##                    if sname.find(iopf+' ') == 0 or sname.find(' '+iopf) == len(sname)-len(iopf)-1:
-##                        setOpf(iopf)
-##                        sname = sname.replace(iopf,'').strip()
-##                        words = String.GetWords(sname)
-##                        break
-##                        #print('mOpf: ', words)
-##            # поиск ОПФ - endOpf
-##            for iopf in endOpf:
-##                if iopf in words:
-##                    sopf = ''
-##                    end = words.index(iopf); start = 0
-##                    for i in range(end-1,0,-1):
-##                        if Word.Type(words[i]) < 2 or Word.Type(words[i]) > 3:
-##                            start = i + 1; break
-##                    if start == end: continue
-##                    for i in range(start, end+1):
-##                        sopf += words[i]+' '
-##                    sopf = sopf.strip()
-##                    for i in range(start, end+1):
-##                        del(words[start])
-##                    setOpf(sopf)
-##            sname = None
-##            if len(words) > 0:
-##                sname = ''
-##                cname = String.GetConstr(name)
-##                for word in words:
-##                    try:
-##                        s = cname[cname.find('['+word+']')+len(word)+2]
-##                    except: s = ' '
-##                    sname += word+s
-##                sname = sname[:-1]
-##            Worker.mDataCSV.append(sname) # name
-##            if opf[0] is not None:
-##                Worker.mDataCSV(newOpf(opf[0])) # opf1
-##            else: Worker.mDataCSV(None)
-##            if opf[1] is not None:
-##                Worker.mDataCSV(newOpf(opf[1])) # opf2
-##            else: Worker.mDataCSV(None)
-##
-##            if Worker.mDataCSV[10] == 'КОПФ': Worker.mDataCSV[10] = 0 # opf_spr
-##            elif Worker.mDataCSV[10] == 'ОКОПФ': Worker.mDataCSV[10] = 1
-##            else Worker.mDataCSV[10] is not None: Worker.mDataCSV[10] = 100
-##
-##            # проверка ОПФ - dOpf - в начале и в конце строки
-##            koef = 0
-##            if abbr is not None:
-##                words2 = String.GetWords(abbr)
-##                for key in dOpf:
-##                    if key in words2:
-##                        if key == words2[0]:
-##                            if opf[0] == dOpf[key] or opf[1] == dOpf[key]:
-##                                koef += 0.4
-##                                name = name.replace(dOpf[key],'')
-##                                abbr = abbr.replace(key,'')
-##                                del(words2[0])
-##                                break
-##                        if key == words2[-1]:
-##                            if opf[0] == dOpf[key] or opf[1] == dOpf[key]:
-##                                koef += 0.4
-##                                name = name.replace(dOpf[key],'')
-##                                abbr = abbr.replace(key,'')
-##                                del(words2[-1])
-##                                break
-##                name = name.replace('"','').strip()
-##                abbr = abbr.replace('"','').strip()
-##                # проверка наименования
-##                if name == abbr: koef += 0.6
-##                elif words == words2: koef += 0.5
-##            m.append(koef) # koef
-##            mOrgs.append(m)
-##            iorg += 1
-##            if iorg % orgs == 0: print('Обработано %i из %i...' % (iorg, len(mOrgs)))
-##        except Exception as e:
-##            print('!!!Bug - '+str(e)+' : '+str(iOrg))
-##    
-##    Worker.UpdateBlockCSV('organizations', {'id': 'int nn u', 'version_date': 'text',
-##        'ogrn': 'text', 'ogrn_date': 'text', 'inn': 'text', 'kpp': 'text',
-##        'okved': 'text', 'okved_version': 'int', 'name_full': 'text',
-##        'name_abbr': 'text', 'name': 'text', 'opf_name': 'int', 'opf_name2': 'int',
-##        'opf_spr': 'int', 'opf': 'int', 'koef': 'float'},
-##        {'id': 'id', 'version_date': 'version_date',
-##        'ogrn': 'ogrnul', 'ogrn_date': 'ogrn_date', 'inn': 'innul', 'kpp': 'kpp',
-##        'okved': 'okved_code', 'okved_version': 'okved_version', 'name_full': 'name_full',
-##        'name_abbr': 'name_abbr', 'name': 'name', 'opf_name': 'opf', 'opf_name2': 'opf2',
-##        'opf_spr': 'opf_spr', 'opf': 'opf_code', 'koef': 'koef'})
-##
-##    # Отдельно записываем словарь ОПФ
-##    Worker.UpdateTableDict('dictionary_opf', tOpf)
 
-##    # База адресов
-##
-##    Worker.UpdateTableCSV('DB/organization_address.csv', 'organizations_address',
-##            {'id': 'int pk nn u', 'organization_id': 'int nn',
-##            'version_date': 'text', 'grn': 'text', 'grn_date': 'text', 'region_code': 'int',
-##            'area_type': 'text', 'area_name': 'text', 
-##            'city_type': 'text', 'city_name': 'text',
-##            'settlement_type': 'text', 'settlement_name': 'text',
-##            'street_type': 'text', 'street_name': 'text',
-##            'house': 'text', 'building': 'text', 'flat': 'text',
-##            'postcode': 'text', 'fias_house': 'text', 'fias': 'text'}, blocks=11)
-##        
-##    Worker.Indexation('fias_address', ['level', 'type', 'nameU', 'postcode'])
-##    Worker.Indexation('organizations_address', ['organization_id'])  
+    # База организаций
+
+    for ib in range(0, 11):
+        Worker.ReadBlockCSV('DB/organization.csv', iblock=ib)
+    
+    mOrgs = []
+    iorg = 0
+    Worker.mTableCSV.append('name')
+    Worker.mTableCSV.append('opf')
+    Worker.mTableCSV.append('opf2')
+    Worker.mTableCSV.append('koef')
+    for iOrg in mOrg:
+        try:
+            m = []
+            m.append(iOrg[0]) # id
+            m.append(iOrg[1]) # version_date
+            m.append(iOrg[2]) # ogrn
+            m.append(iOrg[3]) # ogrn_date
+            m.append(iOrg[4]) # inn
+            m.append(iOrg[9]) # kpp
+            m.append(iOrg[5]) # okved
+            m.append(iOrg[6]) # okved_version
+            m.append(name) # name_full
+            m.append(abbr) # name_abbr
+            m.append(iOrg[11]) # opf
+
+            # Обработка имени
+            Worker.mDataCSV[7] = Worker.mDataCSV[7].upper().replace('  ',' ').strip()
+            name = Worker.mDataCSV[7]
+            abbr = Worker.mDataCSV[8]
+            if abbr is not None: abbr = abbr.upper().strip()
+
+            opf = [None, None]
+            sname = name
+            words = String.GetWords(name) # наименование без ОПФ
+            # поиск ОПФ - dOpf - в начале и в конце строки
+            for val in dOpf.values():
+                if val in sname:
+                    if name.find(val+' ') == 0 or sname.find(' '+val) == len(sname)-len(val)-1:
+                        setOpf(val)
+                        sname = sname.replace(val,'').strip()
+                        words = String.GetWords(sname)
+                        break
+            for key in dOpf:
+                if key in words:
+                    if key == words[0]:
+                        setOpf(dOpf[key])
+                        del(words[0])
+                        break
+                    if key == words[-1]:
+                        setOpf(dOpf[key])
+                        del(words[-1])
+                        break
+            # поиск ОПФ - mOpf - в начале и в конце строки
+            for iopf in mOpf:
+                if iopf in sname:
+                    if sname.find(iopf+' ') == 0 or sname.find(' '+iopf) == len(sname)-len(iopf)-1:
+                        setOpf(iopf)
+                        sname = sname.replace(iopf,'').strip()
+                        words = String.GetWords(sname)
+                        break
+                        #print('mOpf: ', words)
+            # поиск ОПФ - endOpf
+            for iopf in endOpf:
+                if iopf in words:
+                    sopf = ''
+                    end = words.index(iopf); start = 0
+                    for i in range(end-1,0,-1):
+                        if Word.Type(words[i]) < 2 or Word.Type(words[i]) > 3:
+                            start = i + 1; break
+                    if start == end: continue
+                    for i in range(start, end+1):
+                        sopf += words[i]+' '
+                    sopf = sopf.strip()
+                    for i in range(start, end+1):
+                        del(words[start])
+                    setOpf(sopf)
+            sname = None
+            if len(words) > 0:
+                sname = ''
+                cname = String.GetConstr(name)
+                for word in words:
+                    try:
+                        s = cname[cname.find('['+word+']')+len(word)+2]
+                    except: s = ' '
+                    sname += word+s
+                sname = sname[:-1]
+            Worker.mDataCSV.append(sname) # name
+            if opf[0] is not None:
+                Worker.mDataCSV(newOpf(opf[0])) # opf1
+            else: Worker.mDataCSV(None)
+            if opf[1] is not None:
+                Worker.mDataCSV(newOpf(opf[1])) # opf2
+            else: Worker.mDataCSV(None)
+
+            if Worker.mDataCSV[10] == 'КОПФ': Worker.mDataCSV[10] = 0 # opf_spr
+            elif Worker.mDataCSV[10] == 'ОКОПФ': Worker.mDataCSV[10] = 1
+            else Worker.mDataCSV[10] is not None: Worker.mDataCSV[10] = 100
+
+            # проверка ОПФ - dOpf - в начале и в конце строки
+            koef = 0
+            if abbr is not None:
+                words2 = String.GetWords(abbr)
+                for key in dOpf:
+                    if key in words2:
+                        if key == words2[0]:
+                            if opf[0] == dOpf[key] or opf[1] == dOpf[key]:
+                                koef += 0.4
+                                name = name.replace(dOpf[key],'')
+                                abbr = abbr.replace(key,'')
+                                del(words2[0])
+                                break
+                        if key == words2[-1]:
+                            if opf[0] == dOpf[key] or opf[1] == dOpf[key]:
+                                koef += 0.4
+                                name = name.replace(dOpf[key],'')
+                                abbr = abbr.replace(key,'')
+                                del(words2[-1])
+                                break
+                name = name.replace('"','').strip()
+                abbr = abbr.replace('"','').strip()
+                # проверка наименования
+                if name == abbr: koef += 0.6
+                elif words == words2: koef += 0.5
+            m.append(koef) # koef
+            mOrgs.append(m)
+            iorg += 1
+            if iorg % orgs == 0: print('Обработано %i из %i...' % (iorg, len(mOrgs)))
+        except Exception as e:
+            print('!!!Bug - '+str(e)+' : '+str(iOrg))
+    
+    Worker.UpdateBlockCSV('organizations', {'id': 'int nn u', 'version_date': 'text',
+        'ogrn': 'text', 'ogrn_date': 'text', 'inn': 'text', 'kpp': 'text',
+        'okved': 'text', 'okved_version': 'int', 'name_full': 'text',
+        'name_abbr': 'text', 'name': 'text', 'opf_name': 'int', 'opf_name2': 'int',
+        'opf_spr': 'int', 'opf': 'int', 'koef': 'float'},
+        {'id': 'id', 'version_date': 'version_date',
+        'ogrn': 'ogrnul', 'ogrn_date': 'ogrn_date', 'inn': 'innul', 'kpp': 'kpp',
+        'okved': 'okved_code', 'okved_version': 'okved_version', 'name_full': 'name_full',
+        'name_abbr': 'name_abbr', 'name': 'name', 'opf_name': 'opf', 'opf_name2': 'opf2',
+        'opf_spr': 'opf_spr', 'opf': 'opf_code', 'koef': 'koef'})
+
+    # Отдельно записываем словарь ОПФ
+    Worker.UpdateTableDict('dictionary_opf', tOpf)
+
+    # База адресов
+
+    Worker.UpdateTableCSV('DB/organization_address.csv', 'organizations_address',
+            {'id': 'int pk nn u', 'organization_id': 'int nn',
+            'version_date': 'text', 'grn': 'text', 'grn_date': 'text', 'region_code': 'int',
+            'area_type': 'text', 'area_name': 'text', 
+            'city_type': 'text', 'city_name': 'text',
+            'settlement_type': 'text', 'settlement_name': 'text',
+            'street_type': 'text', 'street_name': 'text',
+            'house': 'text', 'building': 'text', 'flat': 'text',
+            'postcode': 'text', 'fias_house': 'text', 'fias': 'text'}, blocks=11)
+        
+    Worker.Indexation('fias_address', ['level', 'type', 'nameU', 'postcode'])
+    Worker.Indexation('organizations_address', ['organization_id'])  
 
     # База имён
 
@@ -403,8 +403,9 @@ if yn != 'N':
     # Словарь ОКВЭДов
 
     Worker.ReadBlockCSV('DB/okved.csv')
-    Worker.mDataCSV[1] = Worker.mDataCSV[1].strip() # code
-    Worker.mDataCSV[2] = Worker.mDataCSV[2].upper() # name
+    for row in Worker.mDataCSV:
+        row[1] = row[1].strip() # code
+        row[2] = row[2].upper() # name
     Worker.UpdateBlockCSV('dictionary_okved',
         {'id': 'int pk nn u', 'code': 'text nn', 'name': 'text nn', 'group_id': 'int nn', 'version': 'int nn'})
     
@@ -452,7 +453,7 @@ if yn != 'N':
             irow += 1
             if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))       
         Worker.UpdateBlockCSV('organization_founder_per', {# 'id': 'int pk nn u', 
-            'person_id': 'int nn', 'version_date': 'text', 'grn': 'text', 'grn_date': 'text',
+            'person_id': 'int', 'version_date': 'text', 'grn': 'text', 'grn_date': 'text',
             'last_name': 'text', 'first_name': 'text', 'middle_name': 'text',
             'inn': 'text', 'capital_percent': 'float', 'capital_size': 'int'},
             {'organization_id': 'organization_id', 'person_id': 'person_id', 'version_date': 'version_date',
@@ -463,7 +464,7 @@ if yn != 'N':
     # База руководителей
 
     # organization
-    Worker.ReadBlockCSV('DB/organization_leader_org.csv', iblock=ib)
+    Worker.ReadBlockCSV('DB/organization_leader_org.csv')
     irow = 0
     for row in Worker.mDataCSV:
         row[4] = row[4].upper()
@@ -485,7 +486,7 @@ if yn != 'N':
             irow += 1
             if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))       
         Worker.UpdateBlockCSV('organization_leader_per', {# 'id': 'int pk nn u', 
-            'person_id': 'int nn', 'version_date': 'text', 'grn': 'text', 'grn_date': 'text',
+            'person_id': 'int', 'version_date': 'text', 'grn': 'text', 'grn_date': 'text',
             'last_name': 'text', 'first_name': 'text', 'middle_name': 'text',
             'innfl': 'text', 'position_type': 'int', 'position_name': 'text'},
             {'person_id': 'person_id', 'version_date': 'version_date', 'grn': 'grn', 'grn_date': 'grn_date',

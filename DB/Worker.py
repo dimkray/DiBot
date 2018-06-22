@@ -73,12 +73,17 @@ class Worker:
                 except: i = -1   
                 indexes.append(i) 
         data = [] # временное хранилище данных
+        print(indexes)
         for row in Worker.mDataCSV:
-            m = []
-            for i in indexes:
-                if i != -1: m.append(row[i])
-                else: m.append(None)
-            data.append(m)
+            try:
+                m = []
+                for i in indexes:
+                    if i != -1: m.append(row[i])
+                    else: m.append(None)
+                data.append(m)
+            except Exception as e:
+                print('!!! BUG - ' + str(e))
+                print(row)
         print('Обработано данных: %i строк' % len(data))
         print('-------------------------------------')
         result = Worker.UpdateTable(NameTable, dCols, data)
