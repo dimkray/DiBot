@@ -110,3 +110,32 @@ class Worker:
         print('-------------------------------------')
         return result
                    
+    def DictionaryCSV(csvFile, keycol=0, mCols=[]):
+        print('Чтение данных файла "%s" - в словарь' % csvFile)
+        data, mlist = CSV.Reader(csvFile, separator=';', download=items)
+        indexes = [] # индексы CSV для записи данных в БД        
+        if dColsCSV == []:
+            for col in mCols:
+                try:
+                    i = mlist.index(col) # поиск соотвествия таблицы
+                except: i = -1
+                indexes.append(i)
+        else:
+            indexes.append(1)
+            ########.....
+        data = [] # временное хранилище данных
+        print(indexes)
+        for row in Worker.mDataCSV:
+            try:
+                m = []
+                for i in indexes:
+                    if i != -1: m.append(row[i])
+                    else: m.append(None)
+                data.append(m)
+            except Exception as e:
+                print('!!! BUG - ' + str(e))
+                print(row)
+        print('Обработано данных: %i строк' % len(data))
+        print('-------------------------------------')
+        result = Worker.UpdateTable(NameTable, dCols, data)
+        return result

@@ -411,7 +411,10 @@ class CSV:
                         bChar = False
                     else:
                         start += 1
-                        end = row.find('"', start+1)
+                        end = row.find('"'+separator, start+1)
+                        ss = row[end-2:end]
+                        if ss[1] == '"' and ss[0] != '"': # поиск "";
+                            end = row.find('"'+separator, end+1)
                         bChar = True
                     if end == -1: end = len(row); poz = -1
                     else: poz = end+2 if bChar else end+1
@@ -422,8 +425,10 @@ class CSV:
                             if s[-1] == '"': s = s[:-1]
                     except:
                         s = s; print('!!!bug!!! - ' + s)
-                    s = s.replace('|^','"').strip()
-                    if s != '': m.append(s)
+                    s = s.strip()
+                    if '|^' in s: s = s.replace('|^','"')
+                    if '""' in s: s = s.replace('""','"')
+                    if s != '' and s != 'NULL': m.append(s)
                     else: m.append(None)
                 if i == 1: # шапка
                     table = m
