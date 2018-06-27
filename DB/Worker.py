@@ -49,9 +49,10 @@ class Worker:
         return result
 
     # Чтение данных CSV по блокам
-    def ReadBlockCSV(csvFile, iblock=0):
+    def ReadBlockCSV(csvFile, iblock=0, separator=';', symb='\\"'):
         print('Чтение данных файла "%s" - блок %i' % (csvFile, iblock+1))
-        Worker.mDataCSV, mTable = CSV.Reader(csvFile, separator=';', items=block, istart=iblock*block, download=items)
+        Worker.mDataCSV, mTable = CSV.Reader(csvFile, separator=separator,
+                            items=block, istart=iblock*block, download=items, symb=symb)
         if mTable != []: Worker.mTableCSV = mTable
         return len(Worker.mDataCSV) # возвращает число загруженных строк
 
@@ -91,16 +92,17 @@ class Worker:
 
     # Создание новой таблицы (с удалением старой) на основе CSV-файла (для ЕГР)
     # dCols - соотношение данных таблицы ДБ с шапкой таблицы CSV: {nameDB: nameCSV}
-    def UpdateTableCSV(csvFile, NameTable, dCols, dColsCSV={}, blocks=1):
+    def UpdateTableCSV(csvFile, NameTable, dCols, dColsCSV={}, blocks=1, separator=';', symb='\\"'):
         for iblock in range(0, blocks): # обработка данных блоками
-            print('Загружено данных: %i строк' % Worker.ReadBlockCSV(csvFile, iblock=iblock))
+            print('Загружено данных: %i строк' % Worker.ReadBlockCSV(csvFile,
+                                        iblock=iblock, separator=separator, symb=symb))
             result = Worker.UpdateBlockCSV(NameTable, dCols=dCols, dColsCSV=dColsCSV)
         return result
 
     # Индексация таблицы (по завершению загрузки данных в таблицу)
     def Indexation(NameTable, cols):
         print('Индексация полей таблицы "%s"' % NameTable)
-        sql = 'CREATE INDEX indexation ON %s (' % NameTable
+        sql = 'CREATE INDEX %s ON %s (' % ( NameTable + '_idx', NameTable)
         for col in cols:
             sql += col + ', '
         sql = sql[:-2]
@@ -110,32 +112,36 @@ class Worker:
         print('-------------------------------------')
         return result
                    
-    def DictionaryCSV(csvFile, keycol=0, mCols=[]):
+    def DictionaryCSV(csvFile, keycol='id', mCols=[], separator=';', symb='\\"'):
         print('Чтение данных файла "%s" - в словарь' % csvFile)
-        data, mlist = CSV.Reader(csvFile, separator=';', download=items)
-        indexes = [] # индексы CSV для записи данных в БД        
-        if dColsCSV == []:
+        data, mlist = CSV.Reader(csvFile, separator=separator, symb=symb, download=items)
+        indexes = [] # индексы CSV для записи данных в БД
+        try:
+            icol = mlist.index(keycol)
+        except: icol = 0    
+        if mCols != []:
             for col in mCols:
                 try:
                     i = mlist.index(col) # поиск соотвествия таблицы
                 except: i = -1
                 indexes.append(i)
-        else:
-            indexes.append(1)
-            ########.....
-        data = [] # временное хранилище данных
+        elif icol == 0: indexes.append(1)
+        else: indexes.append(0)
         print(indexes)
-        for row in Worker.mDataCSV:
+        dData = {} # Создание словаря
+        for row in data:
             try:
                 m = []
-                for i in indexes:
-                    if i != -1: m.append(row[i])
-                    else: m.append(None)
-                data.append(m)
+                if len(indexes) > 1:
+                    for i in indexes:
+                        if i != -1: m.append(row[i])
+                        else: m.append(None)
+                    dData[row[icol]] = m
+                else:
+                    dData[row[icol]] = row[indexes[0]]
             except Exception as e:
                 print('!!! BUG - ' + str(e))
                 print(row)
         print('Обработано данных: %i строк' % len(data))
         print('-------------------------------------')
-        result = Worker.UpdateTable(NameTable, dCols, data)
-        return result
+        return dData # возвращение словаря

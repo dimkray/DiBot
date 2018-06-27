@@ -385,8 +385,8 @@ class Finder:
 # класс работы с SVN-файлами
 class CSV:
     # Ручное чтение csv-файла
-    def Reader(fullname, separator=',', items=0, istart=0, download=1000):
-        symb = '\\"'; valcount = 0; row = ''
+    def Reader(fullname, separator=',', items=0, istart=0, download=1000, symb='\\"'):
+        valcount = 0; row = ''
         data = []; table = []; i = 0; ist = 0
         with open(fullname, "r", encoding='utf-8') as f:
             for line in f:
