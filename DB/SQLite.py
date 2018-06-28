@@ -3,6 +3,7 @@
 
 import Fixer
 import sqlite3
+import csv
 
 # Чтение по одному критерию (равенство или like)
 def Read(table, colname, value, colValue = '*', bLike = False, bOne = False, bFirst = False):
@@ -384,6 +385,22 @@ class Finder:
 
 # класс работы с SVN-файлами
 class CSV:
+    # Автоматизированное чтение csv-файла
+    def AutoReader(fullname, separator=',', quotechar='\\', items=0, istart=0, download=1000):
+        data = []; table = []; i = 0; ist = 0
+        with open(fullname, newline='', encoding='utf-8') as csvfile:
+            reader = csv.reader(csvfile, delimiter=separator, quotechar=quotechar)
+            for row in reader:
+                i += 1
+                if i < istart+1: continue # запуск со старта
+                ist += 1
+                if i == 1: table = row
+                else: data.append(row)
+                if items != 0 and ist >= items: break
+                if i % download == 0:
+                    print('Загружено %i записей...' % i)
+        return data, table
+    
     # Ручное чтение csv-файла
     def Reader(fullname, separator=',', items=0, istart=0, download=1000, symb='\\"'):
         valcount = 0; row = ''

@@ -49,10 +49,14 @@ class Worker:
         return result
 
     # Чтение данных CSV по блокам
-    def ReadBlockCSV(csvFile, iblock=0, separator=';', symb='\\"'):
+    def ReadBlockCSV(csvFile, iblock=0, separator=';', symb='\\', bRead=True):
         print('Чтение данных файла "%s" - блок %i' % (csvFile, iblock+1))
-        Worker.mDataCSV, mTable = CSV.Reader(csvFile, separator=separator,
+        if bRead:
+            Worker.mDataCSV, mTable = CSV.Reader(csvFile, separator=separator,
                             items=block, istart=iblock*block, download=items, symb=symb)
+        else:
+            Worker.mDataCSV, mTable = CSV.AutoReader(csvFile, separator=separator,
+                            items=block, istart=iblock*block, download=items, quotechar=symb)
         if mTable != []: Worker.mTableCSV = mTable
         return len(Worker.mDataCSV) # возвращает число загруженных строк
 
@@ -111,10 +115,11 @@ class Worker:
         print('Результат: ' + result)
         print('-------------------------------------')
         return result
-                   
-    def DictionaryCSV(csvFile, keycol='id', mCols=[], separator=';', symb='\\"'):
+
+    # Чтение файла в словарь
+    def DictionaryCSV(csvFile, keycol='id', mCols=[], separator=';', symb='\\'):
         print('Чтение данных файла "%s" - в словарь' % csvFile)
-        data, mlist = CSV.Reader(csvFile, separator=separator, symb=symb, download=items)
+        data, mlist = CSV.AutoReader(csvFile, separator=separator, quotechar=symb, download=items)
         indexes = [] # индексы CSV для записи данных в БД
         try:
             icol = mlist.index(keycol)
@@ -145,3 +150,4 @@ class Worker:
         print('Обработано данных: %i строк' % len(data))
         print('-------------------------------------')
         return dData # возвращение словаря
+
