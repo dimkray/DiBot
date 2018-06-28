@@ -421,7 +421,8 @@ class CSV:
                 poz = 0; start = 0; end = 0; bChar = False
                 while poz >= 0: # ручной поиск разделителей
                     sep = row.find(separator, poz)
-                    start = row.find('"', poz)
+                    if separator != '\t': start = row.find('"', poz)
+                    else: start = -1
                     if sep < start or start == -1:
                         start = poz
                         end = sep

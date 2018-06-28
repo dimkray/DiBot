@@ -17,7 +17,14 @@ block = 1000000
 yn = input('...... Обновить таблицы БД и загрузить новые данные? Y/N: ')
 if yn != 'N': 
 
-    # Словарь типов объектов
+    # Словари
+    Worker.UpdateTableCSV('Cities/countryInfo.txt', 'countries',
+        {'iso': 'text pk nn u', 'iso3': 'text', 'iso_numeric': 'text', 'fips': 'text', 'name': 'text', 'capital': 'text', 'area': 'float',
+         'population': 'int', 'continent': 'text', 'tld': 'text', 'currency_code': 'text',
+         'currency_name': 'text', 'phone': 'text', 'postcode_format': 'text', 'postcode_regex': 'text',
+         'languages': 'text', 'geo_id': 'int', 'neighbours': 'int', 'equivalent_fipscode': 'text'}, separator='\t', symb='"')
+    Worker.UpdateTableCSV('Cities/iso-languagecodes.txt', 'languages',
+        {'iso3': 'text pk nn u', 'iso2': 'text', 'iso1': 'text', 'name': 'text'}, separator='\t', symb='"')
     Worker.UpdateTableCSV('Cities/featureCodes_ru.txt', 'feature_codes',
         {'code': 'text pk nn u', 'name': 'text', 'description': 'text'}, separator='\t', symb='"')
     dType = Worker.DictionaryCSV('Cities/featureCodes_ru.txt', keycol='code', mCols=['name'], separator='\t', symb='"')
@@ -44,17 +51,17 @@ if yn != 'N':
             if (row[2] == 'ru' or row[2] == None) and row[3] is not None:
                 iType = Word.Type(row[3])
                 if iType != 0 and iType != 50:
-                    dType[row[1]] = row[3]
+                    dName[row[1]] = row[3]
             if row[2] == 'link': dLink[row[1]] = row[3]
             irow += 1
             if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))
         Worker.UpdateBlockCSV('names', {
             'geo_id': 'int nn', 'iso': 'text', 'name': 'text nn',
             'is_preferred': 'int', 'is_short': 'int', 'is_colloquial': 'int',
-            'is_historic': 'int', 'date': 'text'},
+            'is_historic': 'int'},
             {'geo_id': 'geonameid', 'iso': 'isolanguage', 'name': 'alternate name',
             'is_preferred': 'isPreferredName', 'is_short': 'isShortName', 'is_colloquial': 'isColloquial',
-            'is_historic': 'isHistoric', 'date': 'from'})
+            'is_historic': 'isHistoric'})
 
     # Таблица городов
 
@@ -79,7 +86,7 @@ if yn != 'N':
             if row[0] in dName: # Русское наименование
                 name = dName[row[0]]
                 row.append(name)
-                row.append(name.uppend())
+                row.append(name.upper())
             else:
                 row.append(None)
                 row.append(None)
@@ -87,18 +94,10 @@ if yn != 'N':
                 admin1 = row[8]+'.'+row[10]
                 if admin1 in dAdmin1:
                     row[10] = dAdmin1[admin1]
-                else:
-                    row.append(None)
-            else:
-                row.append(None)
             if row[11] is not None:
                 admin2 = row[8]+'.'+row[11]
                 if admin2 in dAdmin2:
                     row[11] = dAdmin2[admin2]
-                else:
-                    row.append(None)
-            else:
-                row.append(None)
             if row[17] is not None:
                 timeZone = row[8]+'.'+row[17]
                 if timeZone in dTimeZones:
