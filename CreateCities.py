@@ -3,7 +3,7 @@ import csv
 import Fixer
 from DB.SQLite import SQL, CSV
 from DB.Worker import Worker
-from Services.StrMorph import Word
+from Services.StrMorph import Word, Modif
 
 Fixer.DB = 'DB/Geo.db'
 
@@ -65,8 +65,8 @@ if yn != 'N':
 
     # Таблица городов
 
-    for ib in range(0, 1):
-        Worker.ReadBlockCSV('Cities/RU.txt', iblock=ib, separator='\t', symb='"')
+    for ib in range(0, 12):
+        Worker.ReadBlockCSV('Cities/allCountries.txt', iblock=ib, separator='\t', symb='"')
         irow = 0
         Worker.mTableCSV.append('type')
         Worker.mTableCSV.append('link')
@@ -74,21 +74,27 @@ if yn != 'N':
         Worker.mTableCSV.append('nameU_ru')
         Worker.mTableCSV.append('tz')
         for row in Worker.mDataCSV:
-            idType = row[6]+'.'+row[7]
-            if idType in dType: # Тип объекта
-                row.append(dType[idType])
+            if row[6] is not None and row[7] is not None:
+                idType = row[6]+'.'+row[7]
+                if idType in dType: # Тип объекта
+                    row.append(dType[idType])
+                else:
+                    row.append(None)
             else:
                 row.append(None)
             if row[0] in dLink: # Link
                 row.append(dLink[row[0]])
             else:
-                row.append(None)    
+                row.append(None)
+            name = ''
             if row[0] in dName: # Русское наименование
                 name = dName[row[0]]
-                row.append(name)
+            else:
+                name = Modif.Translit(row[2])
+            row.append(name)
+            if name is not None:
                 row.append(name.upper())
             else:
-                row.append(None)
                 row.append(None)
             if row[10] is not None:
                 admin1 = row[8]+'.'+row[10]

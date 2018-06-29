@@ -1,6 +1,6 @@
 from Profiler import Profiler
 from Tests.Testing import Test, Report
-from Services.StrMorph import String, Word
+from Services.StrMorph import String, Word, Modif
 
 service = 'StrMorth'
 
@@ -80,6 +80,18 @@ with Profiler() as p:
 
     test = Word.Tags(5)
     Test.Add(service+'.Tags','crash', test, [])
+
+
+    # LangDetect
+    test = String.LangDetect('Табареками')
+    Test.Add(service+'.LangDetect','normal 1', test, 'русский')
+
+    # Translit
+    test = Modif.Translit('Turaabad')
+    Test.Add(service+'.Translit','normal 1', test, 'Тураабад')
+
+    test = Modif.Translit('Shyukyurbeyli')
+    Test.Add(service+'.Translit','normal 2', test, 'Шукюрбейли')
 
 print('')
 print('------- Отчёт тестов сервиса %s --------' % service)

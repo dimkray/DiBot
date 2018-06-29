@@ -3,6 +3,7 @@
 import re
 import Fixer
 import pymorphy2
+from transliterate import translit, slugify, get_available_language_codes, detect_language
 
 dic = Fixer.Load('morth') # словарь морфологических определений
 morph = pymorphy2.MorphAnalyzer()
@@ -29,6 +30,25 @@ phr = {'NOUN': 1,  # существительное
        'LATN': 50, # латиница
        'PNCT': 90, # знак пунктуации
        'UNKN': 0 } # неизвестное
+
+langs = {'hy': 'армянский', 'ka': 'грузинский',
+         'el': 'греческий', 'ru': 'русский',
+         'bg': 'болгарский', 'mn': 'монгольский',
+         'sr': 'сербский', 'uk': 'украинский',
+         'mk': 'македонский'}
+
+cltkr = {'ya': 'я', 'zh': 'ж', 'ch': 'ч', 'iy': 'ий', 'ay': 'ай',
+         'ei': 'ей', 'kh': 'х', 'ye': 'е', 'ay': 'ай', 'yu': 'ю'}
+
+ltkr = {'a': 'а', 'b': 'б', 'с': 'ц', 'd': 'д',
+       'a': 'а', 'b': 'б', 'с': 'ц', 'd': 'д',
+       'a': 'а', 'b': 'б', 'с': 'ц', 'd': 'д'}
+
+krlt = {'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'e',
+      'ж':'zh','з':'z','и':'i','й':'i','к':'k','л':'l','м':'m','н':'n',
+      'о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'h',
+      'ц':'c','ч':'cz','ш':'sh','щ':'scz','ъ':'','ы':'y','ь':'','э':'e',
+      'ю':'u','я':'ja'}
 
 # Получение отдельных предложений
 def Strings(text):
@@ -109,6 +129,10 @@ class String:
     def GetConstr(text):
         mwords, constr = Words(text)
         return constr
+
+    # идентификация языка
+    def LangDetect(text):
+        return langs[detect_language(text)]
 
 # Основной класс по работе со словами
 class Word:
@@ -234,3 +258,19 @@ class Word:
         except e as Exception:
             Fixer.errlog('StrMorth.inflect', str(e))
             return word
+
+# Класс модификации текста
+class Modif:
+    
+    # транслитерация текста
+    def Translit(text, bToRus=True):
+        try:
+            if bToRus:
+                return translit(text, 'ru')
+            else:
+                if LangDetect(text) == 'ru':
+                    return slugify(text)
+        except Exception as e:
+            Fixer.errlog('StrMorph.Transit', str(e))
+            return text
+    
