@@ -386,7 +386,7 @@ class Finder:
 # класс работы с SVN-файлами
 class CSV:
     # Автоматизированное чтение csv-файла
-    def AutoReader(fullname, separator=',', quotechar='\\', items=0, istart=0, download=1000):
+    def AutoReader(fullname, separator=';', quotechar='\\', items=0, istart=0, download=1000):
         data = []; table = []; i = 0; ist = 0
         with open(fullname, newline='', encoding='utf-8') as csvfile:
             reader = csv.reader(csvfile, delimiter=separator, quotechar=quotechar)
@@ -394,6 +394,8 @@ class CSV:
                 i += 1
                 if i < istart+1: continue # запуск со старта
                 ist += 1
+                for item in row:
+                    if item == '' or item == 'NULL': item = None
                 if i == 1: table = row
                 else: data.append(row)
                 if items != 0 and ist >= items: break
@@ -402,11 +404,12 @@ class CSV:
         return data, table
     
     # Ручное чтение csv-файла
-    def Reader(fullname, separator=',', items=0, istart=0, download=1000, symb='\\"'):
+    def Reader(fullname, separator=';', items=0, istart=0, download=1000, symb='\\"'):
         valcount = 0; row = ''
         data = []; table = []; i = 0; ist = 0
         with open(fullname, "r", encoding='utf-8') as f:
             for line in f:
+                ierr = 0
                 i += 1
                 if i < istart+1: continue # запуск со старта
                 ist += 1
@@ -417,9 +420,14 @@ class CSV:
                     if row.count(separator) < valcount - 1: continue
                 else: row = line
                 m = []
-                row = row.replace(symb,'|^')
+                if symb != '': row = row.replace(symb,'|^')
                 poz = 0; start = 0; end = 0; bChar = False
                 while poz >= 0: # ручной поиск разделителей
+                    ierr += 1
+                    if ierr > 10000:
+                        print('BUG! - ошибка в строке ' + str(row))
+                        poz = -1
+                        continue
                     sep = row.find(separator, poz)
                     if separator != '\t': start = row.find('"', poz)
                     else: start = -1

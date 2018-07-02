@@ -3,7 +3,7 @@ import csv
 import Fixer
 from DB.SQLite import SQL, CSV
 from DB.Worker import Worker
-from Services.StrMorph import Word, Modif
+from Services.StrMorph import Word
 
 Fixer.DB = 'DB/Geo.db'
 
@@ -13,18 +13,18 @@ Fixer.DB = 'DB/Geo.db'
 items = 100000
 block = 1000000
 
-#try:
-yn = input('...... Обновить таблицы БД и загрузить новые данные? Y/N: ')
-if yn != 'N': 
+try:
+##yn = input('...... Обновить таблицы БД и загрузить новые данные? Y/N: ')
+##if yn != 'N': 
 
     # Словари
-    Worker.UpdateTableCSV('Cities/countryInfo.txt', 'countries',
-        {'iso': 'text pk nn u', 'iso3': 'text', 'iso_numeric': 'text', 'fips': 'text', 'name': 'text', 'capital': 'text', 'area': 'float',
-         'population': 'int', 'continent': 'text', 'tld': 'text', 'currency_code': 'text',
-         'currency_name': 'text', 'phone': 'text', 'postcode_format': 'text', 'postcode_regex': 'text',
-         'languages': 'text', 'geo_id': 'int', 'neighbours': 'int', 'equivalent_fipscode': 'text'}, separator='\t', symb='"')
-    Worker.UpdateTableCSV('Cities/iso-languagecodes.txt', 'languages',
-        {'iso3': 'text pk nn u', 'iso2': 'text', 'iso1': 'text', 'name': 'text'}, separator='\t', symb='"')
+##    Worker.UpdateTableCSV('Cities/countryInfo.txt', 'countries',
+##        {'iso': 'text pk nn u', 'iso3': 'text', 'iso_numeric': 'text', 'fips': 'text', 'name': 'text', 'capital': 'text', 'area': 'float',
+##         'population': 'int', 'continent': 'text', 'tld': 'text', 'currency_code': 'text',
+##         'currency_name': 'text', 'phone': 'text', 'postcode_format': 'text', 'postcode_regex': 'text',
+##         'languages': 'text', 'geo_id': 'int', 'neighbours': 'int', 'equivalent_fipscode': 'text'}, separator='\t', symb='"')
+##    Worker.UpdateTableCSV('Cities/iso-languagecodes.txt', 'languages',
+##        {'iso3': 'text pk nn u', 'iso2': 'text', 'iso1': 'text', 'name': 'text'}, separator='\t', symb='"')
     Worker.UpdateTableCSV('Cities/featureCodes_ru.txt', 'feature_codes',
         {'code': 'text pk nn u', 'name': 'text', 'description': 'text'}, separator='\t', symb='"')
     dType = Worker.DictionaryCSV('Cities/featureCodes_ru.txt', keycol='code', mCols=['name'], separator='\t', symb='"')
@@ -90,7 +90,7 @@ if yn != 'N':
             if row[0] in dName: # Русское наименование
                 name = dName[row[0]]
             else:
-                name = Modif.Translit(row[2])
+                name = '-' # Modif.Translit(row[2])
             row.append(name)
             if name is not None:
                 row.append(name.upper())
@@ -126,3 +126,5 @@ if yn != 'N':
             'country_code': 'country code', 'code1': 'admin1 code', 'code2': 'admin2 code',
             'code3': 'admin3 code', 'code4': 'admin4 code', 'population': 'population', 'elevation': 'elevation',
             'dem': 'dem', 'timezone': 'timezone', 'tz': 'tz', 'date': 'modification date', 'nameU_ru': 'nameU_ru'})
+
+except: pass

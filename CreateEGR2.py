@@ -157,7 +157,7 @@ if yn != 'N':
     # Таблица организаций
 
     for ib in range(0, 11):
-        Worker.ReadBlockCSV('DS/organization.csv', iblock=ib)
+        Worker.ReadBlockCSV('E:/SQL/Dossier/organization.csv', iblock=ib)
         irow = 0
         for row in Worker.mDataCSV:
             row[2] = row[2][:10]
@@ -166,13 +166,13 @@ if yn != 'N':
         Worker.UpdateBlockCSV('organizations', {
             'id': 'int pk nn u', 'ogrn': 'text nn', 'ogrn_date': 'text', 'inn': 'text', 'kpp': 'text',
         'status_group_id': 'text', 'okved_group_id': 'int', 'okved_codes': 'text', 'region_code': 'int'},
-        {'id': 'Id', 'ogrn': 'Ogrn', 'ogrn_date': 'OgrnDate', 'inn': 'Inn', 'kpp': 'Kpp',
+        {'id': 0, 'ogrn': 'Ogrn', 'ogrn_date': 'OgrnDate', 'inn': 'Inn', 'kpp': 'Kpp',
         'status_group_id': 'StatusGroup', 'okved_group_id': 'OkvedGroup', 'okved_codes': 'OkvedCodes', 'region_code': 'RegionCode'})
 
     # Таблица названий организаций
 
     for ib in range(0, 15):
-        Worker.ReadBlockCSV('DS/organizationname.csv', iblock=ib)
+        Worker.ReadBlockCSV('E:/SQL/Dossier/organizationname.csv', iblock=ib)
         #mOrgs = []
         iorg = 0
         Worker.mTableCSV.append('Name')
@@ -301,25 +301,130 @@ if yn != 'N':
     Worker.UpdateTableDict('dictionary_opf', tOpf)
 
     # Таблица ОПФ
-    Worker.UpdateTableCSV('DS/opf.csv', 'opf',
+    Worker.UpdateTableCSV('E:/SQL/Dossier/opf.csv', 'opf',
                           {'id': 'int pk nn u', 'name': 'text', 'code': 'int', 'ref': 'text'},
-                          {'id': 'Id', 'name': 'Name', 'code': 'Code', 'ref': 'Reference'})
+                          {'id': 0, 'name': 'Name', 'code': 'Code', 'ref': 'Reference'})
 
     # База адресов
 
-    Worker.UpdateTableCSV('DB/organization_address.csv', 'organizations_address',
-            {'id': 'int pk nn u', 'organization_id': 'int nn',
-            'version_date': 'text', 'grn': 'text', 'grn_date': 'text', 'region_code': 'int',
-            'area_type': 'text', 'area_name': 'text', 
+    dAddress = Worker.DictionaryCSV('E:/SQL/Dossier/Address.csv', keycol='Id',
+                    mCols=['Postcode', 'RegionCode', 'Area', 'City', 'Town', 'Street', 'KladrCode'])
+    dPost = Worker.DictionaryCSV('E:/SQL/Dossier/AddressPostcode.csv', keycol='Id', mCols=['Value'])
+    dKladr = Worker.DictionaryCSV('E:/SQL/Dossier/AddressKladr.csv', keycol='Id', mCols=['Value'])
+    #dRegion = Worker.DictionaryCSV('E:/SQL/Dossier/AddressRegion.csv', keycol='Id', mCols=['Type', 'Name'])
+    dArea = Worker.DictionaryCSV('E:/SQL/Dossier/AddressArea.csv', keycol='Id', mCols=['Type', 'Name'])
+    dCity = Worker.DictionaryCSV('E:/SQL/Dossier/AddressCity.csv', keycol='Id', mCols=['Type', 'Name'])
+    dTown = Worker.DictionaryCSV('E:/SQL/Dossier/AddressTown.csv', keycol='Id', mCols=['Type', 'Name'])
+    dStreet = Worker.DictionaryCSV('E:/SQL/Dossier/AddressStreet.csv', keycol='Id', mCols=['Type', 'Name'])
+
+    for ib in range(0, 7):
+        Worker.ReadBlockCSV('E:/SQL/Dossier/AddressBuilding.csv', symb='', iblock=ib)
+        Worker.mTableCSV.append('Kladr')
+        Worker.mTableCSV.append('Postcode')
+        Worker.mTableCSV.append('RegionCode')
+        Worker.mTableCSV.append('AreaType')
+        Worker.mTableCSV.append('AreaName')
+        Worker.mTableCSV.append('CityType')
+        Worker.mTableCSV.append('CityName')
+        Worker.mTableCSV.append('TownType')
+        Worker.mTableCSV.append('TownName')
+        Worker.mTableCSV.append('StreetType')
+        Worker.mTableCSV.append('StreetName')
+    
+        irow = 0
+        for row in Worker.mDataCSV:
+            if row[1] in dAddress:
+                if row[2] is not None:
+                    row[2] = row[2].upper()
+                if row[3] is not None:
+                    row[3] = row[3].upper()
+                Id = dAddress[row[1]][6] # Kladr
+                if Id is not None and Id in dKladr: 
+                    row.append(dKladr[Id])
+                else:
+                    row.append(None)
+                Id = dAddress[row[1]][0] # Postcode
+                if Id is not None and Id in dPost: 
+                    row.append(dPost[Id])
+                else:
+                    row.append(None)
+                row.append(dAddress[row[1]][1]) # RegionCode
+                Id = dAddress[row[1]][2] # id Area
+                if Id is not None and Id in dArea:
+                    row.append(dArea[Id][0].upper())
+                    row.append(dArea[Id][1].upper())
+                else:
+                    row.append(None)
+                    row.append(None)
+                Id = dAddress[row[1]][3] # id City
+                if Id is not None and Id in dArea: 
+                    row.append(dCity[Id][0].upper())
+                    row.append(dCity[Id][1].upper())
+                else:
+                    row.append(None)
+                    row.append(None)
+                Id = dAddress[row[1]][4] # id Town
+                if Id is not None and Id in dTown: 
+                    row.append(dTown[Id][0].upper())
+                    row.append(dTown[Id][1].upper())
+                else:
+                    row.append(None)
+                    row.append(None)
+                Id = dAddress[row[1]][5] # id Street
+                if Id is not None and Id in dStreet: 
+                    row.append(dStreet[Id][0].upper())
+                    row.append(dStreet[Id][1].upper())
+                else:
+                    row.append(None)
+                    row.append(None)
+            else:
+                row.append(None)
+                row.append(None)
+                row.append(None)
+                row.append(None)
+                row.append(None)
+                row.append(None)
+                row.append(None)
+                row.append(None)
+                row.append(None)
+                row.append(None)
+                row.append(None)
+                print('Не найден address_id = ' + row[1])
+            irow += 1
+            if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))
+        Worker.UpdateBlockCSV('address', {
+            'id': 'int pk nn u', 'region_code': 'int',
+            'area_type': 'text', 'area_name': 'text',
             'city_type': 'text', 'city_name': 'text',
             'settlement_type': 'text', 'settlement_name': 'text',
             'street_type': 'text', 'street_name': 'text',
-            'house': 'text', 'building': 'text', 'flat': 'text',
-            'postcode': 'text', 'fias_house': 'text', 'fias': 'text'}, blocks=11)
+            'house': 'text', 'building': 'text',
+            'postcode': 'text', 'kladr': 'text'},
+        {'id': 0, 'region_code': 'RegionCode',
+            'area_type': 'AreaType', 'area_name': 'AreaName',
+            'city_type': 'CityType', 'city_name': 'CityName',
+            'settlement_type': 'TownType', 'settlement_name': 'TownName',
+            'street_type': 'StreetType', 'street_name': 'StreetName',
+            'house': 'House', 'building': 'Building',
+            'postcode': 'Postcode', 'kladr': 'Kladr'})
+
+    for ib in range(0, 24):
+        Worker.ReadBlockCSV('E:/SQL/Dossier/OrganizationAddress.csv', symb='', iblock=ib)
+        irow = 0
+        for row in Worker.mDataCSV:
+            if row[1] is not None:
+                row[1] = row[1][:10]
+            if row[4] is not None:
+                row[4] = row[4].upper()
+            irow += 1
+            if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))
+        Worker.UpdateBlockCSV('organizations_address',
+            {'organization_id': 'int nn', 'date': 'text', 
+             'address_id': 'int nn', 'flat': 'text', 'address_error': 'int', 'old_data': 'int'},
+            {'organization_id': 'Organization', 'date': 'DT',
+             'address_id': 'AddressBuilding', 'flat': 'Flat',
+             'address_error': 'AddressError', 'old_data': 'OldData'})
         
-    Worker.Indexation('fias_address', ['level', 'type', 'nameU', 'postcode'])
-    Worker.Indexation('organizations_address', ['organization_id'])  
-##
 
 ##    # База статусов
 ##
@@ -430,4 +535,8 @@ if yn != 'N':
 ##            'innfl': 'text', 'position_type': 'int', 'position_name': 'text'},
 ##            {'person_id': 'person_id', 'version_date': 'version_date', 'grn': 'grn', 'grn_date': 'grn_date',
 ##            'last_name': 'lastname', 'first_name': 'firstname', 'middle_name': 'middlename',
-##            'inn': 'innfl', 'position_type': 'position_type', 'position_name': 'position_name'})     
+##            'inn': 'innfl', 'position_type': 'position_type', 'position_name': 'position_name'})
+
+    Worker.Indexation('organizations', ['id', 'ogrn', 'inn'])
+    Worker.Indexation('organizations_name', ['organization_id', 'address_id'])
+    Worker.Indexation('organizations_address', ['organization_id', 'address_id'])  

@@ -58,6 +58,7 @@ class Worker:
             Worker.mDataCSV, mTable = CSV.AutoReader(csvFile, separator=separator,
                             items=block, istart=iblock*block, download=items, quotechar=symb)
         if mTable != []: Worker.mTableCSV = mTable
+        print(Worker.mTableCSV)
         return len(Worker.mDataCSV) # возвращает число загруженных строк
 
     # Создание новой таблицы (с удалением старой) на основе таблицы CSV - по блокам
@@ -69,14 +70,17 @@ class Worker:
             for col in cols:
                 try:
                     i = Worker.mTableCSV.index(col) # поиск соотвествия таблицы
-                except: i = -1
+                except: i = -1; print('!!! BUG - not found col "%s"' % col)  
                 indexes.append(i)
         else:
             for col in cols:
-                try:
-                    i = Worker.mTableCSV.index(dColsCSV[col]) # поиск индекса в dColsCSV
-                except: i = -1   
-                indexes.append(i) 
+                if isinstance(dColsCSV[col], int):
+                    indexes.append(dColsCSV[col])
+                else:
+                    try:
+                        i = Worker.mTableCSV.index(dColsCSV[col]) # поиск индекса в dColsCSV
+                    except: i = -1; print('!!! BUG - not found col "%s"' % col)  
+                    indexes.append(i) 
         data = [] # временное хранилище данных
         print(indexes)
         for row in Worker.mDataCSV:
@@ -121,6 +125,7 @@ class Worker:
         print('Чтение данных файла "%s" - в словарь' % csvFile)
         data, mlist = CSV.AutoReader(csvFile, separator=separator, quotechar=symb, download=items)
         indexes = [] # индексы CSV для записи данных в БД
+        print(mlist)
         try:
             icol = mlist.index(keycol)
         except: icol = 0    
@@ -128,7 +133,7 @@ class Worker:
             for col in mCols:
                 try:
                     i = mlist.index(col) # поиск соотвествия таблицы
-                except: i = -1
+                except: i = -1; print('!!! BUG - not found col "%s"' % col)  
                 indexes.append(i)
         elif icol == 0: indexes.append(1)
         else: indexes.append(0)
