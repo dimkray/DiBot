@@ -149,82 +149,83 @@ def newOpf(text):
 items = 100000
 block = 1000000
 
-#try:
-yn = input('...... Обновить таблицу адресов и загрузить новые данные? Y/N: ')
-if yn != 'N': 
+try:
+# yn = input('...... Обновить таблицу адресов и загрузить новые данные? Y/N: ')
+# if yn != 'N': 
 
-    # Словарь адресов ФИАС
-
-    for ib in range(0, 2):
-        Worker.ReadBlockCSV('DB/address.csv', iblock=ib)
-        irow = 0
-        Worker.mTableCSV.append('type')
-        Worker.mTableCSV.append('nameU')    
-        for row in Worker.mDataCSV:
-            row.append(row[6].upper().strip()) # type
-            row.append(row[2].upper().strip()) # nameU
-            irow += 1
-            if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))       
-        Worker.UpdateBlockCSV('fias_address', {'guid': 'text pk nn u', 'parent_guid': 'text',
-            'level': 'int', 'region_code': 'int', 'type_short': 'text', 'type': 'text',
-            'name': 'text', 'nameU': 'text', 'postcode': 'text', 'update_date': 'text'},
-            {'guid': 'ao_guid', 'parent_guid': 'parent_guid', 'level': 'ao_level',
-             'region_code': 'region_code', 'type_short': 'short_name', 'type': 'type',
-             'name': 'formal_name', 'nameU': 'nameU', 'postcode': 'postal_code', 'update_date':
-             'update_date'})
-
-
-    # Словарь домов ФИАС
-
-    for ib in range(0, 28):
-        Worker.ReadBlockCSV('DB/house.csv', iblock=ib)
-        irow = 0
-        for row in Worker.mDataCSV:
-            if row[2] is not None:
-                row[2] = row[2].upper() # build_num
-                if row[2] == '-': row[2] = None
-                if row[2] == 'НЕТ': row[2] = None
-            if row[4] is not None:
-                row[4] = row[4].upper() # house_num
-            if row[6] is not None:
-                row[6] = row[6].upper() # structure_num
-                if row[6] == '-': row[6] = None
-                if row[6] == 'НЕТ': row[6] = None
-            irow += 1
-            if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))       
-        Worker.UpdateBlockCSV('fias_house', {'guid': 'text pk nn u', 'parent_guid': 'text',
-            'house': 'text', 'build': 'text', 'struc': 'text', 'postcode': 'text',
-            'update_date': 'text'},
-            {'guid': 'house_guid', 'parent_guid': 'ao_guid',
-            'house': 'house_num', 'build': 'build_num', 'struc': 'structure_num',
-            'postcode': 'postal_code', 'update_date': 'update_date'})    
-
-    # Словарь комнат ФИАС
-
-    for ib in range(0, 26):
-        Worker.ReadBlockCSV('DB/room.csv', iblock=ib)
-        irow = 0
-        for row in Worker.mDataCSV:
-            if row[1] is not None:
-                row[1] = row[1].upper() # house_num
-            if row[5] is not None:
-                row[5] = row[5].upper() # structure_num
-                if row[5] == '-': row[5] = None
-                if row[5] == 'НЕТ': row[5] = None
-            irow += 1
-            if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))       
-        Worker.UpdateBlockCSV('fias_room', {'guid': 'text pk nn u', 'parent_guid': 'text',
-            'flat': 'text', 'room': 'text', 'postcode': 'text',
-            'update_date': 'text'},
-            {'guid': 'room_guid', 'parent_guid': 'house_guid',
-            'flat': 'flat_number', 'room': 'room_number', 'postcode': 'postal_code',
-            'update_date': 'update_date'})     
-  
+##    # Словарь адресов ФИАС
+##
+##    for ib in range(0, 2):
+##        Worker.ReadBlockCSV('DB/address.csv', iblock=ib)
+##        irow = 0
+##        Worker.mTableCSV.append('type')
+##        Worker.mTableCSV.append('nameU')    
+##        for row in Worker.mDataCSV:
+##            row.append(row[6].upper().strip()) # type
+##            row.append(row[2].upper().strip()) # nameU
+##            irow += 1
+##            if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))       
+##        Worker.UpdateBlockCSV('fias_address', {'guid': 'text pk nn u', 'parent_guid': 'text',
+##            'level': 'int', 'region_code': 'int', 'type_short': 'text', 'type': 'text',
+##            'name': 'text', 'nameU': 'text', 'postcode': 'text', 'update_date': 'text'},
+##            {'guid': 'ao_guid', 'parent_guid': 'parent_guid', 'level': 'ao_level',
+##             'region_code': 'region_code', 'type_short': 'short_name', 'type': 'type',
+##             'name': 'formal_name', 'nameU': 'nameU', 'postcode': 'postal_code', 'update_date':
+##             'update_date'})
+##     Worker.Indexation('fias_address', ['level', 'type', 'nameU', 'postcode'])
+##
+##
+##    # Словарь домов ФИАС
+##
+##    for ib in range(0, 28):
+##        Worker.ReadBlockCSV('DB/house.csv', iblock=ib)
+##        irow = 0
+##        for row in Worker.mDataCSV:
+##            if row[2] is not None:
+##                row[2] = row[2].upper() # build_num
+##                if row[2] == '-': row[2] = None
+##                if row[2] == 'НЕТ': row[2] = None
+##            if row[4] is not None:
+##                row[4] = row[4].upper() # house_num
+##            if row[6] is not None:
+##                row[6] = row[6].upper() # structure_num
+##                if row[6] == '-': row[6] = None
+##                if row[6] == 'НЕТ': row[6] = None
+##            irow += 1
+##            if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))       
+##        Worker.UpdateBlockCSV('fias_house', {'guid': 'text pk nn u', 'parent_guid': 'text',
+##            'house': 'text', 'build': 'text', 'struc': 'text', 'postcode': 'text',
+##            'update_date': 'text'},
+##            {'guid': 'house_guid', 'parent_guid': 'ao_guid',
+##            'house': 'house_num', 'build': 'build_num', 'struc': 'structure_num',
+##            'postcode': 'postal_code', 'update_date': 'update_date'})    
+##
+##    # Словарь комнат ФИАС
+##
+##    for ib in range(0, 26):
+##        Worker.ReadBlockCSV('DB/room.csv', iblock=ib)
+##        irow = 0
+##        for row in Worker.mDataCSV:
+##            if row[1] is not None:
+##                row[1] = row[1].upper() # house_num
+##            if row[5] is not None:
+##                row[5] = row[5].upper() # structure_num
+##                if row[5] == '-': row[5] = None
+##                if row[5] == 'НЕТ': row[5] = None
+##            irow += 1
+##            if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))       
+##        Worker.UpdateBlockCSV('fias_room', {'guid': 'text pk nn u', 'parent_guid': 'text',
+##            'flat': 'text', 'room': 'text', 'postcode': 'text',
+##            'update_date': 'text'},
+##            {'guid': 'room_guid', 'parent_guid': 'house_guid',
+##            'flat': 'flat_number', 'room': 'room_number', 'postcode': 'postal_code',
+##            'update_date': 'update_date'})     
+##  
 
     # База организаций
 
     for ib in range(0, 11):
-        Worker.ReadBlockCSV('DB/organization.csv', iblock=ib)
+        Worker.ReadBlockCSV('E:/SQL/EGR/organization.csv', iblock=ib)
     
     mOrgs = []
     iorg = 0
@@ -357,7 +358,7 @@ if yn != 'N':
         'okved': 'text', 'okved_version': 'int', 'name_full': 'text',
         'name_abbr': 'text', 'name': 'text', 'opf_name': 'int', 'opf_name2': 'int',
         'opf_spr': 'int', 'opf': 'int', 'koef': 'float'},
-        {'id': 'id', 'version_date': 'version_date',
+        {'id': 0, 'version_date': 'version_date',
         'ogrn': 'ogrnul', 'ogrn_date': 'ogrn_date', 'inn': 'innul', 'kpp': 'kpp',
         'okved': 'okved_code', 'okved_version': 'okved_version', 'name_full': 'name_full',
         'name_abbr': 'name_abbr', 'name': 'name', 'opf_name': 'opf', 'opf_name2': 'opf2',
@@ -368,7 +369,7 @@ if yn != 'N':
 
     # База адресов
 
-    Worker.UpdateTableCSV('DB/organization_address.csv', 'organizations_address',
+    Worker.UpdateTableCSV('E:/SQL/EGR/organizations_address.csv', 'organizations_address',
             {'id': 'int pk nn u', 'organization_id': 'int nn',
             'version_date': 'text', 'grn': 'text', 'grn_date': 'text', 'region_code': 'int',
             'area_type': 'text', 'area_name': 'text', 
@@ -377,32 +378,30 @@ if yn != 'N':
             'street_type': 'text', 'street_name': 'text',
             'house': 'text', 'building': 'text', 'flat': 'text',
             'postcode': 'text', 'fias_house': 'text', 'fias': 'text'}, blocks=11)
-        
-    Worker.Indexation('fias_address', ['level', 'type', 'nameU', 'postcode'])
-    Worker.Indexation('organizations_address', ['organization_id'])  
+    Worker.Indexation('organizations_address', ['organization_id'])
 
     # База имён
 
-    Worker.UpdateTableCSV('DB/organization_name.csv', 'organizations_name',
-            {'organization_id': 'int nn', # 'id': 'int pk nn u', 
+    Worker.UpdateTableCSV('E:/SQL/EGR/organization_name.csv', 'organizations_name',
+            {'organization_id': 'int nn', 
             'version_date': 'text', 'grn': 'text', 'grn_date': 'text',
             'name_full': 'text', 'name_abbr': 'text'}, blocks=7)
 
     # База статусов
 
-    Worker.UpdateTableCSV('DB/organization_status.csv', 'organizations_status',
-            {'organization_id': 'int nn', # 'id': 'int pk nn u', 
+    Worker.UpdateTableCSV('E:/SQL/EGR/organization_status.csv', 'organizations_status',
+            {'organization_id': 'int nn', 
             'version_date': 'text', 'grn': 'text', 'grn_date': 'text', 'status_code': 'int'}, blocks=7)
 
     # База ОКВЭДов
 
-    Worker.UpdateTableCSV('DB/organization_okved.csv', 'organizations_okved',
-            {'organization_id': 'int nn', # 'id': 'int pk nn u', 
+    Worker.UpdateTableCSV('E:/SQL/EGR/organization_okved.csv', 'organizations_okved',
+            {'org_id': 'int nn',  
             'version_date': 'text', 'grn': 'text', 'grn_date': 'text', 'okved_id': 'int'}, blocks=113)
 
     # Словарь ОКВЭДов
 
-    Worker.ReadBlockCSV('DB/okved.csv')
+    Worker.ReadBlockCSV('E:/SQL/EGR/okved.csv')
     for row in Worker.mDataCSV:
         row[1] = row[1].strip() # code
         row[2] = row[2].upper() # name
@@ -411,52 +410,52 @@ if yn != 'N':
     
     # Словарь групп ОКВЭДов
 
-    Worker.UpdateTableCSV('DB/okved_group.csv', 'dictionary_okved_group',
+    Worker.UpdateTableCSV('E:/SQL/EGR/okved_group.csv', 'dictionary_okved_group',
         {'id': 'int pk nn u', 'name': 'text nn'})
     
     # База учредителей
 
     for ib in range(0, 2): # organization
-        Worker.ReadBlockCSV('DB/organization_founder_org.csv', iblock=ib)
+        Worker.ReadBlockCSV('E:/SQL/EGR/organization_founder_org.csv', iblock=ib)
         irow = 0
         for row in Worker.mDataCSV:
             row[4] = row[4].upper()
             irow += 1
             if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))       
-        Worker.UpdateBlockCSV('organization_founder_org', {# 'id': 'int pk nn u', 
-            'organization_id': 'int nn', 'version_date': 'text', 'grn': 'text', 'grn_date': 'text',
+        Worker.UpdateBlockCSV('organizations_founder_org', {# 'id': 'int pk nn u', 
+            'org_id': 'int nn', 'version_date': 'text', 'grn': 'text', 'grn_date': 'text',
             'name': 'text', 'ogrn': 'text', 'inn': 'text',
-            'founder_organization_id': 'int', 'capital_percent': 'float', 'capital_size': 'int'},
-            {'organization_id': 'organization_id', 'version_date': 'version_date', 'grn': 'grn',
+            'founder_org_id': 'int', 'capital_percent': 'float', 'capital_size': 'int'},
+            {'org_id': 'organization_id', 'version_date': 'version_date', 'grn': 'grn',
             'grn_date': 'grn_date', 'name': 'name', 'ogrn': 'ogrnul', 'inn': 'innul',
-            'founder_organization_id': 'founder_organization_id',
+            'founder_org_id': 'founder_organization_id',
             'capital_percent': 'capital_percent', 'capital_size': 'capital_size'})
 
     # organization foreign
-    Worker.ReadBlockCSV('DB/organization_foreign.csv')
+    Worker.ReadBlockCSV('E:/SQL/EGR/organization_foreign.csv')
     for row in Worker.mDataCSV:
         row[4] = row[4].upper()    
-    Worker.UpdateBlockCSV('organization_founder_org', {# 'id': 'int pk nn u', 
-        'organization_id': 'int nn', 'version_date': 'text', 'grn': 'text', 'grn_date': 'text',
+    Worker.UpdateBlockCSV('organizations_founder_org', { 
+        'org_id': 'int nn', 'version_date': 'text', 'grn': 'text', 'grn_date': 'text',
         'name': 'text', 'ogrn': 'text', 'inn': 'text',
-        'founder_organization_id': 'int', 'capital_percent': 'float', 'capital_size': 'int'},
-        {'organization_id': 'organization_id', 'version_date': 'version_date', 'grn': 'grn',
+        'founder_org_id': 'int', 'capital_percent': 'float', 'capital_size': 'int'},
+        {'org_id': 'organization_id', 'version_date': 'version_date', 'grn': 'grn',
         'grn_date': 'grn_date', 'name': 'name', 'ogrn': 'ogrnul', 'inn': 'innul',
-        'founder_organization_id': 'founder_organization_id',
+        'founder_org_id': 'founder_organization_id',
         'capital_percent': 'capital_percent', 'capital_size': 'capital_size'})
 
     for ib in range(0, 15): # person
-        Worker.ReadBlockCSV('DB/organization_founder_per.csv', iblock=ib)
+        Worker.ReadBlockCSV('E:/SQL/EGR/organization_founder_per.csv', iblock=ib)
         irow = 0
         for row in Worker.mDataCSV:
             row[4] = row[4].upper()
             irow += 1
             if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))       
-        Worker.UpdateBlockCSV('organization_founder_per', {# 'id': 'int pk nn u', 
-            'person_id': 'int', 'version_date': 'text', 'grn': 'text', 'grn_date': 'text',
+        Worker.UpdateBlockCSV('organizations_founder_per', { 
+            'org_id': 'int nn', 'per_id': 'int', 'version_date': 'text', 'grn': 'text', 'grn_date': 'text',
             'last_name': 'text', 'first_name': 'text', 'middle_name': 'text',
             'inn': 'text', 'capital_percent': 'float', 'capital_size': 'int'},
-            {'organization_id': 'organization_id', 'person_id': 'person_id', 'version_date': 'version_date',
+            {'org_id': 'organization_id', 'per_id': 'person_id', 'version_date': 'version_date',
              'grn': 'grn', 'grn_date': 'grn_date',
             'last_name': 'lastname', 'first_name': 'firstname', 'middle_name': 'middlename',
             'inn': 'innfl', 'capital_percent': 'capital_percent', 'capital_size': 'capital_size'})
@@ -464,31 +463,84 @@ if yn != 'N':
     # База руководителей
 
     # organization
-    Worker.ReadBlockCSV('DB/organization_leader_org.csv')
+    Worker.ReadBlockCSV('E:/SQL/EGR/organization_leader_org.csv')
     irow = 0
     for row in Worker.mDataCSV:
         row[4] = row[4].upper()
         irow += 1
         if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))       
-    Worker.UpdateBlockCSV('organization_leader_org', {# 'id': 'int pk nn u', 
-        'organization_id': 'int nn', 'version_date': 'text', 'grn': 'text', 'grn_date': 'text',
+    Worker.UpdateBlockCSV('organizations_leader_org', {# 'id': 'int pk nn u', 
+        'org_id': 'int nn', 'version_date': 'text', 'grn': 'text', 'grn_date': 'text',
         'name': 'text', 'ogrn': 'text', 'inn': 'text',
-        'leader_organization_id': 'int'},
-        {'organization_id': 'organization_id', 'version_date': 'version_date', 'grn': 'grn',
+        'leader_org_id': 'int'},
+        {'org_id': 'organization_id', 'version_date': 'version_date', 'grn': 'grn',
         'grn_date': 'grn_date', 'name': 'name', 'ogrn': 'ogrnul', 'inn': 'innul',
-        'leader_organization_id': 'leader_organization_id'})
+        'leader_org_id': 'leader_organization_id'})
 
     for ib in range(0, 10): # person
-        Worker.ReadBlockCSV('DB/organization_leader_per.csv', iblock=ib)
+        Worker.ReadBlockCSV('E:/SQL/EGR/organization_leader_per.csv', iblock=ib)
         irow = 0
         for row in Worker.mDataCSV:
             row[4] = row[4].upper()
             irow += 1
             if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))       
-        Worker.UpdateBlockCSV('organization_leader_per', {# 'id': 'int pk nn u', 
-            'person_id': 'int', 'version_date': 'text', 'grn': 'text', 'grn_date': 'text',
+        Worker.UpdateBlockCSV('organizations_leader_per', {# 'id': 'int pk nn u', 
+            'per_id': 'int', 'version_date': 'text', 'grn': 'text', 'grn_date': 'text',
             'last_name': 'text', 'first_name': 'text', 'middle_name': 'text',
             'innfl': 'text', 'position_type': 'int', 'position_name': 'text'},
-            {'person_id': 'person_id', 'version_date': 'version_date', 'grn': 'grn', 'grn_date': 'grn_date',
+            {'per_id': 'person_id', 'version_date': 'version_date', 'grn': 'grn', 'grn_date': 'grn_date',
             'last_name': 'lastname', 'first_name': 'firstname', 'middle_name': 'middlename',
-            'inn': 'innfl', 'position_type': 'position_type', 'position_name': 'position_name'})     
+            'inn': 'innfl', 'position_type': 'position_type', 'position_name': 'position_name'})       
+
+##    # Физические лица
+##
+##    Worker.UpdateTableCSV('E:/SQL/EGR/person.csv', 'entrepreneurs',
+##            {'id': 'int pk nn u', 'per_id': 'int nn',
+##            'version_date': 'text', 'ogrn': 'text', 'ogrn_date': 'text', 'inn': 'text',
+##            'lastname': 'text', 'firstname': 'text', 
+##            'middlename': 'text', 'okved': 'text',
+##            'okved_version': 'int', 'person_type': 'int'},
+##            {'id': 0, 'per_id': 'person_id',
+##            'version_date': 'version_date', 'ogrn': 'ogrnip', 'ogrn_date': 'ogrnip_date', 'inn': 'innfl',
+##            'lastname': 'lastname', 'firstname': 'firstname', 
+##            'middlename': 'middlename', 'okved': 'okved_code',
+##            'okved_version': 'okved_version', 'person_type': 'person_type_code'}, blocks=14)
+##    Worker.Indexation('organizations_address', ['organization_id'])
+##
+##    # ---------------------------
+##    # База ИП
+##
+##    Worker.UpdateTableCSV('E:/SQL/EGR/entrepreneur.csv', 'entrepreneurs',
+##            {'id': 'int pk nn u', 'per_id': 'int nn',
+##            'version_date': 'text', 'ogrn': 'text', 'ogrn_date': 'text', 'inn': 'text',
+##            'lastname': 'text', 'firstname': 'text', 
+##            'middlename': 'text', 'okved': 'text',
+##            'okved_version': 'int', 'person_type': 'int'},
+##            {'id': 0, 'per_id': 'person_id',
+##            'version_date': 'version_date', 'ogrn': 'ogrnip', 'ogrn_date': 'ogrnip_date', 'inn': 'innfl',
+##            'lastname': 'lastname', 'firstname': 'firstname', 
+##            'middlename': 'middlename', 'okved': 'okved_code',
+##            'okved_version': 'okved_version', 'person_type': 'person_type_code'}, blocks=14)
+##    Worker.Indexation('organizations_address', ['organization_id'])
+##
+##    # База имён
+##
+##    Worker.UpdateTableCSV('E:/SQL/EGR/organization_name.csv', 'organizations_name',
+##            {'org_id': 'int nn', 
+##            'version_date': 'text', 'grn': 'text', 'grn_date': 'text',
+##            'name_full': 'text', 'name_abbr': 'text'}, blocks=7)
+##
+##    # База статусов
+##
+##    Worker.UpdateTableCSV('E:/SQL/EGR/organization_status.csv', 'organizations_status',
+##            {'org_id': 'int nn', 
+##            'version_date': 'text', 'grn': 'text', 'grn_date': 'text', 'status_code': 'int'}, blocks=7)
+##
+##    # База ОКВЭДов
+##
+##    Worker.UpdateTableCSV('E:/SQL/EGR/organization_okved.csv', 'organizations_okved',
+##            {'org_id': 'int nn',  
+##            'version_date': 'text', 'grn': 'text', 'grn_date': 'text', 'okved_id': 'int'}, blocks=113)
+
+
+except: pass

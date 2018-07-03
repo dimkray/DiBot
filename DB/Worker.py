@@ -43,7 +43,7 @@ class Worker:
         print('Результат: ' + SQL.Table(NameTable, dCols))
         tDel.append(NameTable)
         print('Запись данных: %i строк' % len(dictData))
-        result = SQL.WriteBlockDict(NameTable, dictData)
+        result = SQL.WriteDictBlock(NameTable, dictData)
         print('Результат: ' + result)
         print('-------------------------------------')
         return result

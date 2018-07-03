@@ -440,7 +440,7 @@ class CSV:
                         end = row.find('"'+separator, start+1)
                         ss = row[end-2:end]
                         if ss[1] == '"' and ss[0] != '"': # поиск "";
-                            end = row.find('"'+separator, end+1)
+                            end = row.find('"'+separator, end+2)
                         bChar = True
                     if end == -1: end = len(row); poz = -1
                     else: poz = end+2 if bChar else end+1
