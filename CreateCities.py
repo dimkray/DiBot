@@ -43,27 +43,32 @@ if yn != 'N':
     # Таблица названий объектов
 
     dName = {}; dLink = {}
-    # ['abbr' - аббревиатура,'icao' - ICAO,'link' - ссылка,'post' - почта,'wkdt' - ?]
-    for ib in range(0, 13):
-        Worker.ReadBlockCSV('E:/SQL/Cities/alternateNamesV2.txt', iblock=ib, separator='\t')
-        irow = 0
-        for row in Worker.mDataCSV:
-            if (row[2] == 'ru' or row[2] == None) and row[3] is not None:
-                if row[5] is None and row[6] is None and row[7] is None:
-                    iType = Word.Type(row[3])
-                    if iType != 0 and iType != 50:
-                        dName[row[1]] = row[3]
-            if row[2] == 'link': dLink[row[1]] = row[3]
-            irow += 1
-            if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))
-        Worker.UpdateBlockCSV('names', {
-            'geo_id': 'int nn', 'iso': 'text', 'name': 'text nn',
-            'is_preferred': 'int', 'is_short': 'int', 'is_colloquial': 'int',
-            'is_historic': 'int'},
-            {'geo_id': 'geonameid', 'iso': 'isolanguage', 'name': 'alternate name',
-            'is_preferred': 'isPreferredName', 'is_short': 'isShortName', 'is_colloquial': 'isColloquial',
-            'is_historic': 'isHistoric'})
-    Worker.Indexation('names', ['geo_id', 'name'])
+##    # ['abbr' - аббревиатура,'icao' - ICAO,'link' - ссылка,'post' - почта,'wkdt' - ?]
+##    for ib in range(0, 13):
+##        Worker.ReadBlockCSV('E:/SQL/Cities/alternateNamesV2.txt', iblock=ib, separator='\t')
+##        Worker.mTableCSV.append('Params')
+##        irow = 0
+##        for row in Worker.mDataCSV:
+##            if (row[2] == 'ru' or row[2] == None) and row[3] is not None:
+##                if row[5] is None and row[6] is None and row[7] is None:
+##                    iType = Word.Type(row[3])
+##                    if iType != 0 and iType != 50:
+##                        dName[row[1]] = row[3]
+##            if row[2] == 'link': dLink[row[1]] = row[3]
+##            sparams = ''
+##            if row[4] is not None: sparams += 'p' # isPreferredName
+##            if row[5] is not None: sparams += 's' # isShortName
+##            if row[6] is not None: sparams += 'c' # isColloquial
+##            if row[7] is not None: sparams += 'h' # isHistoric
+##            row.append(sparams)
+##            irow += 1
+##            if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))
+##        Worker.UpdateBlockCSV('names', {
+##            'geo_id': 'int nn', 'iso': 'text', 'name': 'text nn',
+##            'params': 'text' },
+##            {'geo_id': 'geonameid', 'iso': 'isolanguage', 'name': 'alternate name',
+##            'params': 'Params'})
+##    Worker.Indexation('names', ['geo_id', 'name'])
 
     # Таблица городов
 
@@ -75,6 +80,7 @@ if yn != 'N':
         Worker.mTableCSV.append('name_ru')
         Worker.mTableCSV.append('nameU_ru')
         Worker.mTableCSV.append('tz')
+        Worker.mTableCSV.append('tile')
         for row in Worker.mDataCSV:
             try:
                 if row[6] is not None and row[7] is not None:
@@ -100,11 +106,11 @@ if yn != 'N':
                     row.append(name.upper().replace('Ё','Е'))
                 else:
                     row.append(None)
-                if row[10] is not None:
+                if row[8] is not None and row[10] is not None:
                     admin1 = row[8]+'.'+row[10]
                     if admin1 in dAdmin1:
                         row[10] = dAdmin1[admin1]
-                if row[11] is not None:
+                if row[8] is not None and row[11] is not None:
                     admin2 = row[8]+'.'+row[11]
                     if admin2 in dAdmin2:
                         row[11] = dAdmin2[admin2]
@@ -116,7 +122,17 @@ if yn != 'N':
                         row.append(None)
                 else:
                     row.append(None)
+                # Создаём tile
+                stile = None
+                if row[4] is not None and row[5] is not None:
+                    lat = float(row[4])
+                    lon = float(row[5])
+                    dcLat = (lat - int(lat)) * 10
+                    dcLon = (lon - int(lon)) * 10
+                    stile = '%i,%i|%i,%i' % (int(lat), int(lon), int(dcLat), int(dcLon))
+                row.append(stile)
             except Exception as e:
+                row.append(None)
                 row.append(None)
                 row.append(None)
                 row.append(None)
@@ -127,15 +143,15 @@ if yn != 'N':
             if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))
         Worker.UpdateBlockCSV('cities', {
             'id': 'int pk nn u', 'name': 'text nn', 'name_ascii': 'text', 'name_ru': 'text', 'link': 'text', # 'name_alternate': 'text',
-            'lat': 'float', 'lon': 'float', 'feature_class': 'text', 'feature_code': 'text', 'type': 'text',
-            'country_code': 'text', 'code1': 'text', 'code2': 'text', # 'cc2': 'text', 
+            'lat': 'float', 'lon': 'float', 'tile': 'text', 'feature_class': 'text', 'feature_code': 'text', 'type': 'text',
+            'country_code': 'text', 'code1': 'text', 'code2': 'text',
             'code3': 'text', 'code4': 'text', 'population': 'int', 'elevation': 'int',
-            'dem': 'int', 'timezone': 'text', 'tz': 'float', 'date': 'text', 'nameU_ru': 'text'},
+            'timezone': 'text', 'tz': 'float', 'date': 'text', 'nameU_ru': 'text'}, # 'dem': 'int'
             {'id': 'geonameid', 'name': 'name', 'name_ascii': 'asciiname', 'name_ru': 'name_ru', 'link': 'link',
-            'lat': 'latitude', 'lon': 'longitude', 'feature_class': 'feature class', 'feature_code': 'feature code',
-            'type': 'type',
+            'lat': 'latitude', 'lon': 'longitude', 'tile': 'tile',
+            'feature_class': 'feature class', 'feature_code': 'feature code', 'type': 'type',
             'country_code': 'country code', 'code1': 'admin1 code', 'code2': 'admin2 code',
             'code3': 'admin3 code', 'code4': 'admin4 code', 'population': 'population', 'elevation': 'elevation',
-            'dem': 'dem', 'timezone': 'timezone', 'tz': 'tz', 'date': 'modification date', 'nameU_ru': 'nameU_ru'})
-    Worker.Indexation('cities', ['id', 'name', 'name_ascii', 'nameU_ru', 'lat', 'lon', 'code1', 'code2', 'population'])
+            'timezone': 'timezone', 'tz': 'tz', 'date': 'modification date', 'nameU_ru': 'nameU_ru'})
+    Worker.Indexation('cities', ['id', 'name_ascii', 'nameU_ru', 'tile', 'code1', 'code2', 'population'])
         

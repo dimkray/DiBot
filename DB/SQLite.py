@@ -383,6 +383,13 @@ class Finder:
         m = Finder.FindAll(table, mcols, svalue, returnCol=returnCol)
         return Fixer.strformat(m, items=items, sformat=sFormat, nameCol=returnCol)
 
+# класс комплексной работы с БД
+class DB:
+    # Получение данных из базы в Dict (JSON)
+    def Dict(description, obj_id):
+        #...
+        return 1
+
 # класс работы с SVN-файлами
 class CSV:
     # Автоматизированное чтение csv-файла
