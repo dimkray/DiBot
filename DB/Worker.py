@@ -49,7 +49,7 @@ class Worker:
         return result
 
     # Чтение данных CSV по блокам
-    def ReadBlockCSV(csvFile, iblock=0, separator=';', symb='\\', bRead=True):
+    def ReadBlockCSV(csvFile, iblock=0, separator=';', symb='\\"', bRead=True):
         print('Чтение данных файла "%s" - блок %i' % (csvFile, iblock+1))
         if bRead:
             Worker.mDataCSV, mTable = CSV.Reader(csvFile, separator=separator,

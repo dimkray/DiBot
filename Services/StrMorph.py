@@ -30,37 +30,32 @@ phr = {'NOUN': 1,  # существительное
        'PNCT': 90, # знак пунктуации
        'UNKN': 0 } # неизвестное
 
-ccltkr = {'shch': 'щ'}
+ccltkr = {'shch': 'щ', 'you': 'ю', 'rth': 'рф', 'tion': 'шен', 'ath': 'aф',
+          'thi': 'фи', 'the': 'фе', 'nee': 'ни', 'bee': 'би', 'ree': 'ри',
+          'pha': 'фа', 'qua': 'ква'}
 
-cltkr = {'ya': 'я', 'ye': 'е', 'yu': 'ю', 'yo': 'йо',
-         'ja': 'я', 'je': 'е', 'ju': 'ю', 'jo': 'ё',
+cltkr = {'ya': 'я', 'ye': 'е', 'yo': 'йо', 'yu': 'ю',
+         'ja': 'я', 'je': 'е', 'jo': 'ё', 'ju': 'ю', 
          'ch': 'ч', 'sh': 'ш', 'kh': 'х', 'zh': 'ж',
-         'ts': 'ц', 'cz': 'ч', 'sz': 'ш',
-         'iy': 'ий', 'ay': 'ай', 'yy': 'ый',
-         'ei': 'ей', 'ai': 'ай',
-         'ie': 'е', 'io': 'ё',
-         'ej': 'ей', 'aj': 'ай', 'oj': 'ой',
-         'wa': 'уо',
-         'ls': 'льс', 'lb': 'льб' }
+         'ts': 'ц', 'tz': 'ц', 'cz': 'ч', 'sz': 'ш',
+         'ay': 'ай', 'ey': 'ей', 'iy': 'ий', 'oy': 'ой', 'uy': 'уй', 'yy': 'ый', 
+         'ai': 'ай', 'ei': 'ей', 'oi': 'ой',
+         'ie': 'е',
+         'ej': 'ей', 'aj': 'ай', 'oj': 'ой', 'uj': 'уй',
+         'zw': 'цв'}
 
-ltkr = {'a': 'а', 'b': 'б', 'с': 'ц', 'd': 'д',
+ltkr = {'a': 'а', 'b': 'б', 'c': 'ц', 'd': 'д',
         'e': 'е', 'f': 'ф', 'g': 'г', 'h': 'х',
         'i': 'и', 'j': 'дж', 'k': 'к', 'l': 'л',
         'm': 'м', 'n': 'н', 'o': 'о', 'p': 'п',
         'q': 'к', 'r': 'р', 's': 'с', 't': 'т',
         'u': 'у', 'v': 'в', 'w': 'в', 'x': 'кс',
-        'y': 'ы', 'z': 'з', '\'': 'ь'}
+        'y': 'ы', 'z': 'з', '\'': 'ь', '"': 'ъ'}
 
 krlt = {'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'e',
       'ж':'zh','з':'z','и':'i','й':'i','к':'k','л':'l','м':'m','н':'n',
       'о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'h',
-      'ц':'c','ч':'cz','ш':'sh','щ':'scz','ъ':'','ы':'y','ь':'','э':'e',
-      'ю':'u','я':'ja'}
-
-ltkt = {'a':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'e',
-      'ж':'zh','з':'z','и':'i','й':'i','к':'k','л':'l','м':'m','н':'n',
-      'о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'h',
-      'ц':'c','ч':'cz','ш':'sh','щ':'scz','ъ':'','ы':'y','ь':'','э':'e',
+      'ц':'c','ч':'cz','ш':'sh','щ':'scz','ъ':'\'','ы':'y','ь':'\'','э':'e',
       'ю':'u','я':'ja'}
 
 # Получение отдельных предложений
@@ -269,17 +264,38 @@ class Word:
             return word
 
 # Класс модификации текста
-##class Modif:
-##    
-##    # транслитерация текста
-##    def Translit(text, bToRus=True):
-##        try:
-##            if bToRus:
-##                return translit(text, 'ru')
-##            else:
-##                if LangDetect(text) == 'ru':
-##                    return slugify(text)
-##        except Exception as e:
-##            Fixer.errlog('StrMorph.Transit', str(e))
-##            return text
+class Modif:
+    
+    # транслитерация текста
+    def Translit(text, bToRus=True):
+        try: 
+            mWordUpper = []
+            mWords = String.GetWords(text)
+            for word in mWords:
+                if word[0].lower() != word[0]:
+                    mWordUpper.append(True)
+                else:
+                    mWordUpper.append(False)
+            text = text.lower()
+            if bToRus:
+                for key in ccltkr:
+                    text = text.replace(key, ccltkr[key])
+                for key in cltkr:
+                    text = text.replace(key, cltkr[key])
+                for key in ltkr:
+                    text = text.replace(key, ltkr[key])
+            else:
+                for key in krlt:
+                    text = text.replace(key, krlt[key])
+            mWords = String.GetWords(text)
+            i = 0
+            for word in mWords:
+                if mWordUpper[i]:
+                    s = word[0].upper() + word[1:]
+                    text = text.replace(word, s, 1)
+                i += 1
+            return text
+        except Exception as e:
+            Fixer.errlog('StrMorph.Transit', str(e))
+            return text
     
