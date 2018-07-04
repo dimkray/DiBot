@@ -119,7 +119,8 @@ def location(scoords):
 if __name__ == '__main__':
     Fixer.log('Start','--------------------------------------------')   
     Fixer.log('Start','Запуск VK-Бота')   
-    Fixer.log('Start','--------------------------------------------')	
+    Fixer.log('Start','--------------------------------------------')
+    SendAuthor('Рестарт Di Bot!') 
     # бесконечный цикл проверки
     while True:
         #try:
