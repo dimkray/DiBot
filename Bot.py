@@ -122,9 +122,9 @@ if __name__ == '__main__':
     Fixer.log('Start','--------------------------------------------')	
     # бесконечный цикл проверки
     while True:
-        try:
-            response = vk.method('messages.get', values)
-            #print(response)
+        #try:
+            response = vk.method('messages.get', values=None)
+            print(response)
             if response['items']:
                 values['last_message_id'] = response['items'][0]['id']
                 #print(values['last_message_id'])
@@ -212,8 +212,8 @@ if __name__ == '__main__':
                     Fixer.errlog(Fixer.Process, str(e))
                     SendMessage(PostProcessor.ErrorProcessor('#critical: ' + s))
             Notification.Process() # запуск системы уведомлений
-        except Exception as e:
-            SendAuthor('Возникла ошибка: ' + str(e))  
-            Fixer.errlog(Fixer.Process, str(e))
+##        except Exception as e:
+##            SendAuthor('Возникла ошибка: ' + str(e))  
+##            Fixer.errlog(Fixer.Process, str(e))
 
-        time.sleep(1)
+            time.sleep(1)
