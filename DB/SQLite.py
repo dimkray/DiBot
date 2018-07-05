@@ -66,6 +66,39 @@ def Update(table, colname, value, colUpdate, newValue, bLike = False):
         Fixer.errlog(Fixer.Process, str(e))
         return '#bug: ' + str(e)
 
+# Добавление узла
+def GetNodeCol(node):
+    if 'table=' not in node:
+        print('#bug: Не указана второстепенная таблица для чтения table= !')
+        return None
+    if 'where=' not in node:
+        print('#bug: Не указана связь таблицы where= !')
+        return None
+    else:
+        mcol = node['where=']
+        return mcol[1]
+    return None
+
+# Добавление узла
+def GetNode(node, col, value):
+    print(node, col, value)
+    if 'table=' not in node:
+        return None
+    mNames = []; mCols = []
+    table = node['table=']
+    for key in node:
+        if key != 'table=' and key != 'where=':
+            mNames.append(key)
+            mCols.append(node[key])
+    scols = ''
+    if len(mCols) == 0: return None
+    for icol in mCols:
+        scols += icol + ', '
+    scols = scols[:-2]
+    mRez = Read(table, colname=col, value=value, colValue=scols)
+    return Fixer.ListToDict(mNames, mRez)
+
+# -------------------------------------
 # основной класс
 class SQL:
     
@@ -346,14 +379,104 @@ class SQL:
         result = [] # создаём пустой масив
         try:
             cursor.execute(query)
-            if query.upper().find('SELECT ') < 0: conn.commit()
-            Fixer.log('SQLite.sql', 'Изменено строк: %d' % cursor.rowcount)
-            conn.close()
-            return 'OK'
-        except Exception as e: # ошибка при чтении
+            if 'SELECT ' not in query.upper():
+                conn.commit()
+                Fixer.log('SQLite.sql', 'Изменено строк: %d' % cursor.rowcount)
+                conn.close()
+                return 'OK'
+            else: 
+                for row in cursor.fetchall(): # Загрузка всех данных
+                    result.append(row)
+                conn.close()
+                return result  
+        except Exception as e: # ошибка при обработке запроса
             conn.close()
             Fixer.errlog(Fixer.Process, str(e))
             return '#bug: ' + str(e)
+
+    # Получение данных из базы в Dict (JSON)
+    def Dict(description, objects, sortby='id'):
+        if 'obj=' not in description:
+            print('#bug: Не указан объект для связи obj= !')
+            return None
+        if 'table=' not in description:
+            print('#bug: Не указана главная таблица для чтения table= !')
+            return None
+
+        # обработка главной таблицы
+        table = description['table=']
+        objs = description['obj=']
+        mNames = []; mNamesRez = []
+        for key in description:
+            if key != 'table=' and key != 'obj=':
+                if key == 'col+': # добавляемые поля
+                    if isinstance(description[key], list): # если список полей
+                        for item in description[key]:
+                            mNames = Fixer.inList(mNames, GetNodeCol(item))
+                    elif isinstance(description[key], dict): # если словарь
+                        mNames = Fixer.inList(mNames, GetNodeCol(description[key]))
+                    else:
+                        print('#bug: Указанно неподдерживаемое значение для col+ : ' + str(description[key]))
+                else: # все остальные поля
+                    if isinstance(description[key], list): # если список полей
+                        for item in description[key]:
+                            mNames.append(item)
+                            mNamesRez.append(item)
+                    elif isinstance(description[key], dict): # если словарь
+                        mNames = Fixer.inList(mNames, GetNodeCol(description[key]))
+                    else: # если просто поле
+                        mNames.append(description[key])
+                        mNamesRez.append(description[key])
+        cols = ''
+        if len(mNames) == 0: # Нет списка полей
+            print('#bug: Нет списка полей для вывода!')
+            return None
+        for name in mNames:
+            cols += name + ', '
+        cols = cols[:-2]
+        sobjs = '' # объекты поиска
+        i = 0
+        for obj in objs:
+            value = ''
+            if isinstance(objects[i], str): value = '"'+objects[i]+'"'
+            else: value = str(objects[i])
+            sobjs += obj + ' = ' + value + ' AND '
+            i += 1
+        sobjs = sobjs[:-5]
+        query = 'SELECT %s FROM %s WHERE %s' % (cols, table, sobjs)
+        mCols = SQL.sql(query)
+        if len(mCols) == 0:
+            print('По данному запросу ничего не найдено.')
+            return None
+        # Обработка ответа
+        mResult = Fixer.ListToDict(mNames, mCols, namesRez=mNamesRez)
+        i = 0
+        for row in mCols: # обрабатываем каждые данные
+            for key in description:
+                if key == 'col+' or isinstance(description[key], dict): # добавляемые поля
+                    if isinstance(description[key], list): # если список полей
+                        for item in description[key]:
+                            col = item['where='][0]
+                            idx = mNames.index(item['where='][1])
+                            value = row[idx]
+                            mNew = GetNode(item, col, value)
+                            if len(mNew) == 1:
+                                mResult[i] = {**mResult[i], **mNew[0]}
+                            else:
+                                mResult[i][item['table=']] = mNew
+                    elif isinstance(description[key], dict): # если словарь
+                        col = description[key]['where='][0]
+                        idx = mNames.index(description[key]['where='][1])
+                        value = row[idx]
+                        mNew = GetNode(description[key], col, value)
+                        if key == 'col+' and len(mNew) == 1:
+                            mResult[i] = {**mResult[i], **mNew[0]}
+                        else:
+                            s = key
+                            if key == 'col+': s = item['table=']
+                            mResult[i][s] = mNew
+            i += 1
+        return mResult
 
 # класс поиска данных из БД
 class Finder:
@@ -382,64 +505,6 @@ class Finder:
         Fixer.log('SQLite.strFind')
         m = Finder.FindAll(table, mcols, svalue, returnCol=returnCol)
         return Fixer.strformat(m, items=items, sformat=sFormat, nameCol=returnCol)
-
-# Добавление узла
-def GetNode(Node):
-    return None
-
-# класс комплексной работы с БД
-class DB:
-    # Получение данных из базы в Dict (JSON)
-    def Dict(description, objects):
-        desc = { 'table=': 'cities',
-                 'cityName': 'name',
-                 'cityNameLat': 'name_ascii',
-                 'cityNameRus': 'name_ru',
-                 'Location': ['lat', 'lon'],
-                 'Population': 'population',
-                 'Names': {'table=': 'names',
-                    'ISO': 'iso',
-                    'alternativeName': 'name',
-                    'Parameters': 'params',
-                    'where=': ['id', 'geo_id']},
-                 'obj=': ['tile'],
-                 'col+': {'table=': 'countries',
-                     'countryName': 'name',
-                     'where=': ['country_code', 'code']}}
-
-        if 'obj=' not in description:
-            print('#bug: Не указан объект для связи obj= !')
-            return None
-        if 'table=' not in description:
-            print('#bug: Не указана главная таблица для чтения table= !')
-            return None
-        
-        table = description['table=']
-        objs = description['obj=']
-        mnames = []
-        mcols = []
-        for key in description:
-            if key != 'table=' and key != 'obj=' and key != 'col+':
-                if isinstance(description[key], list): # если список
-                    for item in description[key]:
-                        mcols.append(item)
-                elif isinstance(description[key], dict): # если словарь
-                    GetNode(description[key])
-                    # mcols.append(description[key])
-                else:
-                    mcols.append(description[key])
-            elif key == 'col+':
-                if isinstance(description[key], list): # если список
-                    for item in description[key]:
-                        GetNode(description[key])
-                        #   ...
-                elif isinstance(description[key], dict): # если словарь
-                    GetNode(description[key])
-                    #   ....
-                else:
-                    print('#bug: Не верно указано добавление параметров col+ = ' + str(description[key]))
-            
-        return 1 # ...
 
 # класс работы с SVN-файлами
 class CSV:

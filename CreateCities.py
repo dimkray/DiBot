@@ -46,7 +46,7 @@ if yn != 'N':
     # ['abbr' - аббревиатура,'icao' - ICAO,'link' - ссылка,'post' - почта,'wkdt' - ?]
     for ib in range(0, 13):
         Worker.ReadBlockCSV('E:/SQL/Cities/alternateNamesV2.txt', iblock=ib, separator='\t')
-        Worker.mTableCSV.append('Params')
+        Worker.mTableCSV = Fixer.inList(Worker.mTableCSV, 'Params')
         irow = 0
         for row in Worker.mDataCSV:
             if (row[2] == 'ru' or row[2] == None) and row[3] is not None:
@@ -75,12 +75,12 @@ if yn != 'N':
     for ib in range(0, 12):
         Worker.ReadBlockCSV('E:/SQL/Cities/allCountries.txt', iblock=ib, separator='\t', symb='"')
         irow = 0
-        Worker.mTableCSV.append('type')
-        Worker.mTableCSV.append('link')
-        Worker.mTableCSV.append('name_ru')
-        Worker.mTableCSV.append('nameU_ru')
-        Worker.mTableCSV.append('tz')
-        Worker.mTableCSV.append('tile')
+        Worker.mTableCSV = Fixer.inList(Worker.mTableCSV, 'type')
+        Worker.mTableCSV = Fixer.inList(Worker.mTableCSV, 'link')
+        Worker.mTableCSV = Fixer.inList(Worker.mTableCSV, 'name_ru')
+        Worker.mTableCSV = Fixer.inList(Worker.mTableCSV, 'nameU_ru')
+        Worker.mTableCSV = Fixer.inList(Worker.mTableCSV, 'tz')
+        Worker.mTableCSV = Fixer.inList(Worker.mTableCSV, 'tile')
         for row in Worker.mDataCSV:
             try:
                 if row[6] is not None and row[7] is not None:

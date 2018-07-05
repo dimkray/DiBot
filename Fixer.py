@@ -385,6 +385,34 @@ def Sort(massive, colnum, reverse = False):
     except: pass
     return massive
 
+# ---------------------------------------------------------
+# вн.сервис inList - Добавление элемента в список (List), если его нет
+def inList(mList, item):
+    if item not in mList:
+        mList.append(item)
+    return mList
+
+# ---------------------------------------------------------
+# вн.сервис ListToDict - Преобразование двух списков в словарь внутри списка
+def ListToDict(mNames, mRows, namesRez=[]):
+    if namesRez == []:
+        namesRez = mNames
+    mRez = []; mIdx = []
+    for name in namesRez:
+        i = 0
+        try:
+            i = mNames.index(name)
+        except: i = -1
+        mIdx.append(i)
+    for row in mRows:
+        drow = {}
+        i = 0
+        for name in namesRez:
+            if mIdx[i] >= 0:
+                drow[name] = row[mIdx[i]]
+            i += 1
+        mRez.append(drow)
+    return mRez
 
 # Загрузка таблиц из БД
 log('Fixer.Start', '------ Загрузка данных ------')
