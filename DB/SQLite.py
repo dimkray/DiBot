@@ -383,12 +383,63 @@ class Finder:
         m = Finder.FindAll(table, mcols, svalue, returnCol=returnCol)
         return Fixer.strformat(m, items=items, sformat=sFormat, nameCol=returnCol)
 
+# Добавление узла
+def GetNode(Node):
+    return None
+
 # класс комплексной работы с БД
 class DB:
     # Получение данных из базы в Dict (JSON)
-    def Dict(description, obj_id):
-        #...
-        return 1
+    def Dict(description, objects):
+        desc = { 'table=': 'cities',
+                 'cityName': 'name',
+                 'cityNameLat': 'name_ascii',
+                 'cityNameRus': 'name_ru',
+                 'Location': ['lat', 'lon'],
+                 'Population': 'population',
+                 'Names': {'table=': 'names',
+                    'ISO': 'iso',
+                    'alternativeName': 'name',
+                    'Parameters': 'params',
+                    'where=': ['id', 'geo_id']},
+                 'obj=': ['tile'],
+                 'col+': {'table=': 'countries',
+                     'countryName': 'name',
+                     'where=': ['country_code', 'code']}}
+
+        if 'obj=' not in description:
+            print('#bug: Не указан объект для связи obj= !')
+            return None
+        if 'table=' not in description:
+            print('#bug: Не указана главная таблица для чтения table= !')
+            return None
+        
+        table = description['table=']
+        objs = description['obj=']
+        mnames = []
+        mcols = []
+        for key in description:
+            if key != 'table=' and key != 'obj=' and key != 'col+':
+                if isinstance(description[key], list): # если список
+                    for item in description[key]:
+                        mcols.append(item)
+                elif isinstance(description[key], dict): # если словарь
+                    GetNode(description[key])
+                    # mcols.append(description[key])
+                else:
+                    mcols.append(description[key])
+            elif key == 'col+':
+                if isinstance(description[key], list): # если список
+                    for item in description[key]:
+                        GetNode(description[key])
+                        #   ...
+                elif isinstance(description[key], dict): # если словарь
+                    GetNode(description[key])
+                    #   ....
+                else:
+                    print('#bug: Не верно указано добавление параметров col+ = ' + str(description[key]))
+            
+        return 1 # ...
 
 # класс работы с SVN-файлами
 class CSV:

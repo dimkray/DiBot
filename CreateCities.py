@@ -17,11 +17,11 @@ yn = input('...... Обновить таблицы БД и загрузить н
 if yn != 'N': 
 
     # Словари
-    Worker.UpdateTableCSV('E:/SQL/Cities/countryInfo.txt', 'countries',
-        {'iso': 'text pk nn u', 'iso3': 'text', 'iso_numeric': 'text', 'fips': 'text', 'name': 'text', 'capital': 'text', 'area': 'float',
-         'population': 'int', 'continent': 'text', 'tld': 'text', 'currency_code': 'text',
-         'currency_name': 'text', 'phone': 'text', 'postcode_format': 'text', 'postcode_regex': 'text',
-         'languages': 'text', 'geo_id': 'int', 'neighbours': 'int', 'equivalent_fipscode': 'text'}, separator='\t', symb='"')
+##    Worker.UpdateTableCSV('E:/SQL/Cities/countryInfo.txt', 'countries',
+##        {'iso': 'text pk nn u', 'iso3': 'text', 'iso_numeric': 'text', 'fips': 'text', 'name': 'text', 'capital': 'text', 'area': 'float',
+##         'population': 'int', 'continent': 'text', 'tld': 'text', 'currency_code': 'text',
+##         'currency_name': 'text', 'phone': 'text', 'postcode_format': 'text', 'postcode_regex': 'text',
+##         'languages': 'text', 'geo_id': 'int', 'neighbours': 'int', 'equivalent_fipscode': 'text'}, separator='\t', symb='"')
     Worker.UpdateTableCSV('E:/SQL/Cities/iso-languagecodes.txt', 'languages',
         {'iso3': 'text pk nn u', 'iso2': 'text', 'iso1': 'text', 'name': 'text'}, separator='\t', symb='"')
     Worker.UpdateTableCSV('E:/SQL/Cities/featureCodes_ru.txt', 'feature_codes',
@@ -43,32 +43,32 @@ if yn != 'N':
     # Таблица названий объектов
 
     dName = {}; dLink = {}
-##    # ['abbr' - аббревиатура,'icao' - ICAO,'link' - ссылка,'post' - почта,'wkdt' - ?]
-##    for ib in range(0, 13):
-##        Worker.ReadBlockCSV('E:/SQL/Cities/alternateNamesV2.txt', iblock=ib, separator='\t')
-##        Worker.mTableCSV.append('Params')
-##        irow = 0
-##        for row in Worker.mDataCSV:
-##            if (row[2] == 'ru' or row[2] == None) and row[3] is not None:
-##                if row[5] is None and row[6] is None and row[7] is None:
-##                    iType = Word.Type(row[3])
-##                    if iType != 0 and iType != 50:
-##                        dName[row[1]] = row[3]
-##            if row[2] == 'link': dLink[row[1]] = row[3]
-##            sparams = ''
-##            if row[4] is not None: sparams += 'p' # isPreferredName
-##            if row[5] is not None: sparams += 's' # isShortName
-##            if row[6] is not None: sparams += 'c' # isColloquial
-##            if row[7] is not None: sparams += 'h' # isHistoric
-##            row.append(sparams)
-##            irow += 1
-##            if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))
-##        Worker.UpdateBlockCSV('names', {
-##            'geo_id': 'int nn', 'iso': 'text', 'name': 'text nn',
-##            'params': 'text' },
-##            {'geo_id': 'geonameid', 'iso': 'isolanguage', 'name': 'alternate name',
-##            'params': 'Params'})
-##    Worker.Indexation('names', ['geo_id', 'name'])
+    # ['abbr' - аббревиатура,'icao' - ICAO,'link' - ссылка,'post' - почта,'wkdt' - ?]
+    for ib in range(0, 13):
+        Worker.ReadBlockCSV('E:/SQL/Cities/alternateNamesV2.txt', iblock=ib, separator='\t')
+        Worker.mTableCSV.append('Params')
+        irow = 0
+        for row in Worker.mDataCSV:
+            if (row[2] == 'ru' or row[2] == None) and row[3] is not None:
+                if row[5] is None and row[6] is None and row[7] is None:
+                    iType = Word.Type(row[3])
+                    if iType != 0 and iType != 50:
+                        dName[row[1]] = row[3]
+            if row[2] == 'link': dLink[row[1]] = row[3]
+            sparams = ''
+            if row[4] is not None: sparams += 'p' # isPreferredName
+            if row[5] is not None: sparams += 's' # isShortName
+            if row[6] is not None: sparams += 'c' # isColloquial
+            if row[7] is not None: sparams += 'h' # isHistoric
+            row.append(sparams)
+            irow += 1
+            if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))
+        Worker.UpdateBlockCSV('names', {
+            'geo_id': 'int nn', 'iso': 'text', 'name': 'text nn',
+            'params': 'text' },
+            {'geo_id': 'geonameid', 'iso': 'isolanguage', 'name': 'alternate name',
+            'params': 'Params'})
+    Worker.Indexation('names', ['geo_id', 'name'])
 
     # Таблица городов
 
