@@ -4,28 +4,40 @@ from Tests.Testing import Test, Report
 from DB.SQLite import SQL
 
 service = 'SQLite'
-Fixer.DB = 'DB/Geo.db'
+Fixer.DB = 'Tests/test.db'
 
 print('------- Запущены тесты сервиса %s --------' % service)
 
 # здесь тестовая обработка #
 with Profiler() as p:
-    # isWork
-    desc = { 'table=': 'cities',
-                 'cityName': 'name',
-                 'cityNameLat': 'name_ascii',
-                 'cityNameRus': 'name_ru',
-                 'Location': ['lat', 'lon'],
-                 'Population': 'population',
-                 'Names': {'table=': 'names',
-                    'ISO': 'iso',
-                    'alternativeName': 'name',
-                    'Parameters': 'params',
-                    'where=': ['geo_id', 'id']},
-                 'obj=': ['id']}
+    # Read
+    test = SQL.ReadAll('test1')
+    etalon = [(0, 'Тест 1'), (1, 'Тест 2')]
+    Test.Add(service+'.ReadAll','normal', test, etalon)
     
-    test = SQL.Dict(desc, [511196])
-    Test.Add(service+'.Dict','normal', test, None)
+    # Dict
+    desc = { 'table=': 'test1',
+             'Text': 'text',
+             'Region': {'table=': 'region',
+                        'typeRegion': 'type',
+                        'nameRegion': 'name',
+                        'where=': ['id', 'id']},
+             'col+': [{'table=': 'test2',
+                       'Text2': 'text',
+                       'where=': ['id', 'id']},
+                      {'table=': 'region2',
+                       'typeRegion2': 'type',
+                       'nameRegion2': 'name',
+                       'where=': ['id', 'id']}]}
+
+    test = SQL.Dict(desc, {'id': 1, 'text': 'Тест 2'})
+    etalon = [{'Text': 'Тест 2',
+               'Region': [{'typeRegion': 'ГОРОД', 'nameRegion': 'МОСКВА'}],
+               'Text2': 'Тест 2', 'typeRegion2': 'ГОРОД', 'nameRegion2': 'МОСКВА'}]
+    Test.Add(service+'.Dict','normal', test, etalon)
+
+    test = SQL.Dict({'table=': 'test1', 'key': 'id'}, {'text': 'Тест 1'})
+    Test.Add(service+'.Dict','normal simple', test, [{'key': 0}])
 
 print('')
 print('------- Отчёт тестов сервиса %s --------' % service)

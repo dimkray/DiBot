@@ -395,8 +395,7 @@ def inList(mList, item):
 # ---------------------------------------------------------
 # вн.сервис ListToDict - Преобразование двух списков в словарь внутри списка
 def ListToDict(mNames, mRows, namesRez=[]):
-    if namesRez == []:
-        namesRez = mNames
+    if namesRez == []: namesRez = mNames
     mRez = []; mIdx = []
     for name in namesRez:
         i = 0

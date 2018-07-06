@@ -6,7 +6,7 @@ import sqlite3
 import csv
 
 # Чтение по одному критерию (равенство или like)
-def Read(table, colname, value, colValue = '*', bLike = False, bOne = False, bFirst = False):
+def Read(table, colname, value, colValue='*', bLike=False, bOne=False, bFirst=False, bListRow=False):
     conn = sqlite3.connect(Fixer.DB)
     cursor = conn.cursor()  
     if isinstance(value, str):
@@ -23,16 +23,13 @@ def Read(table, colname, value, colValue = '*', bLike = False, bOne = False, bFi
         cursor.execute(sql)
         if bOne:
             row = cursor.fetchone() # загрузка данных по одной строке
-            #print(row)
             while row is not None:
-                if colValue == '*': result.append(row)
+                if colValue == '*' or bListRow == True: result.append(row)
                 else: result.append(row[0])
                 row = cursor.fetchone()
-                #print(row)
         else:
             for row in cursor.fetchall(): # Загрузка всех данных
-                #print(row)
-                if colValue == '*': result.append(row)
+                if colValue == '*' or bListRow == True: result.append(row)
                 elif colValue.find(',') > 0: result.append(row)
                 else: result.append(row[0])
         if bFirst: result = result[0]
@@ -81,7 +78,7 @@ def GetNodeCol(node):
 
 # Добавление узла
 def GetNode(node, col, value):
-    print(node, col, value)
+    #print(node, col, value)
     if 'table=' not in node:
         return None
     mNames = []; mCols = []
@@ -95,7 +92,7 @@ def GetNode(node, col, value):
     for icol in mCols:
         scols += icol + ', '
     scols = scols[:-2]
-    mRez = Read(table, colname=col, value=value, colValue=scols)
+    mRez = Read(table, colname=col, value=value, colValue=scols, bListRow=True)
     return Fixer.ListToDict(mNames, mRez)
 
 # -------------------------------------
@@ -267,11 +264,22 @@ class SQL:
             return result
 
     # Загрузка всей таблицы в виде словаря
-    def ReadDict(table):
+    def ReadDict(table, bAll=True):
         m = SQL.ReadAll(table)
         Fixer.log('SQLite.ReadDict')
         dic = {}
         try:
+            if bAll and len(m[0]) > 2: # если всё загружать
+                end = len(m[0])
+                for item in m:
+                    row = []
+                    i = 0
+                    for t in item:
+                        if i > 0: row.append(t)
+                        i += 1
+                    dic[item[0]] = row # формируем словарь со всеми вложениями
+                return dic
+            # если не нужно всё или всего 2 колонки
             for item in m:
                 dic[item[0]] = item[1] # формируем словарь по первым двум колонкам
             return dic
@@ -395,38 +403,38 @@ class SQL:
             return '#bug: ' + str(e)
 
     # Получение данных из базы в Dict (JSON)
-    def Dict(description, objects, sortby='id'):
-        if 'obj=' not in description:
-            print('#bug: Не указан объект для связи obj= !')
-            return None
+    def Dict(description, dObjs, sortby='id'):
         if 'table=' not in description:
             print('#bug: Не указана главная таблица для чтения table= !')
             return None
-
         # обработка главной таблицы
         table = description['table=']
-        objs = description['obj=']
-        mNames = []; mNamesRez = []
+        mNames = []; mNamesRez = []; mNamesKey = []
         for key in description:
-            if key != 'table=' and key != 'obj=':
+            if key != 'table=':
                 if key == 'col+': # добавляемые поля
                     if isinstance(description[key], list): # если список полей
                         for item in description[key]:
                             mNames = Fixer.inList(mNames, GetNodeCol(item))
+                            mNamesKey = Fixer.inList(mNamesKey, GetNodeCol(item))
                     elif isinstance(description[key], dict): # если словарь
                         mNames = Fixer.inList(mNames, GetNodeCol(description[key]))
+                        mNamesKey = Fixer.inList(mNamesKey, GetNodeCol(description[key]))
                     else:
                         print('#bug: Указанно неподдерживаемое значение для col+ : ' + str(description[key]))
                 else: # все остальные поля
                     if isinstance(description[key], list): # если список полей
                         for item in description[key]:
                             mNames.append(item)
+                            mNamesKey.append(item)
                             mNamesRez.append(item)
                     elif isinstance(description[key], dict): # если словарь
                         mNames = Fixer.inList(mNames, GetNodeCol(description[key]))
+                        mNamesKey = Fixer.inList(mNamesKey, GetNodeCol(description[key]))
                     else: # если просто поле
                         mNames.append(description[key])
-                        mNamesRez.append(description[key])
+                        mNamesKey.append(key)
+                        mNamesRez.append(key)
         cols = ''
         if len(mNames) == 0: # Нет списка полей
             print('#bug: Нет списка полей для вывода!')
@@ -436,20 +444,22 @@ class SQL:
         cols = cols[:-2]
         sobjs = '' # объекты поиска
         i = 0
-        for obj in objs:
+        for obj in dObjs:
             value = ''
-            if isinstance(objects[i], str): value = '"'+objects[i]+'"'
-            else: value = str(objects[i])
+            if isinstance(dObjs[obj], str): value = '"'+dObjs[obj]+'"'
+            else: value = str(dObjs[obj])
             sobjs += obj + ' = ' + value + ' AND '
             i += 1
         sobjs = sobjs[:-5]
         query = 'SELECT %s FROM %s WHERE %s' % (cols, table, sobjs)
         mCols = SQL.sql(query)
-        if len(mCols) == 0:
+        if isinstance(mCols, str): return mCols
+        if mCols == []:
             print('По данному запросу ничего не найдено.')
             return None
         # Обработка ответа
-        mResult = Fixer.ListToDict(mNames, mCols, namesRez=mNamesRez)
+        mResult = Fixer.ListToDict(mNamesKey, mCols, namesRez=mNamesRez)
+        print(mResult)
         i = 0
         for row in mCols: # обрабатываем каждые данные
             for key in description:
