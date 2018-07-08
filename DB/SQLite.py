@@ -455,11 +455,10 @@ class SQL:
         mCols = SQL.sql(query)
         if isinstance(mCols, str): return mCols
         if mCols == []:
-            print('По данному запросу ничего не найдено.')
-            return None
+            # print('По данному запросу ничего не найдено.')
+            return []
         # Обработка ответа
         mResult = Fixer.ListToDict(mNamesKey, mCols, namesRez=mNamesRez)
-        print(mResult)
         i = 0
         for row in mCols: # обрабатываем каждые данные
             for key in description:
