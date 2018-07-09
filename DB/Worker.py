@@ -70,7 +70,10 @@ class Worker:
             for col in cols:
                 try:
                     i = Worker.mTableCSV.index(col) # поиск соотвествия таблицы
-                except: i = -1; print('!!! BUG - not found col "%s"' % col)  
+                except:
+                    i = -1
+                    print('!!! BUG - not found col "%s"' % col)
+                    Fixer.log('UpdateBlockCSV', '!!! BUG - not found col "%s"' % col)
                 indexes.append(i)
         else:
             for col in cols:
@@ -79,7 +82,10 @@ class Worker:
                 else:
                     try:
                         i = Worker.mTableCSV.index(dColsCSV[col]) # поиск индекса в dColsCSV
-                    except: i = -1; print('!!! BUG - not found col "%s"' % col)  
+                    except:
+                        i = -1
+                        print('!!! BUG - not found col "%s"' % col)
+                        Fixer.log('UpdateBlockCSV', '!!! BUG - not found col "%s"' % col)
                     indexes.append(i) 
         data = [] # временное хранилище данных
         print(indexes)
@@ -93,6 +99,7 @@ class Worker:
             except Exception as e:
                 print('!!! BUG - ' + str(e))
                 print(row)
+                Fixer.log('UpdateBlockCSV', '!!! BUG - %s\n%s' % (str(e), str(row)))
         print('Обработано данных: %i строк' % len(data))
         print('-------------------------------------')
         result = Worker.UpdateTable(NameTable, dCols, data)
@@ -133,7 +140,10 @@ class Worker:
             for col in mCols:
                 try:
                     i = mlist.index(col) # поиск соотвествия таблицы
-                except: i = -1; print('!!! BUG - not found col "%s"' % col)  
+                except:
+                    i = -1
+                    print('!!! BUG - not found col "%s"' % col)
+                    Fixer.log('DictionaryCSV', '!!! BUG - not found col "%s"' % col)
                 indexes.append(i)
         elif icol == 0: indexes.append(1)
         else: indexes.append(0)
@@ -152,6 +162,7 @@ class Worker:
             except Exception as e:
                 print('!!! BUG - ' + str(e))
                 print(row)
+                Fixer.log('UpdateBlockCSV', '!!! BUG - %s\n%s' % (str(e), str(row)))
         print('Обработано данных: %i строк' % len(data))
         print('-------------------------------------')
         return dData # возвращение словаря

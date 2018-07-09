@@ -558,6 +558,7 @@ class CSV:
                     ierr += 1
                     if ierr > 10000:
                         print('BUG! - ошибка в строке ' + str(row))
+                        Fixer.log('Reader', '!!!bug!!! - ' + str(row))
                         poz = -1
                         continue
                     sep = row.find(separator, poz)
@@ -582,7 +583,9 @@ class CSV:
                             if s[0] == '"': s = s[1:]
                             if s[-1] == '"': s = s[:-1]
                     except:
-                        s = s; print('!!!bug!!! - ' + s)
+                        s = s
+                        print('!!!bug!!! - ' + s)
+                        Fixer.log('Reader', '!!!bug!!! - ' + s)
                     s = s.strip()
                     if '|^' in s: s = s.replace('|^','"')
                     if '""' in s: s = s.replace('""','"')
