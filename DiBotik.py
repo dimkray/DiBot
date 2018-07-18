@@ -27,9 +27,13 @@ from Chats.Chats import Chat
 Author = 2876041
 Home = 'ВКонтакте'
 
-vk = vk_api.VkApi(token = config.token_VK) #Авторизоваться как сообщество
-# vk.auth()
-# values = {'out': 0,'count': 20,'time_offset': 60}
+login, password = config.DiBotik_log, config.DiBotik_pass
+vk = vk_api.VkApi(login, password)
+
+try:
+    vk.auth(token_only=True)
+except vk_api.AuthError as error_msg:
+    print(error_msg)
 
 longpoll = VkLongPoll(vk)
 
@@ -90,8 +94,12 @@ def SendAuthor(text):
 def SendMessage(text): 
     if Fixer.ChatID == 0: return False
     text = Fixer.Subs(text)
-    print({'user_id': Fixer.UserID, 'chat_id': Fixer.ChatID, 'message': text})
-    vk.method('messages.send', {'user_id': Fixer.UserID, 'chat_id': Fixer.ChatID, 'message': text})
+    # print({'user_id': Fixer.UserID, 'chat_id': Fixer.ChatID, 'peer_id': Fixer.PeerID, 'message': text})
+    if Fixer.bChats == 0:
+        vk.method('messages.send', {'user_id': Fixer.UserID, 'message': text})
+    elif Fixer.bChats == 2:
+        vk.method('messages.send', {'chat_id': Fixer.ChatID, 'message': text})
+    else: return False
     Fixer.log('Bot', text)
     if Fixer.UserID != Author: SendAuthor('~Уведомление: бот пишет пользователю VK '+str(Fixer.UserID)+': ' + text)
     return True
@@ -122,15 +130,37 @@ def location(scoords):
 def LongPoll():
     for event in longpoll.listen():
         if event.type == VkEventType.MESSAGE_NEW:
+            Fixer.bChats = 0
+            if event.from_user:
+                if event.user_id != Author:
+                    SendAuthor('~Уведомление: пользователь VK %i пишет: %s' % (event.user_id, event.text))
+            elif event.from_chat:
+                #print('Беседа ' + str(event.chat_id))
+                Fixer.bChats = 1 # признак чата
+                if event.text.upper()[:3] == 'DI,' or event.text.upper()[:3] == 'ДИ,': Fixer.bChats = 2 # надо ответить
+                if event.user_id != Author:
+                    SendAuthor('~Уведомление: пользователь VK %i пишет в беседе %i: %s' % (event.user_id, event.chat_id, event.text))
+            elif event.from_group:
+                Fixer.bChats = 1 # признак чата
+                #print('Группа ' + str(event.chat_id))
+                if event.user_id != Author:
+                    SendAuthor('~Уведомление: пользователь VK %i пишет в группе %i: %s' % (event.user_id, event.group_id, event.text))
+
+            if Fixer.bChats == 1: continue # пропускаем беседу
+            # Обработка сообщений для бота
             if event.to_me:
+                # print(event.peer_id)
                 text = event.text
                 #try:
+                if len(text) > 3:
+                    if text.upper()[:3] == 'DI,' or text.upper()[:3] == 'ДИ,': text = text[3:].strip()
                 if text != '':
                     if text[0] == '~': continue # включён тихий режим сообщения
                     Fixer.ChatID = event.chat_id
+                    Fixer.PeerID = event.peer_id
                     # Идентификатор юзера
                     Fixer.UserID = event.user_id
-                    if Fixer.UserID != Author: SendAuthor('~Уведомление: пользователь TL '+str(Fixer.UserID)+' пишет: ' + text)
+                    # if Fixer.UserID != Author: SendAuthor('~Уведомление: пользователь VK '+str(Fixer.UserID)+' пишет: ' + text)
                     Fixer.Time.append(Fixer.time())
                     Fixer.Chat.append(text)
                     if Chat.Load() == False:
@@ -153,15 +183,16 @@ def LongPoll():
 ##                        if text == '': SendMessage(s); Chat.Save(); continue
                     # Поиск стикеров и вложений
                     iphoto = 0
-                    if event.attachments:
-                        Fixer.Process = 'Bot.GetUserAttachments'
-                        for att in event.attachments: # иттератор по вложениям
-                            if att[u'type'] == u'sticker': # найден стикер
-                                SendMessage('Сорян. Я не умею распознавать стикеры.'); continue
-                            elif att[u'type'] == u'photo': # найдено фото
-                                iphoto += 1
-                            else: # другой тип вложения
-                                if text == '': SendMessage('В данных типах вложениях я не разбираюсь :('); continue
+##                    if event.attachments:
+##                        print(event.attachments)
+##                        Fixer.Process = 'Bot.GetUserAttachments'
+##                        for att in event.attachments: # иттератор по вложениям 
+##                            if att[u'type'] == u'sticker': # найден стикер
+##                                SendMessage('Сорян. Я не умею распознавать стикеры.'); continue
+##                            elif att[u'type'] == u'photo': # найдено фото
+##                                iphoto += 1
+##                            else: # другой тип вложения
+##                                if text == '': SendMessage('В данных типах вложениях я не разбираюсь :('); continue
                     if text == '': # Пустое сообщение (без текста)
                         if iphoto == 1: s = 'Одно фото во вложении. В будующем смогу провести анализ фото :)'
                         elif iphoto > 1: s = 'Найдено '+str(iphoto)+ ' изображений/фото во вложении.'
@@ -209,8 +240,8 @@ def LongPoll():
 
 if __name__ == '__main__':
     Fixer.log('Start','--------------------------------------------')   
-    Fixer.log('Start','Запуск VK-Бота')   
+    Fixer.log('Start','Запуск VK-Ботика')   
     Fixer.log('Start','--------------------------------------------')
-    SendAuthor('Рестарт Di Bot!') 
+    SendAuthor('Рестарт DiBotik!') 
     # Запуск longpool
     LongPoll()
