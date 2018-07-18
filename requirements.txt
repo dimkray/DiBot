@@ -15,7 +15,7 @@ query-string==0.0.28
 request==0.0.26
 requests==2.18.4
 urllib3==1.22
-vk-api==9.3.2
+vk-api==10.1
 wikipedia==1.4.0
 feedparser==5.2.1
 pymorphy2==0.8

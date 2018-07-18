@@ -7,9 +7,11 @@ from DB.Worker import Worker
 
 Fixer.DB = 'DB/egr2.db'
 
+global tOpf, opf # словарь организационно-правовых форм
+tOpf = {}
 opf = [None, None]
-tOpf = {} # словарь организационно-правовых форм
-tDel = [] # Список удалённых таблиц
+
+# tDel = [] # Список удалённых таблиц
 
 dOpf = {'АНО':	'АВТОНОМНАЯ НЕКОММЕРЧЕСКАЯ ОРГАНИЗАЦИЯ',
     'АОЗТ':	'АКЦИОНЕРНОЕ ОБЩЕСТВО ЗАКРЫТОГО ТИПА',
@@ -125,6 +127,7 @@ endOpf = ['АРТЕЛЬ', 'АССОЦИАЦИЯ', 'ИНСПЕКЦИЯ', 'КОЛ�
 
 # запись ОПФ
 def setOpf(text):
+    global opf
     if opf[0] is not None: opf[1] = text
     elif opf[0] is None: opf[0] = text
     else: return False
@@ -132,6 +135,7 @@ def setOpf(text):
 
 # создание новой записи в таблице ОПФ
 def newOpf(text):
+    global tOpf
     i = 0; rez = -1
     for val in tOpf.values():
         if val == text:
@@ -162,10 +166,10 @@ def SetOrganization(nameTable):
 
 # Заполнение таблицы названий организаций
 def SetOrganizationName(nameTable):
+    global tOpf, opf
     Fixer.log('SetOrganizationName','start')
     for ib in range(0, 15):
         Worker.ReadBlockCSV('E:/SQL/Dossier/organizationname.csv', iblock=ib)
-        #mOrgs = []
         iorg = 0
         Worker.mTableCSV.append('Name')
         Worker.mTableCSV.append('Opf1')
@@ -216,7 +220,6 @@ def SetOrganizationName(nameTable):
                             sname = sname.replace(iopf,'').strip()
                             words = String.GetWords(sname)
                             break
-                            #print('mOpf: ', words)
                 # поиск ОПФ - endOpf
                 for iopf in endOpf:
                     if iopf in words:
@@ -278,10 +281,12 @@ def SetOrganizationName(nameTable):
                 iOrg.append(koef) # koef
                 iorg += 1
                 if iorg % items == 0: print('Обработано %i из %i...' % (iorg, len(Worker.mDataCSV)))
+                #print(len(tOpf))
             except Exception as e:
                 print('!!!Bug - '+str(e)+' : '+str(iOrg))
+                Fixer.log('SetOrganizationName','!!!Bug - '+str(e)+' : '+str(iOrg))
         
-        Worker.UpdateBlockCSV('nameTable', {'org_id': 'int nn',
+        Worker.UpdateBlockCSV(nameTable, {'org_id': 'int nn',
             'date': 'text', 'name_full': 'text', 'name_abbr': 'text', 'name': 'text',
             'opf_name1': 'int', 'opf_name2': 'int', 'opf_id': 'int', 'name_original': 'text',
             'old_data': 'int', 'koef': 'float'},
@@ -437,9 +442,10 @@ def SetOrganizationAddress(nameTable):
 def SetOrganizationStatus(nameTable):
     Fixer.log('SetOrganizationStatus','start')
     # Коды статусов
-    Worker.UpdateTableCSV('E:/SQL/Dossier/status.csv', 'status',
+    Worker.UpdateTableCSV('E:/SQL/Dossier/status.csv', 'dictionary_status',
                           {'id': 'int pk nn u', 'code': 'int', 'name': 'text'},
                           {'id': 0, 'code': 'Code', 'name': 'Name'})
+    Worker.Indexation('dictionary_status', ['id'])
 
     for ib in range(0, 22): # organization
         Worker.ReadBlockCSV('E:/SQL/Dossier/organizationstatus.csv', iblock=ib)
@@ -449,7 +455,7 @@ def SetOrganizationStatus(nameTable):
             row[1] = row[1][:10]
             irow += 1
             if irow % items == 0: print('Обработано %i из %i...' % (irow, len(Worker.mDataCSV)))       
-        Worker.UpdateBlockCSV('organizations_status',
+        Worker.UpdateBlockCSV(nameTable,
             {'org_id': 'int nn', 'date': 'text', 'status_id': 'int', 'old_data': 'int'},
             {'org_id': 'Organization', 'date': 'DT', 'status_id': 'Status', 'old_data': 'OldData'})
     Worker.Indexation(nameTable, ['org_id'])
@@ -466,8 +472,12 @@ def SetOrganizationOKVED(nameTable):
     Worker.mTableCSV.append('NameU')
     Worker.mTableCSV.append('NoteU')
     for row in Worker.mDataCSV:
-        row.append(row[3].upper()) # name
-        row.append(row[4].upper()) # note
+        if row[3] is not None:
+            row.append(row[3].upper()) # name
+        else: row.append(None)
+        if row[4] is not None:
+            row.append(row[4].upper()) # note
+        else: row.append(None)
     Worker.UpdateBlockCSV('dictionary_okved',
         {'id': 'int pk nn u', 'code': 'text nn', 'name': 'text', 'note': 'text', 'version': 'int',
          'nameU': 'text', 'noteU': 'text'},
@@ -668,16 +678,16 @@ def SetEmail():
     # organization
     Worker.ReadBlockCSV('E:/SQL/Dossier/email.csv')
     for row in Worker.mDataCSV:
-        row[1] = row[1][:10]
+        row[2] = row[2][:10]
     Worker.UpdateBlockCSV('organization_email',
-            {'org_id': 'int pk nn u', 'email': 'text', 'date': 'text', 'old_data': 'int'},
+            {'org_id': 'int nn', 'email': 'text', 'date': 'text', 'old_data': 'int'},
             {'org_id': 'Organization', 'email': 'EmailAddress', 'date': 'DT', 'old_data': 'OldData'})
     # person
     Worker.ReadBlockCSV('E:/SQL/Dossier/emailperson.csv')
     for row in Worker.mDataCSV:
-        row[1] = row[1][:10]
+        row[2] = row[2][:10]
     Worker.UpdateBlockCSV('entrepreneur_email',
-            {'etr_id': 'int pk nn u', 'email': 'text', 'date': 'text', 'old_data': 'int'},
+            {'etr_id': 'int nn', 'email': 'text', 'date': 'text', 'old_data': 'int'},
             {'etr_id': 'Person', 'email': 'EmailAddress', 'date': 'DT', 'old_data': 'OldData'})
 
         

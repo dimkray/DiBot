@@ -123,7 +123,7 @@ if __name__ == '__main__':
     SendAuthor('Рестарт Di Bot!') 
     # бесконечный цикл проверки
     while True:
-        #try:
+        try:
             response = vk.method('messages.get', values=None)
             print(response)
             if response['items']:
@@ -213,8 +213,8 @@ if __name__ == '__main__':
                     Fixer.errlog(Fixer.Process, str(e))
                     SendMessage(PostProcessor.ErrorProcessor('#critical: ' + s))
             Notification.Process() # запуск системы уведомлений
-##        except Exception as e:
-##            SendAuthor('Возникла ошибка: ' + str(e))  
-##            Fixer.errlog(Fixer.Process, str(e))
+        except Exception as e:
+            SendAuthor('Возникла ошибка: ' + str(e))  
+            Fixer.errlog(Fixer.Process, str(e))
 
-            time.sleep(1)
+        time.sleep(1)
