@@ -130,7 +130,7 @@ if __name__ == '__main__':
                 values['last_message_id'] = response['items'][0]['id']
                 #print(values['last_message_id'])
             for item in response['items']:
-                try:
+                #try:
                     print(item)
                     text = item[u'body']
                     if text != '':
@@ -213,8 +213,8 @@ if __name__ == '__main__':
                     Fixer.errlog(Fixer.Process, str(e))
                     SendMessage(PostProcessor.ErrorProcessor('#critical: ' + s))
             Notification.Process() # запуск системы уведомлений
-        except Exception as e:
-            SendAuthor('Возникла ошибка: ' + str(e))  
-            Fixer.errlog(Fixer.Process, str(e))
+##        except Exception as e:
+##            SendAuthor('Возникла ошибка: ' + str(e))  
+##            Fixer.errlog(Fixer.Process, str(e))
 
-        time.sleep(1)
+            time.sleep(1)
