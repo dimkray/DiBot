@@ -53,7 +53,7 @@ def ai(text):
     try:
         request = apiai.ApiAI(config.apiAI_key).text_request()
         request.lang = 'ru' # На каком языке будет послан запрос
-        request.session_id = Fixer.UserID #'BatlabAIBot' # ID Сессии диалога (нужно, чтобы потом учить бота)
+        request.session_id = str(Fixer.UserID) #'BatlabAIBot' # ID Сессии диалога (нужно, чтобы потом учить бота)
         # Запуск сервиса Google Dialogflow для обработки пользовательского запроса (ИИ)
         request.query = text # Посылаем запрос к ИИ с сообщением от юзера
         responseJson = json.loads(request.getresponse().read().decode('utf-8'))
@@ -669,7 +669,7 @@ def correction(text):
     s = '\nНа запрос: ' + Fixer.strcleaner(Fixer.Query)
     for i in getparams(text, ';'):
         s += '\nВариант ответа: '+ i
-    Bot.SendAuthor('Уведомление от пользователя ' + Fixer.UserID + s)
+    Bot.SendAuthor('Уведомление от пользователя ' + str(Fixer.UserID) + s)
     s = Fixer.Dialog('correction') + s
     Fixer.bAI = True; Fixer.Service = 'ai'; Fixer.Conext = False
     return s
