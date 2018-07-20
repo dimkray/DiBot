@@ -5,10 +5,10 @@ from Services.StrMorph import String, Word
 
 Fixer.DB = 'DB/egr2.db'
 
-dOPF = SQL.ReadDict('opf', bAll=False)
+dOPF = SQL.ReadDict('catalog_opf', bAll=False)
 dFindOPF = SQL.ReadDict('dictionary_opf')
 dOkved = SQL.ReadDict('dictionary_okved') # id: [code, name, note, version ...]
-dStatus = SQL.ReadDict('status') # id: [code, name]
+dStatus = SQL.ReadDict('dictionary_status') # id: [code, name]
 dStatusGroup = {'0': 'Действующее',
                 '1': 'В процессе ликвидации',
                 '2': 'Ликвидированно',
@@ -18,14 +18,14 @@ dOldData = {0: 'нет',
 dTypeOkved = {1: 'главный',
               2: 'не главный'}
 
-model = {'table=': 'organizations',
+model = {'table=': 'organization',
          'ИНН': 'inn',
          'КПП': 'kpp',
          'ОГРН': 'ogrn',
          'Дата ОГРН': 'ogrn_date',
          'Группа статуса': 'status_group_id',
          'Регион': 'region_code',
-         'Названия': {'table=': 'organizations_name',
+         'Названия': {'table=': 'organization_name',
                       'Оригинал': 'name_original',
                       'Полное название': 'name_full',
                       'Сокращённое название': 'name_abbr',
@@ -37,25 +37,25 @@ model = {'table=': 'organizations',
                       'Старые данные': 'old_data',
                       'Дата': 'date',
                       'where=': ['org_id', 'id']},
-         'Статусы': {'table=': 'organizations_status',
+         'Статусы': {'table=': 'organization_status',
                       'Статус': 'status_id',
                       'Старые данные': 'old_data',
                       'Дата': 'date',
                       'where=': ['org_id', 'id']},
-         'Адреса': {'table=': 'organizations_address',
+         'Адреса': {'table=': 'organization_address',
                     'Дата': 'date',
                     'address_id': 'address_id',
                     'Помещение': 'flat',
                     'Ошибка адреса': 'address_error',
                     'Старые данные': 'old_data',
                     'Дата': 'date',
-                    'where=': ['organization_id', 'id']},
-         'ОКВЭДы': {'table=': 'organizations_okved',
+                    'where=': ['org_id', 'id']},
+         'ОКВЭДы': {'table=': 'organization_okved',
                     'okved_id': 'okved_id',
                     'Тип': 'type',
                     'where=': ['org_id', 'id']}
          }
-addressModel = {'table=': 'address',
+addressModel = {'table=': 'catalog_address',
                             'Код региона': 'region_code',
                             'area_type': 'area_type',
                             'area_name': 'area_name',
@@ -88,9 +88,9 @@ while True:
     if tQuery == 'name': # Если это поиск по имени
         if len(query) > 2:
             query = query.upper().replace('Ё','Е')
-            m = SQL.ReadRow('organizations_name', 'name', query)
+            m = SQL.ReadRow('organization_name', 'name', query)
             if m == []:
-                print(SQL.ReadRowsLike('organizations_name', 'name', query))
+                print(SQL.ReadRowsLike('organization_name', 'name', query))
             else: print(m)
         else:
             print('Слишком мая строка для поиска!')
@@ -106,8 +106,10 @@ while True:
             if name['ОПФ'] is not None:
                 name['ОПФ'] = dOPF[name['ОПФ']]
             if name['ОПФ найдено 1'] is not None:
+                #print(name['ОПФ найдено 1'])
                 name['ОПФ найдено 1'] = dFindOPF[name['ОПФ найдено 1']]
             if name['ОПФ найдено 2'] is not None:
+                #print(name['ОПФ найдено 2'])
                 name['ОПФ найдено 2'] = dFindOPF[name['ОПФ найдено 2']]
         if org['Статусы'] is not None:
             for status in org['Статусы']:
