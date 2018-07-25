@@ -113,6 +113,7 @@ class strData:
             if bFindAll: i = 10
             else: i = 1
             data = DData.Address(saddress, i)
+            print(data)
             if len(data['suggestions']) == 1 or bFindAll == False:
                 dAddr = data['suggestions'][0]
                 Fixer.stxt = ''
@@ -140,46 +141,47 @@ class strData:
                 Fixer.stradd(dAddr['flat_type_full'], 'Тип квартиры')
                 Fixer.stradd(dAddr['flat'], 'Квартира')
                 Fixer.stradd(dAddr['postal_box'], 'Абонентский ящик')
-                Fixer.stradd(dAddr['data.fias_id'], 'Код ФИАС')
-                if dAddr['fias_level'] == 0: s = 'страна'
-                elif dAddr['fias_level'] == 1: s = 'регион'
-                elif dAddr['fias_level'] == 3: s = 'район'
-                elif dAddr['fias_level'] == 4: s = 'город'
-                elif dAddr['fias_level'] == 5: s = 'район города'
-                elif dAddr['fias_level'] == 6: s = 'населенный пункт'
-                elif dAddr['fias_level'] == 7: s = 'улица'
-                elif dAddr['fias_level'] == 8: s = 'дом'
-                elif dAddr['fias_level'] == 65: s = 'планировочная структура'
-                elif dAddr['fias_level'] == -1: s = 'иностранный или пустой'
+                Fixer.stradd(dAddr['fias_id'], 'Код ФИАС')
+                s = ''
+                if dAddr['fias_level'] == '0': s = 'страна'
+                elif dAddr['fias_level'] == '1': s = 'регион'
+                elif dAddr['fias_level'] == '3': s = 'район'
+                elif dAddr['fias_level'] == '4': s = 'город'
+                elif dAddr['fias_level'] == '5': s = 'район города'
+                elif dAddr['fias_level'] == '6': s = 'населенный пункт'
+                elif dAddr['fias_level'] == '7': s = 'улица'
+                elif dAddr['fias_level'] == '8': s = 'дом'
+                elif dAddr['fias_level'] == '65': s = 'планировочная структура'
+                elif dAddr['fias_level'] == '-1': s = 'иностранный или пустой'
                 else: s is None
                 Fixer.stradd(s,	'Уровень детализации ФИАС')
                 Fixer.stradd(dAddr['fias_code'], 'Иерархический код адреса в ФИАС')
-                if dAddr['fias_actuality_state'] == 0: s = 'актуальный'
-                elif dAddr['fias_actuality_state'] == 51: s = 'переподчинен'
-                elif dAddr['fias_actuality_state'] == 99: s = 'удален'
-                elif dAddr['fias_actuality_state'] > 0: s = 'переименован'
+                if dAddr['fias_actuality_state'] == '0': s = 'актуальный'
+                elif dAddr['fias_actuality_state'] == '51': s = 'переподчинен'
+                elif dAddr['fias_actuality_state'] == '99': s = 'удален'
+                elif int(dAddr['fias_actuality_state']) > 0: s = 'переименован'
                 else: s is None
                 Fixer.stradd(s, 'Признак актуальности адреса в ФИАС')
                 Fixer.stradd(dAddr['kladr_id'], 'Код КЛАДР')
-                if dAddr['capital_marker'] == 1: s = 'центр района'
-                elif dAddr['capital_marker'] == 2: s = 'центр региона'
-                elif dAddr['capital_marker'] == 3: s = 'центр района и региона'
-                elif dAddr['capital_marker'] == 4: s = 'центральный район региона'
+                if dAddr['capital_marker'] == '1': s = 'центр района'
+                elif dAddr['capital_marker'] == '2': s = 'центр региона'
+                elif dAddr['capital_marker'] == '3': s = 'центр района и региона'
+                elif dAddr['capital_marker'] == '4': s = 'центральный район региона'
                 else: s is None
                 Fixer.stradd(s, 'Признак')
                 Fixer.stradd(dAddr['okato'], 'Код ОКАТО')
                 Fixer.stradd(dAddr['oktmo'], 'Код ОКТМО')
                 Fixer.stradd(dAddr['tax_office'], 'Код ИФНС для физических лиц')
                 Fixer.stradd(dAddr['tax_office_legal'], 'Код ИФНС для организаций')
-                Fixer.stradd(dAddr['data.history_values'], 'Список исторических названий')
+                Fixer.stradd(dAddr['history_values'], 'Список исторических названий')
                 Fixer.stradd(dAddr['geo_lat'], 'Координаты: широта')
                 Fixer.stradd(dAddr['geo_lon'], 'Координаты: долгота')
-                if dAddr['qc_geo'] == 0: s = 'точные координаты'
-                elif dAddr['qc_geo'] == 1: s = 'ближайший дом'
-                elif dAddr['qc_geo'] == 2: s = 'улица'
-                elif dAddr['qc_geo'] == 3: s = 'населенный пункт'
-                elif dAddr['qc_geo'] == 4: s = 'город'
-                elif dAddr['qc_geo'] == 5: s = 'координаты не определены'
+                if dAddr['qc_geo'] == '0': s = 'точные координаты'
+                elif dAddr['qc_geo'] == '1': s = 'ближайший дом'
+                elif dAddr['qc_geo'] == '2': s = 'улица'
+                elif dAddr['qc_geo'] == '3': s = 'населенный пункт'
+                elif dAddr['qc_geo'] == '4': s = 'город'
+                elif dAddr['qc_geo'] == '5': s = 'координаты не определены'
                 else: s is None
                 Fixer.stradd(s, 'Код точности координат')
                 Fixer.stradd(dAddr['city_area'], 'Административный округ')
@@ -224,6 +226,7 @@ class strData:
                 Fixer.stradd(dOrg['address']['unrestricted_value'], 'Полный адрес')
                 Fixer.stradd(dOrg['address']['data']['source'], 'Адрес как в ЕГРЮЛ')
                 Fixer.stradd(dOrg['branch_count'], 'Количество филиалов')
+                s = ''
                 if dOrg['branch_type'] == 'MAIN': s = 'головная организация'
                 elif dOrg['branch_type'] == 'BRANCH': s = 'филиал'
                 else: s is None
