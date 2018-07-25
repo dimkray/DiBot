@@ -21,6 +21,7 @@ from Services.RSS import RSS
 from Services.IATA import IATA
 from Services.Web import Web
 from Services.StrMorph import String, Word
+from Services.DaData import strData
 from Chats.Chats import Chat
 from DB.SQLite import SQL
 
@@ -999,6 +1000,14 @@ def ServiceProcess(response):
     elif ser == '#morph:': tsend = morph(send)
     # Спецсервис для кодирования
     elif ser == '#code:': tsend = str(DefProcess.Code(send))
+    # Сервисы DaData
+    elif ser == '#dataname:': tsend = strData.Name(send, False)
+    elif ser == '#dataaddress:': tsend = strData.Address(send, False)
+    elif ser == '#dataorg:': tsend = strData.Organization(send, False, False)
+    elif ser == '#dataorgid:':
+        print(send)
+        tsend = strData.Organization(send, True, False)
+
     # Все остальные случаи
     else: tsend = '#problem: Сервис {%s} не найден!' % Fixer.Service
     return tsend

@@ -47,7 +47,7 @@ def ReadMessage(text):
     # Анализ сообщения
     Fixer.log('PreProcessor.Analyzer')
     texttype, count = TextFinder.AnalyzeType(text)
-    if texttype == 50 and count > 1: text = '#translate: русский: ' + text
+    if texttype == 50 and count > 3: text = '#translate: русский: ' + text
     if texttype == 40 and count > 1: text = '#calculator: ' + text
     if text[0] == '#': Fixer.bAI = False # отключаем искуственный интеллект
     return text

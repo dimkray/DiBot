@@ -97,8 +97,8 @@ class Comp:
                         et = 0
                         for ietalon in String.GetStrings(setalon):
                             if strEqual(istr, stret) >= 0.9: rez += fl * strEqual(istr, stret) * abs(et-i)/scount
-                            elif Word.WordsCount(istr) > 1 and Word.WordsCount(ietalon) > 1:
-                                rez += fl * listEqual(Word.GetWords(istr), Word.GetWords(ietalon)) * 0.9
+                            elif String.WordsCount(istr) > 1 and String.WordsCount(ietalon) > 1:
+                                rez += fl * listEqual(String.GetWords(istr), String.GetWords(ietalon)) * 0.9
                             et += 1
                     i += 1
                 return rez

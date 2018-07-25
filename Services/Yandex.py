@@ -13,20 +13,23 @@ dir_lang = []
 for item in Fixer.yaDirLang:
     dir_lang.append(item[0]+'-'+item[1])
 
-tr_type = [['САМОЛ','plane', 3],['ПОЕЗД','train', 1],['ЭЛЕКТР','suburban', 1],
-           ['АВТОБУС','bus', 2],['ВОДН','water', 4],['ВЕРТОЛ','helicopter', 3]]
-trd = {'All':'любой транспорт', 'plane':'самолёт', 'train':'поезд', 'suburban':'электричка',
-       'bus':'автобус', 'water':'водный транспорт', 'helicopter':'вертолёт'}
+tr_type = [['САМОЛ', 'plane', 3], ['ПОЕЗД', 'train', 1], ['ЭЛЕКТР', 'suburban', 1],
+           ['АВТОБУС', 'bus', 2], ['ВОДН', 'water', 4], ['ВЕРТОЛ', 'helicopter', 3]]
+trd = {'All': 'любой транспорт', 'plane': 'самолёт', 'train': 'поезд', 'suburban': 'электричка',
+       'bus': 'автобус', 'water': 'водный транспорт', 'helicopter': 'вертолёт'}
 mounth = ['ЯНВАРЯ', 'ФЕВРАЛЯ', 'МАРТА', 'АПРЕЛЯ', 'МАЯ', 'ИЮНЯ', 'ИЮЛЯ',
           'АВГУСТА', 'СЕНТЯБРЯ', 'ОКТЯБРЯ', 'НОЯБРЯ', 'ДЕКАБРЯ']
 trSt = {'': 0, 'unknown': 0, 'train_station': 1, 'platform': 1, 'station': 1,
-        'bus_station': 2, 'bus_stop': 2, 'airport':3, 'whafr': 4, 'river_port': 4, 'port': 4}
+        'bus_station': 2, 'bus_stop': 2, 'airport': 3, 'whafr': 4, 'river_port': 4, 'port': 4}
+
 
 # Поиск идентификатора языка
 def FindLang(slang):
     if slang.upper() in Fixer.yaLangs:
         return Fixer.yaLangs[slang.upper()]
-    else: return ''
+    else:
+        return ''
+
 
 # Функция - есть ли станция/город в базе
 def isStation(station):

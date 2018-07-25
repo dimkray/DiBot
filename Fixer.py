@@ -59,6 +59,8 @@ LastService = []
 
 Radius = 100 # радиус интресера
 
+stxt = '' # строка для ответа
+
 def KnowUser(): # возвращает процент информации о пользователе
     rez = 0
     if Name != '': rez += 20
@@ -327,6 +329,19 @@ def strcleaner(text):
     text = text.replace('/','')
     text = text.replace('  ',' ')
     return text
+
+# ---------------------------------------------------------
+# вн.сервис stradd - добавление строки, если есть
+def stradd(value, text=''):
+    global stxt
+    s = ''
+    if value is not None:
+        if text != '':
+            s = '%s: %s\n' % (text, str(value))
+        else:
+            s = '%s\n' % str(value)
+    stxt += s
+    return s
 
 # ---------------------------------------------------------
 # вн.сервис strformat - преобразование результата в форматированный текст
