@@ -10,12 +10,12 @@ print('------- Запущены тесты сервиса %s --------' % service
 with Profiler() as p:
     test = SQL.ReadRow('organizations', 'ogrn', '1027700071530')[0] #['id']
     etalon = 4249295
-    Test.Add(service+'.Organizations','тестирование скорости обращения', test, etalon)
+    Test.Add(service, service+'.Organizations','тестирование скорости обращения', test, etalon)
 
 with Profiler() as p:
     test = SQL.ReadRow('organizations', 'id', '15680004')[2] #['ogrn']
     etalon = '1024600970591'
-    Test.Add(service+'.Organizations','тестирование скорости обращения', test, etalon)
+    Test.Add(service, service+'.Organizations','тестирование скорости обращения', test, etalon)
 
 print('')
 print('------- Отчёт тестов сервиса %s --------' % service)

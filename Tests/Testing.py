@@ -134,16 +134,16 @@ class Comp:
 # Процесс тестирования
 class Test:
     # Добавление теста
-    def Add(service, name, testvalue, etalonvalue, time=0, critery=1):
+    def Add(nameservice, service, name, testvalue, etalonvalue, time=0, critery=1):
         print(service, TestsDef)
         if service in TestsDef:
             TestsDef[service]['test'] = True
             TestsDef[service]['tests'].append(name)
         iTest = []
-        iTest.append(service)
-        iTest.append(name)
-        iTest.append(str(testvalue).replace('\n', '\\n'))
-        iTest.append(str(etalonvalue).replace('\n', '\\n'))
+        iTest.append(service)  # 0
+        iTest.append(name)  # 1
+        iTest.append(str(testvalue).replace('\n', '\\n'))  # 2
+        iTest.append(str(etalonvalue).replace('\n', '\\n'))  # 3
         ftest = 0; comm = ''
         if type(testvalue) == type(etalonvalue):  # если совпадают типы
             comm = 'Сравнение ' + str(type(testvalue))
@@ -156,18 +156,18 @@ class Test:
             else: # если на входе всё что угодно
                 ftest = Comp.Equal(testvalue, etalonvalue)
         else: ftest = 0; comm ='Разные типы!'  # если типы не совпадают
-        iTest.append(ftest)
+        iTest.append(ftest)  # 4
         if ftest >= critery:
-            iTest.append(True)
+            iTest.append(True)  # 5
         else:
-            iTest.append(False)
-        iTest.append(time)
-        iTest.append(comm)
+            iTest.append(False)  # 5
+        iTest.append(time)  # 6
+        iTest.append(comm)  # 7
         Tests.append(iTest)  # добавление теста
         return iTest
 
     # Добавление прочих тестов: iswork, swork, istype
-    def AddSimple(service, name, testvalue, testtype='iswork', time=0, criteries=[]):
+    def AddSimple(nameservice, service, name, testvalue, testtype='iswork', time=0, criteries=[]):
         if service in TestsDef:
             TestsDef[service]['test'] = True
             TestsDef[service]['tests'].append(name)
@@ -187,8 +187,9 @@ class Test:
         iTest.append(ftest) # 4
         if ftest == 1: iTest.append(True) # 5
         else: iTest.append(False)
-        iTest.append(time) # 6
-        iTest.append(comm) # 7
+        iTest.append(time)  # 6
+        iTest.append(comm)  # 7
+        iTest.append(nameservice) # 8
         Tests.append(iTest) # добавление теста
         return iTest
 

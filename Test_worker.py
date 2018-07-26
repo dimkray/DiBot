@@ -14,26 +14,26 @@ with Profiler() as p:
     # AddTable
     data = [[0,'Тест 1'],[1,'Тест 2']]
     test = Worker.AddTable('test1', {'id':'int nn', 'text':'str'}, data)
-    Test.Add(service+'.AddTable', 'normal', test, 'OK')
+    Test.Add(service, service+'.AddTable', 'normal', test, 'OK')
 
     # UpdateTable
     test = Worker.UpdateTable('test2', {'id':'int nn u', 'text':'text'}, data)
-    Test.Add(service+'.UpdateTable', 'normal', test, 'OK')
+    Test.Add(service, service+'.UpdateTable', 'normal', test, 'OK')
 
     # UpdateTableCSV
     test = Worker.UpdateTableCSV('Tests/region.csv', 'region', {'id':'int nn u', 'type':'text', 'name':'text'})
-    Test.Add(service+'.UpdateTableCSV', 'normal', test, 'OK')
+    Test.Add(service, service+'.UpdateTableCSV', 'normal', test, 'OK')
 
     test = Worker.UpdateTableCSV('Tests/region.csv', 'region2', {'id':'int nn u', 'name':'text', 'type':'text'})
-    Test.Add(service+'.UpdateTableCSV', 'normal', test, 'OK')
+    Test.Add(service, service+'.UpdateTableCSV', 'normal', test, 'OK')
 
     test = Worker.UpdateTableCSV('Tests/area.csv', 'area', {'id':'int nn u', 'area':'text', 'type_name':'text'},
                                  {'id': 'id', 'type_name': 'type', 'area': 'name'})
-    Test.Add(service+'.UpdateTableCSV', 'normal', test, 'OK')
+    Test.Add(service, service+'.UpdateTableCSV', 'normal', test, 'OK')
 
     # ReadBlockCSV
     test = Worker.ReadBlockCSV('Tests/region.csv')
-    Test.Add(service+'.ReadBlockCSV', 'normal', test, 239)
+    Test.Add(service, service+'.ReadBlockCSV', 'normal', test, 239)
 
     #UpdateBlockCSV
     for row in Worker.mDataCSV:
@@ -43,7 +43,7 @@ with Profiler() as p:
     Worker.mTableCSV.append('name_lower')
     test = Worker.UpdateBlockCSV('region3', {'id':'int nn u', 'type':'text', 'name':'text',
                                              'name_lower':'text'})
-    Test.Add(service+'.UpdateBlockCSV', 'normal', test, 'OK')
+    Test.Add(service, service+'.UpdateBlockCSV', 'normal', test, 'OK')
 
 print('------- Отчёт тестов сервиса %s --------' % service)
 print(Report.WriteAll())

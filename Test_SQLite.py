@@ -13,7 +13,7 @@ with Profiler() as p:
     # Read
     test = SQL.ReadAll('test1')
     etalon = [(0, 'Тест 1'), (1, 'Тест 2')]
-    Test.Add(service+'.ReadAll','normal', test, etalon)
+    Test.Add(service, service+'.ReadAll','normal', test, etalon)
     
     # Dict
     desc = { 'table=': 'test1',
@@ -34,10 +34,10 @@ with Profiler() as p:
     etalon = [{'Text': 'Тест 2',
                'Region': [{'typeRegion': 'ГОРОД', 'nameRegion': 'МОСКВА'}],
                'Text2': 'Тест 2', 'typeRegion2': 'ГОРОД', 'nameRegion2': 'МОСКВА'}]
-    Test.Add(service+'.Dict','normal', test, etalon)
+    Test.Add(service, service+'.Dict','normal', test, etalon)
 
     test = SQL.Dict({'table=': 'test1', 'key': 'id'}, {'text': 'Тест 1'})
-    Test.Add(service+'.Dict','normal simple', test, [{'key': 0}])
+    Test.Add(service, service+'.Dict','normal simple', test, [{'key': 0}])
 
 print('')
 print('------- Отчёт тестов сервиса %s --------' % service)
