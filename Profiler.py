@@ -1,13 +1,12 @@
 ﻿# -*- coding: utf-8 -*-
 # простейший профайлер
-# with Profiler() as p:
-#    // your code to be profiled here
 
 import time
 
 
+# with Profiler() as p:
+#    // your code to be profiled here
 class Profiler(object):
-
     def __enter__(self):
         self._startTime = time.time()
          
@@ -15,10 +14,9 @@ class Profiler(object):
         self.time = time.time() - self._startTime
         print('Время выполнения: {:.3f} сек.'.format(self.time))
 
-    def getTime(self):
-        return time.time() - self._startTime
 
-
+# @decorator.benchmark
+# def sumdef()
 class decorator:
     def benchmark(func):
         def wrapper(*args, **kwargs):

@@ -14,7 +14,7 @@
 
 import config
 import Fixer
-import time
+# import logging
 import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
 import PreProcessor
@@ -140,21 +140,18 @@ def LongPoll():
                 if event.user_id != Author:
                     SendAuthor('~Уведомление: пользователь VK %i пишет: %s' % (event.user_id, event.text))
             elif event.from_chat:
-                #print('Беседа ' + str(event.chat_id))
                 Fixer.bChats = 1 # признак чата
                 if event.text.upper()[:3] == 'DI,' or event.text.upper()[:3] == 'ДИ,': Fixer.bChats = 2 # надо ответить
                 if event.user_id != Author:
                     SendAuthor('~Уведомление: пользователь VK %i пишет в беседе %i: %s' % (event.user_id, event.chat_id, event.text))
             elif event.from_group:
                 Fixer.bChats = 1 # признак чата
-                #print('Группа ' + str(event.chat_id))
                 if event.user_id != Author:
                     SendAuthor('~Уведомление: пользователь VK %i пишет в группе %i: %s' % (event.user_id, event.group_id, event.text))
 
             if Fixer.bChats == 1: continue # пропускаем беседу
             # Обработка сообщений для бота
             if event.to_me:
-                # print(event.peer_id)
                 text = event.text
                 #try:
                 if len(text) > 3:
@@ -246,9 +243,18 @@ def LongPoll():
 
 # Основной блок программы
 if __name__ == '__main__':
+    # Настройка логгирования
+    # log = logging.getLogger('Bot')
+    # log.setLevel(logging.INFO)
+    # fh = logging.FileHandler("DiBot.log")
+    # formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    # fh.setFormatter(formatter)
+    # log.addHandler(fh)
+
     Fixer.log('Start', '--------------------------------------------')
     Fixer.log('Start', 'Запуск VK-Бота')
     Fixer.log('Start', '--------------------------------------------')
     SendAuthor('Рестарт DiBot!')
+
     # Запуск LongPoll
     LongPoll()

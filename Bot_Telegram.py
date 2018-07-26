@@ -17,7 +17,7 @@ import Processor
 import telebot
 #from geolocation.distance_matrix.client import DistanceMatrixApiClient
 from telebot import types
-from Services.Yandex import Yandex
+from Services.Yandex import Ya
 from Chats.Chats import Chat
 
 Author = '172009889'

@@ -9,17 +9,17 @@ import os
 DB = 'DB/bot.db'
 
 # общие фразы
-responses = ['yesno','wait','notice']
+responses = ['yesno', 'wait', 'notice']
 # Загрузка всех словарей в конце файла
 
-Response = '' # статус диалога с пользователем
-Query = '' # последний запрос пользователя
+Response = ''  # статус диалога с пользователем
+Query = ''  # последний запрос пользователя
 
 # уведомление пользователя вкл/выкл
 bNotice = True
 
 # Процессорные фиксаторы
-bAI = True # Признак включения сервиса ИИ
+bAI = True  # Признак включения сервиса ИИ
 
 # текущая версия
 Version = 20180427
@@ -27,41 +27,43 @@ Version = 20180427
 # общие фиксаторы
 Time = []     # фиксация времени
 Chat = []     # история чата
-UserID = 0   # текущий пользователь
+UserID = 0    # текущий пользователь
 ChatID = 0    # Текущий чат
 PeerID = 0    # Текущее назначение - для беседы, для группы
 bChats = 0    # Признак беседы: 0 - не беседа, 1 - беседа, 2 - беседа, где надо ответить
 Name = 'человек'     # имя
 Family = 'без фамилии'   # фамилия
-BirthDay = 'день рождения не известен' # ДР
+BirthDay = 'день рождения не известен'  # ДР
 Phone = 'телефон не указан'    # номер телефона
 eMail = 'e-mail не указан'    # почта
-Contacts = {} # Мессенджеры
-Interests = []# Список интересов
+Contacts = {}   # Мессенджеры
+Interests = []  # Список интересов
 Things = []   # Список вещей/характеристик пользователя
 Age = 0       # 0 - неизвестно
 Type = 0      # 0 - неизвестно, 1 - мужчина, 2 - женщина
 Thema = ''    # текущая тема
-LastThema = []
-Mess = '' # текущий мессенджер
+LastThema = []  # список последних тем
+Mess = ''     # текущий мессенджер
 TimeZone = 3  # часовой пояс пользователя относительно UTF
 
-Process = '' # текущий процесс
-errProcess = '' #процесс, в котором возникла ошибка
-errMsg = '' #сообщение об ошибке
+Process = ''  # текущий процесс
+errProcess = ''  #процесс, в котором возникла ошибка
+errMsg = ''   #сообщение об ошибке
 
-bNow = False # признак сейчас
+bNow = False  # признак сейчас
 Date = date.today()
 
-Service = '#' # текущий сервис
+Service = '#'  # текущий сервис
 Context = False
 LastService = []
 
-Radius = 100 # радиус интресера
+Radius = 100   # радиус интресера
 
-stxt = '' # строка для ответа
+stxt = ''      # строка для ответа
 
-def KnowUser(): # возвращает процент информации о пользователе
+
+# возвращает процент информации о пользователе
+def KnowUser():
     rez = 0
     if Name != '': rez += 20
     if Family != '': rez += 10
@@ -110,27 +112,27 @@ Page = 'Москва'
 LastPage = []
 
 # сервис Rate
-Valute = 'RUB' # актуальная валюта
+Valute = 'RUB'  # актуальная валюта
 LastValute = []
 
 # Сервис Яндекс поиск объектов
-Obj = [] # Подробный список найденных объектов
-sObj = [] # Список преобразованный в строку
+Obj = []   # Подробный список найденных объектов
+sObj = []  # Список преобразованный в строку
 
 # Сервис Notes
-Notes = {} # Записи пользователя
+Notes = {}  # Записи пользователя
 
 # Сервис RSS-каналов
 RSS = []
 LastRSS = []
 
 # Запись лога
-def log(process, s = ''):
+def log(process, s=''):
     f = open('log.txt', 'a', encoding='utf-8')
     Process = process
     if s:
         try:
-            s = s.replace('\n',' \ ')
+            s = s.replace('\n', ' \ ')
             f.write('%s %s {%s}: %s\n' % (str(datetime.today()), UserID, Process, s))
             print('{%s}: %s' % (Process, s))
         except Exception as e:
@@ -225,7 +227,7 @@ def Dialog(key):
 # вн.сервис substitution - подстановка строковых переменных
 def Subs(text):
     t = 0
-    text = text.replace('\\n','\n')
+    text = text.replace('\\n', '\n')
     while text.find('[', t) >= 0:
         t1 = text.find('[', t)
         t2 = text.find(']', t1)
@@ -345,18 +347,18 @@ def stradd(value, text=''):
 
 # ---------------------------------------------------------
 # вн.сервис strformat - преобразование результата в форматированный текст
-def strformat(mresult, items = 5, sformat = '', nameCol = [], sobj = 'объектов'):
+def strformat(mresult, items=5, sformat='', nameCol=[], sobj='объектов'):
     if len(mresult) > 0: # если есть результат
         s = 'По запросу найдено %s: %i' % ( sobj, len(mresult)) 
         if items < len(mresult): s += '\nБудут показаны первые %i:' % items
         else: items = len(mresult)
-        for i in range(0,items):
+        for i in range(0, items):
             if sformat == '': # если не задан формат
                 if len(nameCol) > 1: # если несколько возвращаемых колонок
                     row = mresult[i]
                     s += '\n[%i] %s:' % (i+1, row[0])
                     ic = 0
-                    for col in returnCol:
+                    for col in nameCol:
                         if col == 0: ic += 1; continue
                         s += '\n%s: %s' % (col, row[ic])
                         ic += 1              
@@ -376,7 +378,7 @@ def strformat(mresult, items = 5, sformat = '', nameCol = [], sobj = 'объек
                 while sitem.find('\\%') >= 0:
                     sitem = sitem.replace('\\%', '%')
                 s += '\n['+str(i+1)+'] ' + sitem
-    else: s = 'По данному запросу нет результата :('
+    else: s = 'По данному запросу нет результата'
     return s
 
 # ---------------------------------------------------------

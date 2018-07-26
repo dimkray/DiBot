@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # ПреПроцессор - стартовый обработчик пользовательских запросов
 import Fixer
-from Services.Yandex import Yandex
+from Services.Yandex import Ya
 from Services.Analyzer import TextFinder
 from Services.StrMorph import String, Word
 
@@ -23,7 +23,7 @@ def MultiProcessor(text):
 def ReadMessage(text):
     Fixer.log('PreProcessor.ReadMessage', text)
     # Запуск сервиса Яндекс.Спеллер для исправления пользовательских опечаток
-    text = Yandex.Speller(text)
+    text = Ya.Speller(text)
     Fixer.log('Яндекс.Спеллер: ' + text)
     stext = text.upper()
     stext = stext.replace('Ё','Е')

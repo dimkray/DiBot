@@ -4,12 +4,13 @@
 import config
 import Fixer
 import Bot
-import apiai, json
+import apiai
+import json
 import random
 import DefProcess
 
 from Services.Fun import Fun
-from Services.Yandex import Yandex
+from Services.Yandex import Ya
 from Services.Google import Google
 from Services.Wikipedia import Wiki
 from Services.User import User
@@ -19,7 +20,6 @@ from Services.Geo import Geo
 from Services.House import Booking
 from Services.RSS import RSS
 from Services.IATA import IATA
-from Services.Web import Web
 from Services.StrMorph import String, Word
 from Services.DaData import strData
 from Chats.Chats import Chat
@@ -268,8 +268,8 @@ def booking(text, send=False):
 def timetable(text, send=False):
     Fixer.log('TimeTable')
     if send: Bot.SendMessage('Секундочку! Ищу расписание транспорта в сервисе Яндекс.Расписания...')
-    tsend = Yandex.FindRasp(text)
-    Fixer.log('Yandex.Rasp', tsend)
+    tsend = Ya.FindRasp(text)
+    Fixer.log('Ya.Rasp', tsend)
     tsend = FormRasp(tsend)
     Fixer.log('FormRasp', tsend)
     if tsend[0] != '#':
@@ -305,8 +305,8 @@ def translate(text):
         Fixer.Lang2 = lang2
     ttext = text[n2+2:]
     Fixer.log('Translate', ttext + ' | ' + lang1 + ' | ' + lang2)
-    tsend = Yandex.Translate(ttext, lang1, lang2)
-    Fixer.log('Yandex.Translate', tsend)
+    tsend = Ya.Translate(ttext, lang1, lang2)
+    Fixer.log('Ya.Translate', tsend)
     if tsend[0] != '#':
         Fixer.LastLang1.append(Fixer.Lang1)
         Fixer.LastLang2.append(Fixer.Lang2)
@@ -315,7 +315,7 @@ def translate(text):
 # ---------------------------------------------------------
 # сервис Яндекс поиск объектов : #object: objName | Radius
 def yaobject(text):
-    Fixer.log('Yandex.Object', text)
+    Fixer.log('Ya.Object', text)
     param = getparams(text)
     ttext = param[0]
     rad = Fixer.Radius
@@ -325,35 +325,35 @@ def yaobject(text):
     except:
         if rad == 'near': drad = 2
         else: drad = 100
-    tsend = Yandex.Objects(ttext, Xloc=Fixer.X, Yloc=Fixer.Y, dr=drad)
-    Fixer.log('Yandex.Object', tsend)
+    tsend = Ya.Objects(ttext, Xloc=Fixer.X, Yloc=Fixer.Y, dr=drad)
+    Fixer.log('Ya.Object', tsend)
     return tsend
 
 # ---------------------------------------------------------
 # сервис Яндекс.Координаты : #coordinates: $geo-city
 def coordinates(text):
-    Fixer.log('Yandex.Координаты')
+    Fixer.log('Ya.Координаты')
     if text == '': text = 'LOCATION'
-    tsend = Yandex.Coordinates(text)
-    Fixer.log('Yandex.Координаты', tsend)
+    tsend = Ya.Coordinates(text)
+    Fixer.log('Ya.Координаты', tsend)
     return tsend
 
 # ---------------------------------------------------------
 # сервис Яндекс.Каталог : #site: type(info/find) - $site/String
 def site(text):
-    Fixer.log('Yandex.Каталог')
+    Fixer.log('Ya.Каталог')
     param = getparams(text)
     if len(param) < 2:
         Fixer.errProcess = Fixer.Process	
         return '#err: Нет второго параметра'
     if param[0].lower() == 'info':
-        tsend = Yandex.Catalog(param[1])
+        tsend = Ya.Catalog(param[1])
     elif param[0].lower() == 'find':
-        tsend = Yandex.FindCatalog(param[1])
+        tsend = Ya.FindCatalog(param[1])
     else: 
         Fixer.errProcess = Fixer.Process
         return '#err: Параметр "%s" не поддерживается!' % param[0]
-    Fixer.log('Yandex.Каталог', tsend)
+    Fixer.log('Ya.Каталог', tsend)
     return tsend
 
 # ---------------------------------------------------------
@@ -453,7 +453,7 @@ def getcoords(geocity):
         Fixer.Coords[1] = Fixer.Y
         s = 'LOCATION'
     else:
-        s = Yandex.Coordinates(geocity)
+        s = Ya.Coordinates(geocity)
     print(s)
     return s
 
@@ -679,7 +679,7 @@ def correction(text):
 # сервис date / time / datetime : location - type
 def datetime(location, ttype='datetime'):
     Fixer.log('DateTime: %s | %s' % (location, ttype))
-    #s = Yandex.Coordinates(location)
+    #s = Ya.Coordinates(location)
     tz = float(timezone(location))
     import datetime
     now = datetime.datetime.utcnow() + datetime.timedelta(hours=tz)
