@@ -45,9 +45,10 @@ def ReadMessage(text):
                 Fixer.log('PreProcessor.KeyWord', 'Найдено совпадение по ключевому слову [' + word + ']:' + text)
                 break
     # Анализ сообщения
-    Fixer.log('PreProcessor.Analyzer')
-    texttype, count = TextFinder.AnalyzeType(text)
-    if texttype == 50 and count > 3: text = '#translate: русский: ' + text
-    if texttype == 40 and count > 1: text = '#calculator: ' + text
+    if ': ' not in text:
+        Fixer.log('PreProcessor.Analyzer')
+        texttype, count = TextFinder.AnalyzeType(text)
+        if texttype == 50 and count > 3: text = '#translate: русский: ' + text
+        if texttype == 40 and count > 1: text = '#calculator: ' + text
     if text[0] == '#': Fixer.bAI = False # отключаем искуственный интеллект
     return text
