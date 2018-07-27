@@ -113,7 +113,7 @@ class strData:
             if bFindAll: i = 10
             else: i = 1
             data = DData.Address(saddress, i)
-            print(data)
+            #  print(data)
             if len(data['suggestions']) == 1 or bFindAll == False:
                 dAddr = data['suggestions'][0]
                 Fixer.stxt = ''
@@ -203,12 +203,14 @@ class strData:
                 s = 'Не удалось распознать'
             return s
         except Exception as e:
-            Fixer.errlog('strData.Name', str(e))
+            Fixer.errlog('strData.Address', str(e))
             return '#bug: ' + str(e)
 
 
     # Обработать организацию
     def Organization(sorg, bId=False, bFindAll=True):
+        from DB.SQLite import SQL
+        s = ''
         try:
             if bFindAll: i = 10
             else: i = 1
@@ -216,48 +218,77 @@ class strData:
                 data = DData.OrganizationId(sorg)
             else:
                 data = DData.Organization(sorg, i)
-            if len(data['suggestions']) == 1 or bFindAll == False:
+            if len(data['suggestions']) == 1:
                 dOrg = data['suggestions'][0]
                 Fixer.stxt = ''
-                Fixer.stradd(dOrg['value'], 'Наименование компании')
-                Fixer.stradd(dOrg['unrestricted_value'], 'Полное наименование компании')
+                if dOrg['data']['type'] == 'LEGAL':
+                    Fixer.stradd(dOrg['value'], 'Наименование компании')
+                    Fixer.stradd(dOrg['unrestricted_value'], 'Полное наименование компании')
+                else:
+                    Fixer.stradd(dOrg['value'], 'Наименование')
+                    Fixer.stradd(dOrg['unrestricted_value'], 'Полное наименование')
                 dOrg = dOrg['data']
-                Fixer.stradd(dOrg['address']['value'], 'Адрес')
-                Fixer.stradd(dOrg['address']['unrestricted_value'], 'Полный адрес')
-                Fixer.stradd(dOrg['address']['data']['source'], 'Адрес как в ЕГРЮЛ')
-                Fixer.stradd(dOrg['branch_count'], 'Количество филиалов')
-                s = ''
-                if dOrg['branch_type'] == 'MAIN': s = 'головная организация'
-                elif dOrg['branch_type'] == 'BRANCH': s = 'филиал'
-                else: s is None
-                Fixer.stradd(s, 'Тип подразделения')
+                if dOrg['type'] == 'LEGAL': s = 'юридическое лицо'
+                elif dOrg['type'] == 'INDIVIDUAL': s = 'индивидуальный предприниматель'
+                else: s = 'неизвестный тип'
+                Fixer.stradd(s,	'Тип организации')
+                if dOrg['address'] is not None:
+                    Fixer.stradd(dOrg['address']['value'], 'Адрес')
+                    Fixer.stradd(dOrg['address']['unrestricted_value'], 'Полный адрес')
+                    if dOrg['address']['data'] is not None:
+                        Fixer.stradd(dOrg['address']['data']['source'], 'Адрес как в ЕГРЮЛ')
+                if 'branch_count' in dOrg:
+                    Fixer.stradd(dOrg['branch_count'], 'Количество филиалов')
+                if 'branch_type' in dOrg:
+                    if dOrg['branch_type'] == 'MAIN': s = 'головная организация'
+                    elif dOrg['branch_type'] == 'BRANCH': s = 'филиал'
+                    else: s is None
+                    Fixer.stradd(s, 'Тип подразделения')
                 Fixer.stradd(dOrg['inn'], 'ИНН')
-                Fixer.stradd(dOrg['kpp'], 'КПП')
+                if 'kpp' in dOrg:
+                    Fixer.stradd(dOrg['kpp'], 'КПП')
                 Fixer.stradd(dOrg['ogrn'], 'ОГРН')
-                Fixer.stradd(dOrg['ogrn_date'], 'Дата выдачи ОГРН')
-                Fixer.stradd(dOrg['management']['name'], 'Руководитель')
-                Fixer.stradd(dOrg['management']['post'], 'Должность руководителя')
-                Fixer.stradd(dOrg['name']['full_with_opf'], 'Полное наименование с ОПФ')
-                Fixer.stradd(dOrg['name']['short_with_opf'], 'Краткое наименование с ОПФ')
-                Fixer.stradd(dOrg['name']['full'], 'Полное наименование')
-                Fixer.stradd(dOrg['name']['short'], 'Краткое наименование')
+                if 'ogrn_date' and dOrg['ogrn_date'] is not None in dOrg:
+                    s = datetime.datetime.fromtimestamp(int(dOrg['ogrn_date'])/1000).strftime('%Y-%m-%d')
+                    Fixer.stradd(s, 'Дата выдачи ОГРН')
+                if 'management' in dOrg:
+                    if dOrg['management'] is not None:
+                        Fixer.stradd(dOrg['management']['name'], 'Руководитель')
+                        Fixer.stradd(dOrg['management']['post'], 'Должность руководителя')
+                if dOrg['name'] is not None:
+                    Fixer.stradd(dOrg['name']['full_with_opf'], 'Полное наименование с ОПФ')
+                    Fixer.stradd(dOrg['name']['short_with_opf'], 'Краткое наименование с ОПФ')
+                    Fixer.stradd(dOrg['name']['full'], 'Полное наименование')
+                    Fixer.stradd(dOrg['name']['short'], 'Краткое наименование')
                 Fixer.stradd(dOrg['okved'], 'Код ОКВЭД')
                 Fixer.stradd(dOrg['okved_type'], 'Версия справочника ОКВЭД')
+                m = SQL.ReadRows('okved', 'code', dOrg['okved'])
+                if len(m) > 0: # если найдены коды ОКВЭД в справочнике
+                    sName = m[0][2]
+                    sDesc = m[0][3]
+                    if m[0][4] != int(dOrg['okved_type']) and len(m) > 1:
+                        sName = m[1][2]
+                        sDesc = m[1][3]
+                    Fixer.stradd(sName, 'ОКВЭД')
+                    if sDesc is not None: sDesc = sDesc.replace('- ', '\n- ')
+                    Fixer.stradd(sDesc, 'Пояснения')
                 if bId:
                     Fixer.stradd(dOrg['okveds'], 'Коды ОКВЭД дополнительных видов деятельности')
-                Fixer.stradd(dOrg['opf']['full'], 'Полное название ОПФ')
-                Fixer.stradd(dOrg['opf']['short'], 'Краткое название ОПФ')
-                Fixer.stradd(dOrg['opf']['code'], 'Код ОКОПФ')
+                if dOrg['opf'] is None:
+                    Fixer.stradd(dOrg['opf']['full'], 'Полное название ОПФ')
+                    Fixer.stradd(dOrg['opf']['short'], 'Краткое название ОПФ')
+                    Fixer.stradd(dOrg['opf']['code'], 'Код ОКОПФ')
                 if dOrg['state']['status'] == 'ACTIVE': s = 'действующая'
                 elif dOrg['state']['status'] == 'LIQUIDATING': s = 'ликвидируется'
                 elif dOrg['state']['status'] == 'LIQUIDATED': s = 'ликвидирована'
                 elif dOrg['state']['status'] == 'REORGANIZING': s = 'в процессе присоединения к другому юр.лицу, с последующей ликвидацией'
                 else: s = 'статус неизвестен'
                 Fixer.stradd(s, 'Статус организации')
-                if dOrg['type'] == 'LEGAL': s = 'юридическое лицо'
-                elif dOrg['type'] == 'INDIVIDUAL': s = 'индивидуальный предприниматель'
-                else: s = 'неизвестный тип'
-                Fixer.stradd(s,	'Тип организации')
+                s = datetime.datetime.fromtimestamp(int(dOrg['state']['registration_date'])/1000).strftime('%Y-%m-%d')
+                Fixer.stradd(s, 'Дата регистрации')
+                if dOrg['state']['liquidation_date'] is not None:
+                    s = datetime.datetime.fromtimestamp(int(dOrg['state']['liquidation_date'])/1000).strftime('%Y-%m-%d')
+                    Fixer.stradd(s, 'Дата ликвидации')
                 if bId:
                     if dOrg['authorities'] is not None:
                         Fixer.stradd(dOrg['authorities']['fts_registration'], 'ИФНС регистрации')
@@ -270,14 +301,19 @@ class strData:
                         Fixer.stradd(dOrg['documents']['sif_registration'], 'Свидетельство о регистрации в Фонде соц. страхования')
                     if 'citizenship' in dOrg:
                         Fixer.stradd(dOrg['citizenship'], 'Гражданство ИП')
-                    Fixer.stradd(dOrg['founders'], 'Учредители компании')
-                    Fixer.stradd(dOrg['managers'], 'Руководители компании')
-                    Fixer.stradd(dOrg['capital'], 'Уставной капитал компании')
-                    Fixer.stradd(dOrg['licenses'], 'Лицензии')
-                # s = datetime.datetime.fromtimestamp(dOrg['state']['actuality_date']).strftime('%Y-%m-%d')
-                Fixer.stradd(dOrg['state']['actuality_date'], 'Дата актуальности сведений')
+                    if 'founders' in dOrg:
+                        Fixer.stradd(dOrg['founders'], 'Учредители компании')
+                    if 'managers' in dOrg:
+                        Fixer.stradd(dOrg['managers'], 'Руководители компании')
+                    if 'capital' in dOrg:
+                        Fixer.stradd(dOrg['capital'], 'Уставной капитал компании')
+                    if 'licenses' in dOrg:
+                        Fixer.stradd(dOrg['licenses'], 'Лицензии')
+                s = datetime.datetime.fromtimestamp(int(dOrg['state']['actuality_date'])/1000).strftime('%Y-%m-%d')
+                Fixer.stradd(s, 'Дата актуальности сведений')
+
                 return Fixer.stxt
-            elif len(data['suggestions']) > 1 and bFindAll:
+            elif len(data['suggestions']) > 1:
                 mName = []
                 for iname in data['suggestions']:
                     mName.append(iname['value'])
@@ -287,5 +323,5 @@ class strData:
             else:
                 return 'Не удалось распознать'
         except Exception as e:
-            Fixer.errlog('strData.Name', str(e))
+            Fixer.errlog('strData.Organization', str(e))
             return '#bug: ' + str(e)

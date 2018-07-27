@@ -18,9 +18,9 @@ with Profiler() as p:
     # print(test)
     # Test.Add(service, service+'.Name', 'normal', test, 'ООО Такском')
 
-    # test = strData.Organization('7704211201', True, False)
-    # print(test)
-    # Test.Add(service, service+'.Name', 'normal', test, '7704211201')
+    test = strData.Organization('5036045205', True, False)
+    print(test)
+    Test.Add(service, service+'.Name', 'normal', test, '7704211201')
 
     test = strData.Address('мск Михевская, 7 к1', False)
     print(test)
