@@ -222,7 +222,7 @@ class Report:
             mreport.append(Report.Write(i))
         if items == 0:
             items = len(Tests)
-        return Fixer.strformat(mreport, items)
+        return Fixer.strFormat(mreport, items)
 
     # Универсальный отчёт по сравнению
     def WriteFails(items=0):
@@ -235,5 +235,5 @@ class Report:
                 mreport.append('- NOT! Не протестирована функция ' + test)
         if items == 0:
             items = len(mreport)
-        return Fixer.strformat(mreport, items, sobj='ошибок')
+        return Fixer.strFormat(mreport, items, sobj='ошибок')
     

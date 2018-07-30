@@ -665,9 +665,9 @@ def setlocation(text):
 # сервис correction
 def correction(text):
     Fixer.log('Correction', text)
-    Fixer.NewDialogs[Fixer.strcleaner(Fixer.Query)] = getparams(text, ';')
+    Fixer.NewDialogs[Fixer.strCleaner(Fixer.Query)] = getparams(text, ';')
     Fixer.Save(Fixer.NewDialogs, 'NewDialogs')
-    s = '\nНа запрос: ' + Fixer.strcleaner(Fixer.Query)
+    s = '\nНа запрос: ' + Fixer.strCleaner(Fixer.Query)
     for i in getparams(text, ';'):
         s += '\nВариант ответа: '+ i
     Bot.SendAuthor('Уведомление от пользователя ' + str(Fixer.UserID) + s)
@@ -844,18 +844,18 @@ def iata(text, stype='code'):
         m1 = IATA.Airport(code=text)
         m2 = IATA.City(code=text)
         if len(m2) > 0:
-            s += Fixer.strformat(m2, sformat=sfrm, sobj = 'аэропортов в городах') + '\n'
-        s += '\n' + Fixer.strformat(m1, sformat=sfrm, sobj = 'отдельных аэропортов')
+            s += Fixer.strFormat(m2, sformat=sfrm, sobj ='аэропортов в городах') + '\n'
+        s += '\n' + Fixer.strFormat(m1, sformat=sfrm, sobj ='отдельных аэропортов')
     elif stype == 'air':
         m = IATA.Airport(name=text)
-        s = Fixer.strformat(m, sformat=sfrm, sobj = 'аэропортов')
+        s = Fixer.strFormat(m, sformat=sfrm, sobj ='аэропортов')
     elif stype == 'city':
         m = IATA.City(name=text)
-        s = Fixer.strformat(m, sformat=sfrm, sobj = 'аэропортов в городах')
+        s = Fixer.strFormat(m, sformat=sfrm, sobj ='аэропортов в городах')
     elif stype == 'code3':
         if Word.Type(text) == 50: m = IATA.Country(code=text) # если латиница
         else: m = IATA.Country(name=text)
-        s = Fixer.strformat(m, sformat='код: %0, код3: %1, iso: %2\nназвание: %3', sobj = 'стран')
+        s = Fixer.strFormat(m, sformat='код: %0, код3: %1, iso: %2\nназвание: %3', sobj ='стран')
     return s
 
 # ---------------------------------------------------------
@@ -1098,7 +1098,7 @@ def FormMessage(text):
                 return s
             else:
                 Fixer.htext = ''
-            s = Fixer.strcleaner(text)
+            s = Fixer.strCleaner(text)
             # Ищем среди новых диалогов
             for i in Fixer.NewDialogs:
                 if i == s: return random.choice(Fixer.NewDialogs[i]) # удалось найти среди новых диалогов

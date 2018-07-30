@@ -82,6 +82,15 @@ def getInfo():
         return False
 
 
+# Получение контента сообщения по истории сообщений с пользователем (User_id)
+def GetMessange(user_id):
+    try:
+        return vk.method('messages.getHistory',
+                         {'user_id': user_id, 'offset': 0, 'count': 1})  # , 'start_message_id': -1
+    except:
+        return False
+
+
 # Отправление информации автору
 def SendAuthor(text):
     try:
@@ -96,7 +105,6 @@ def SendMessage(text):
     if Fixer.ChatID == 0:
         return False
     text = Fixer.Subs(text)
-    print({'user_id': Fixer.UserID, 'chat_id': Fixer.ChatID, 'peer_id': Fixer.PeerID, 'message': text})
     if Fixer.bChats == 0:
         vk.method('messages.send', {'user_id': Fixer.UserID, 'message': text})
     elif Fixer.bChats == 2:
@@ -131,6 +139,7 @@ def location(scoords):
         Fixer.errlog('Google.Location', str(e))
         return '#bug: ' + str(e)
 
+
 # Основной вызов API VK
 def LongPoll():
     for event in longpoll.listen():
@@ -140,30 +149,29 @@ def LongPoll():
                 if event.user_id != Author:
                     SendAuthor('~Уведомление: пользователь VK %i пишет: %s' % (event.user_id, event.text))
             elif event.from_chat:
-                Fixer.bChats = 1 # признак чата
+                Fixer.bChats = 1  # признак чата
                 if event.text.upper()[:3] == 'DI,' or event.text.upper()[:3] == 'ДИ,': Fixer.bChats = 2 # надо ответить
                 if event.user_id != Author:
                     SendAuthor('~Уведомление: пользователь VK %i пишет в беседе %i: %s' % (event.user_id, event.chat_id, event.text))
             elif event.from_group:
-                Fixer.bChats = 1 # признак чата
+                Fixer.bChats = 1  # признак чата
                 if event.user_id != Author:
                     SendAuthor('~Уведомление: пользователь VK %i пишет в группе %i: %s' % (event.user_id, event.group_id, event.text))
 
-            if Fixer.bChats == 1: continue # пропускаем беседу
+            if Fixer.bChats == 1:
+                continue  # пропускаем беседу
             # Обработка сообщений для бота
             if event.to_me:
                 text = event.text
-                #try:
-                if len(text) > 3:
-                    if text.upper()[:3] == 'DI,' or text.upper()[:3] == 'ДИ,': text = text[3:].strip()
-                if text != '':
-                    if text[0] == '~': continue # включён тихий режим сообщения
+                try:
+                    if len(text) > 3:
+                        if text.upper()[:3] == 'DI,' or text.upper()[:3] == 'ДИ,': text = text[3:].strip()
                     Fixer.ChatID = event.chat_id
                     Fixer.PeerID = event.peer_id
                     # Идентификатор юзера
                     Fixer.UserID = event.user_id
-                    print(Fixer.UserID)
-                    # if Fixer.UserID != Author: SendAuthor('~Уведомление: пользователь VK '+str(Fixer.UserID)+' пишет: ' + text)
+                    Msg = GetMessange(Fixer.UserID)['items'][0]
+                    print(Msg)  # печать сообщения
                     Fixer.Time.append(Fixer.time())
                     Fixer.Chat.append(text)
                     if Chat.Load() == False:
@@ -172,36 +180,42 @@ def LongPoll():
                         print('Данные не найдены')
                     Fixer.Mess = Home
                     # Бот начинает писать текст
-                    # vk.method('messages.setActivity', {'user_id':Fixer.ChatID, 'chat_id':Fixer.ChatID, 'type':u'typing'})
+                    vk.method('messages.setActivity', {'user_id': Fixer.UserID, 'chat_id': Fixer.ChatID, 'type': 'typing'})
                     # Поиск текущей локации пользователя
-                    ##                    if event.geo:
-                    ##                        Fixer.Process = 'Bot.GetUserLocation'
-                    ##                        geo = event.geo
-                    ##                        s = ''
-                    ##                        if u'coordinates' in geo:
-                    ##                            s = location(geo[u'coordinates']) + '\n'
-                    ##                        if u'place' in geo:
-                    ##                            if u'country' in geo[u'place']: s += geo[u'place'][u'country'] + ', '
-                    ##                            if u'city' in geo[u'place']: s += geo[u'place'][u'city']
-                    ##                        if text == '': SendMessage(s); Chat.Save(); continue
+                    if 'geo' in Msg:
+                        Fixer.Process = 'Bot.GetUserLocation'
+                        geo = Msg['geo']
+                        s = ''
+                        if 'coordinates' in geo:
+                            s = location(geo['coordinates']) + '\n'
+                        if 'place' in geo:
+                            if 'country' in geo['place']:
+                                s += geo['place']['country'] + ', '
+                            if 'city' in geo['place']:
+                                s += geo['place']['city']
+                        if text == '':
+                            SendMessage(s)
+                            Chat.Save()
+                            continue
                     # Поиск стикеров и вложений
-                    iphoto = 0
-                    ##                    if event.attachments:
-                    ##                        print(event.attachments)
-                    ##                        Fixer.Process = 'Bot.GetUserAttachments'
-                    ##                        for att in event.attachments: # иттератор по вложениям
-                    ##                            if att[u'type'] == u'sticker': # найден стикер
-                    ##                                SendMessage('Сорян. Я не умею распознавать стикеры.'); continue
-                    ##                            elif att[u'type'] == u'photo': # найдено фото
-                    ##                                iphoto += 1
-                    ##                            else: # другой тип вложения
-                    ##                                if text == '': SendMessage('В данных типах вложениях я не разбираюсь :('); continue
-                    if text == '': # Пустое сообщение (без текста)
-                        if iphoto == 1: s = 'Одно фото во вложении. В будующем смогу провести анализ фото :)'
-                        elif iphoto > 1: s = 'Найдено '+str(iphoto)+ ' изображений/фото во вложении.'
-                        SendMessage(s)
-                        continue  # пропускаем сообщение
-
+                    if 'attachments' in Msg:
+                        iphoto = 0
+                        Fixer.Process = 'Bot.GetUserAttachments'
+                        for att in Msg['attachments']:  # иттератор по вложениям
+                            if att['type'] == 'sticker':  # найден стикер
+                                SendMessage('Сорян. Я не умею распознавать стикеры.'); continue
+                            elif att['type'] == 'photo':  # найдено фото
+                                iphoto += 1
+                            else: # другой тип вложения
+                                if text == '':
+                                    SendMessage('В данных типах вложениях я не разбираюсь :('); continue
+                        if iphoto > 0:
+                            if iphoto == 1:
+                                s = 'Одно фото во вложении. В будующем смогу провести анализ фото :)'
+                            elif iphoto > 1:
+                                s = 'Найдено '+str(iphoto) + ' изображений/фото во вложении.'
+                            SendMessage(s)
+                            continue  # пропускаем сообщение
                     # ------------ основная обработка пользовательских сообщений ---------------
                     else:
                         # Мультипроцессорный обработчик - когда в одном сообщении сразу несколько запросов
@@ -215,30 +229,34 @@ def LongPoll():
                             Fixer.Process = 'Bot.Processor'
                             request = Processor.FormMessage(request)
                             Fixer.log('Processor', request)
-                            if request[0] == '#': # Требуется постпроцессорная обработка
+                            if request[0] == '#':  # Требуется постпроцессорная обработка
                                 request = PostProcessor.ErrorProcessor(request)
-                                if request[:6] == '#LOC! ': # Требуется определить геолокацию
+                                if request[:6] == '#LOC! ':  # Требуется определить геолокацию
                                     # !Доработать блок!
                                     request = location(str(Fixer.Y) + ' ' + str(Fixer.X))
                                     request += '\nДля определения более точных координаты в VK, прикрепи и отправь мне текущее местоположение на карте.'
                                 Fixer.log('PostProcessor', request)
                                 SendMessage(request)
                             else: # Постпроцессорная обработка не требуется
-                                if Fixer.Service != '': Fixer.LastService.append(Fixer.Service)
+                                if Fixer.Service != '':
+                                    Fixer.LastService.append(Fixer.Service)
                                 SendMessage(request)
-                            if Fixer.htext != '': # если есть гипперссылка/ки
+                            if Fixer.htext != '':  # если есть гипперссылка/ки
                                 Fixer.log('HiperText', Fixer.htext)
-                                slink = 'Ссылка: ' # если одна ссылка
-                                if '\n' in Fixer.htext: slink = 'Ссылки:'
-                                Fixer.htext = slink + Fixer.htext.replace(' ','%20')
+                                slink = 'Ссылка: '  # если одна ссылка
+                                if '\n' in Fixer.htext:
+                                    slink = 'Ссылки:'
+                                    Fixer.htext = slink + Fixer.htext
+                                else:
+                                    Fixer.htext = slink + Fixer.htext.replace(' ', '%20')
                                 SendMessage(Fixer.htext)
                                 Fixer.htext = ''
-                    Chat.Save()
-                    # Notification.Process() # запуск системы уведомлений
-##                except Exception as e:
-##                    s = str(e)
-##                    Fixer.errlog(Fixer.Process, str(e))
-##                    SendMessage(PostProcessor.ErrorProcessor('#critical: ' + s))
+                        Chat.Save()
+                    Notification.Process()  # запуск системы уведомлений
+                except Exception as e:
+                    s = str(e)
+                    Fixer.errlog(Fixer.Process, str(e))
+                    SendMessage(PostProcessor.ErrorProcessor('#critical: ' + s))
 
 
 # Основной блок программы

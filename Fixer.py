@@ -126,6 +126,7 @@ Notes = {}  # Записи пользователя
 RSS = []
 LastRSS = []
 
+
 # Запись лога
 def log(process, s=''):
     f = open('log.txt', 'a', encoding='utf-8')
@@ -139,18 +140,20 @@ def log(process, s=''):
             print('Ошибка при попытке записи лога! ' + str(e))
     f.close()
 
+
 # Запись лога ошибок
 def errlog(errprocess, s):
     f = open('log_error.txt', 'a', encoding='utf-8')
     try:
-        s = s.replace('\n',' \ ')
+        s = s.replace('\n', ' \ ')
         errProcess = errprocess
         f.write('%s %s {%s}: %s\n' % (str(datetime.today()), UserID, errProcess, s))
         print('Ошибка! {%s}: %s' % (errProcess, s))
-        errMsg = s
+        # errMsg = s
     except Exception as e:
         print('Ошибка при попытке записи лога! ' + str(e))
     f.close()
+
 
 # Запись времени и даты
 def time():
@@ -295,47 +298,32 @@ def servicefind(text):
                 m.append('#%s-%s:' % (skey, subser))
     return strfind(text, m) # поиск сервиса
 
+
 # ---------------------------------------------------------
-# вн.сервис strcleaner - упрощение строки (убирает все лишние символы)
-def strcleaner(text):
+# вн.сервис strCleaner - упрощение строки (убирает все лишние символы)
+def strCleaner(text):
+    dFormat = {'ё': 'е', '«': '', '»': '', '!': '', '@': '', '~': '', '#': '', '^': '', '&': '', '*': '',
+               '(': '', ',': '', '- ': ' ', '+': '', '=': '', '{': '', '}': '', '[': '', ']': '', ';': '',
+               ':': '', '?': '', '<': '', '>': '', '.': '', '`': '', '\\': '', '|': '', '/': '', '  ': ' '}
     text = text.strip().lower()
-    text = text.replace('ё','е')
-    text = text.replace('«','')
-    text = text.replace('»','')
-    text = text.replace('!','')
-    text = text.replace('@','')
-    text = text.replace('~','')
-    text = text.replace('#','')
-    text = text.replace('^','')
-    text = text.replace('&','')
-    text = text.replace('*','')
-    text = text.replace('(','')
-    text = text.replace(')','')
-    text = text.replace('- ',' ')
-    text = text.replace('+','')
-    text = text.replace('=','')
-    text = text.replace('{','')
-    text = text.replace('}','')
-    text = text.replace('[','')
-    text = text.replace(']','')
-    text = text.replace(';','')
-    text = text.replace(':','')
-    text = text.replace('?','')
-    text = text.replace('<','')
-    text = text.replace('>','')
-    text = text.replace(',','')
-    text = text.replace('.','')
-    text = text.replace('`','')
-    text = text.replace('\\','')
-    text = text.replace('|','')
-    text = text.replace('/','')
-    text = text.replace('  ',' ')
+    for key in dFormat:
+        text = text.replace(key, dFormat[key])
     return text
 
 
 # ---------------------------------------------------------
-# вн.сервис stradd - добавление строки, если есть
-def stradd(value, text=''):
+# вн.сервис strFormat - заменяет спецсимволы на номальные символы
+def strSpec(text):
+    dFormat = {'&quot;': '"', '&nbsp;': ' ', '&ensp;': ' ', '&emsp;': '  ', '&ndash;': '-', '&mdash;': '—',
+               '&shy;': ' ', '&copy;': '©', '&reg;': '®', '&trade;': '™', '&permil;': '‰', '&deg;': '°'}
+    for key in dFormat:
+        text = text.replace(key, dFormat[key])
+    return text
+
+
+# ---------------------------------------------------------
+# вн.сервис strAdd - добавление строки, если есть
+def strAdd(value, text=''):
     global stxt
     s = ''
     if value is not None:
@@ -348,8 +336,8 @@ def stradd(value, text=''):
 
 
 # ---------------------------------------------------------
-# вн.сервис strformat - преобразование результата в форматированный текст
-def strformat(mresult, items=5, sformat='', nameCol=[], sobj='объектов'):
+# вн.сервис strFormat - преобразование результата в форматированный текст
+def strFormat(mresult, items=5, sformat='', nameCol=[], sobj='объектов'):
     if len(mresult) > 0: # если есть результат
         s = 'По запросу найдено %s: %i' % ( sobj, len(mresult)) 
         if items < len(mresult): s += '\nБудут показаны первые %i:' % items

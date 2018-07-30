@@ -81,11 +81,11 @@ class strData:
             if len(data['suggestions']) == 1 or bFindAll == False:
                 dName = data['suggestions'][0]
                 Fixer.stxt = ''
-                Fixer.stradd(dName['value'], 'ФИО')
-                Fixer.stradd(dName['unrestricted_value'], 'ФИО полное')
-                Fixer.stradd(dName['data']['surname'], 'Фамилия')
-                Fixer.stradd(dName['data']['name'], 'Имя')
-                Fixer.stradd(dName['data']['patronymic'], 'Отчество')
+                Fixer.strAdd(dName['value'], 'ФИО')
+                Fixer.strAdd(dName['unrestricted_value'], 'ФИО полное')
+                Fixer.strAdd(dName['data']['surname'], 'Фамилия')
+                Fixer.strAdd(dName['data']['name'], 'Имя')
+                Fixer.strAdd(dName['data']['patronymic'], 'Отчество')
                 sgender = 'не удалось однозначно определить'
                 if dName['data']['gender'] == 'MALE':
                     sgender = 'мужской'
@@ -97,7 +97,7 @@ class strData:
                 mName = []
                 for iname in data['suggestions']:
                     mName.append(iname['value'])
-                s = Fixer.strformat(mName, items=10, sobj='имён')
+                s = Fixer.strFormat(mName, items=10, sobj='имён')
                 s += '\n\nВыберите и напишите как надо'
                 return s
             else:
@@ -117,31 +117,31 @@ class strData:
             if len(data['suggestions']) == 1 or bFindAll == False:
                 dAddr = data['suggestions'][0]
                 Fixer.stxt = ''
-                Fixer.stradd(dAddr['value'], 'Адрес')
-                Fixer.stradd(dAddr['unrestricted_value'], 'Адрес полный')
+                Fixer.strAdd(dAddr['value'], 'Адрес')
+                Fixer.strAdd(dAddr['unrestricted_value'], 'Адрес полный')
                 dAddr = dAddr['data']
-                Fixer.stradd(dAddr['postal_code'], 'Почтовый индекс')
-                Fixer.stradd(dAddr['country'], 'Страна')
-                Fixer.stradd(dAddr['region_type_full'], 'Тип региона')
-                Fixer.stradd(dAddr['region'], 'Регион')
-                Fixer.stradd(dAddr['area_type_full'],'Тип района')
-                Fixer.stradd(dAddr['area'], 'Район')
-                Fixer.stradd(dAddr['city_type_full'], 'Тип города')
-                Fixer.stradd(dAddr['city'], 'Город')
-                Fixer.stradd(dAddr['city_district_type_full'], 'Тип района города')
-                Fixer.stradd(dAddr['city_district'], 'Район города')
-                Fixer.stradd(dAddr['settlement_type_full'], 'Тип населенного пункта')
-                Fixer.stradd(dAddr['settlement'], 'Населенный пункт')
-                Fixer.stradd(dAddr['street_type_full'], 'Тип улицы')
-                Fixer.stradd(dAddr['street'], 'Улица')
-                Fixer.stradd(dAddr['house_type_full'], 'Тип дома')
-                Fixer.stradd(dAddr['house'], 'Дом')
-                Fixer.stradd(dAddr['block_type_full'], 'Тип корпуса/строения')
-                Fixer.stradd(dAddr['block'], 'Корпус/строение')
-                Fixer.stradd(dAddr['flat_type_full'], 'Тип квартиры')
-                Fixer.stradd(dAddr['flat'], 'Квартира')
-                Fixer.stradd(dAddr['postal_box'], 'Абонентский ящик')
-                Fixer.stradd(dAddr['fias_id'], 'Код ФИАС')
+                Fixer.strAdd(dAddr['postal_code'], 'Почтовый индекс')
+                Fixer.strAdd(dAddr['country'], 'Страна')
+                Fixer.strAdd(dAddr['region_type_full'], 'Тип региона')
+                Fixer.strAdd(dAddr['region'], 'Регион')
+                Fixer.strAdd(dAddr['area_type_full'], 'Тип района')
+                Fixer.strAdd(dAddr['area'], 'Район')
+                Fixer.strAdd(dAddr['city_type_full'], 'Тип города')
+                Fixer.strAdd(dAddr['city'], 'Город')
+                Fixer.strAdd(dAddr['city_district_type_full'], 'Тип района города')
+                Fixer.strAdd(dAddr['city_district'], 'Район города')
+                Fixer.strAdd(dAddr['settlement_type_full'], 'Тип населенного пункта')
+                Fixer.strAdd(dAddr['settlement'], 'Населенный пункт')
+                Fixer.strAdd(dAddr['street_type_full'], 'Тип улицы')
+                Fixer.strAdd(dAddr['street'], 'Улица')
+                Fixer.strAdd(dAddr['house_type_full'], 'Тип дома')
+                Fixer.strAdd(dAddr['house'], 'Дом')
+                Fixer.strAdd(dAddr['block_type_full'], 'Тип корпуса/строения')
+                Fixer.strAdd(dAddr['block'], 'Корпус/строение')
+                Fixer.strAdd(dAddr['flat_type_full'], 'Тип квартиры')
+                Fixer.strAdd(dAddr['flat'], 'Квартира')
+                Fixer.strAdd(dAddr['postal_box'], 'Абонентский ящик')
+                Fixer.strAdd(dAddr['fias_id'], 'Код ФИАС')
                 s = ''
                 if dAddr['fias_level'] == '0': s = 'страна'
                 elif dAddr['fias_level'] == '1': s = 'регион'
@@ -154,28 +154,28 @@ class strData:
                 elif dAddr['fias_level'] == '65': s = 'планировочная структура'
                 elif dAddr['fias_level'] == '-1': s = 'иностранный или пустой'
                 else: s is None
-                Fixer.stradd(s,	'Уровень детализации ФИАС')
-                Fixer.stradd(dAddr['fias_code'], 'Иерархический код адреса в ФИАС')
+                Fixer.strAdd(s, 'Уровень детализации ФИАС')
+                Fixer.strAdd(dAddr['fias_code'], 'Иерархический код адреса в ФИАС')
                 if dAddr['fias_actuality_state'] == '0': s = 'актуальный'
                 elif dAddr['fias_actuality_state'] == '51': s = 'переподчинен'
                 elif dAddr['fias_actuality_state'] == '99': s = 'удален'
                 elif int(dAddr['fias_actuality_state']) > 0: s = 'переименован'
                 else: s is None
-                Fixer.stradd(s, 'Признак актуальности адреса в ФИАС')
-                Fixer.stradd(dAddr['kladr_id'], 'Код КЛАДР')
+                Fixer.strAdd(s, 'Признак актуальности адреса в ФИАС')
+                Fixer.strAdd(dAddr['kladr_id'], 'Код КЛАДР')
                 if dAddr['capital_marker'] == '1': s = 'центр района'
                 elif dAddr['capital_marker'] == '2': s = 'центр региона'
                 elif dAddr['capital_marker'] == '3': s = 'центр района и региона'
                 elif dAddr['capital_marker'] == '4': s = 'центральный район региона'
                 else: s is None
-                Fixer.stradd(s, 'Признак')
-                Fixer.stradd(dAddr['okato'], 'Код ОКАТО')
-                Fixer.stradd(dAddr['oktmo'], 'Код ОКТМО')
-                Fixer.stradd(dAddr['tax_office'], 'Код ИФНС для физических лиц')
-                Fixer.stradd(dAddr['tax_office_legal'], 'Код ИФНС для организаций')
-                Fixer.stradd(dAddr['history_values'], 'Список исторических названий')
-                Fixer.stradd(dAddr['geo_lat'], 'Координаты: широта')
-                Fixer.stradd(dAddr['geo_lon'], 'Координаты: долгота')
+                Fixer.strAdd(s, 'Признак')
+                Fixer.strAdd(dAddr['okato'], 'Код ОКАТО')
+                Fixer.strAdd(dAddr['oktmo'], 'Код ОКТМО')
+                Fixer.strAdd(dAddr['tax_office'], 'Код ИФНС для физических лиц')
+                Fixer.strAdd(dAddr['tax_office_legal'], 'Код ИФНС для организаций')
+                Fixer.strAdd(dAddr['history_values'], 'Список исторических названий')
+                Fixer.strAdd(dAddr['geo_lat'], 'Координаты: широта')
+                Fixer.strAdd(dAddr['geo_lon'], 'Координаты: долгота')
                 if dAddr['qc_geo'] == '0': s = 'точные координаты'
                 elif dAddr['qc_geo'] == '1': s = 'ближайший дом'
                 elif dAddr['qc_geo'] == '2': s = 'улица'
@@ -183,21 +183,21 @@ class strData:
                 elif dAddr['qc_geo'] == '4': s = 'город'
                 elif dAddr['qc_geo'] == '5': s = 'координаты не определены'
                 else: s is None
-                Fixer.stradd(s, 'Код точности координат')
-                Fixer.stradd(dAddr['city_area'], 'Административный округ')
-                Fixer.stradd(dAddr['beltway_hit'], 'Внутри кольцевой?')
-                Fixer.stradd(dAddr['beltway_distance'], 'Расстояние от кольцевой в километрах')
-                Fixer.stradd(dAddr['flat_area'], 'Площадь квартиры')
-                Fixer.stradd(dAddr['square_meter_price'], 'Рыночная стоимость м²')
-                Fixer.stradd(dAddr['flat_price'], 'Рыночная стоимость квартиры')
-                Fixer.stradd(dAddr['timezone'], 'Часовой пояс')
-                Fixer.stradd(dAddr['metro'], 'Список ближайших станций метро')
+                Fixer.strAdd(s, 'Код точности координат')
+                Fixer.strAdd(dAddr['city_area'], 'Административный округ')
+                Fixer.strAdd(dAddr['beltway_hit'], 'Внутри кольцевой?')
+                Fixer.strAdd(dAddr['beltway_distance'], 'Расстояние от кольцевой в километрах')
+                Fixer.strAdd(dAddr['flat_area'], 'Площадь квартиры')
+                Fixer.strAdd(dAddr['square_meter_price'], 'Рыночная стоимость м²')
+                Fixer.strAdd(dAddr['flat_price'], 'Рыночная стоимость квартиры')
+                Fixer.strAdd(dAddr['timezone'], 'Часовой пояс')
+                Fixer.strAdd(dAddr['metro'], 'Список ближайших станций метро')
                 return Fixer.stxt
             elif len(data['suggestions']) > 1 and bFindAll:
                 mAddr = []
                 for iaddr in data['suggestions']:
                     mAddr.append(iaddr['value'])
-                s = Fixer.strformat(mAddr, items=10, sobj='адресов')
+                s = Fixer.strFormat(mAddr, items=10, sobj='адресов')
                 s += '\n\nВыберите и напишите как надо'
             else:
                 s = 'Не удалось распознать'
@@ -222,46 +222,46 @@ class strData:
                 dOrg = data['suggestions'][0]
                 Fixer.stxt = ''
                 if dOrg['data']['type'] == 'LEGAL':
-                    Fixer.stradd(dOrg['value'], 'Наименование компании')
-                    Fixer.stradd(dOrg['unrestricted_value'], 'Полное наименование компании')
+                    Fixer.strAdd(dOrg['value'], 'Наименование компании')
+                    Fixer.strAdd(dOrg['unrestricted_value'], 'Полное наименование компании')
                 else:
-                    Fixer.stradd(dOrg['value'], 'Наименование')
-                    Fixer.stradd(dOrg['unrestricted_value'], 'Полное наименование')
+                    Fixer.strAdd(dOrg['value'], 'Наименование')
+                    Fixer.strAdd(dOrg['unrestricted_value'], 'Полное наименование')
                 dOrg = dOrg['data']
                 if dOrg['type'] == 'LEGAL': s = 'юридическое лицо'
                 elif dOrg['type'] == 'INDIVIDUAL': s = 'индивидуальный предприниматель'
                 else: s = 'неизвестный тип'
-                Fixer.stradd(s,	'Тип организации')
+                Fixer.strAdd(s, 'Тип организации')
                 if dOrg['address'] is not None:
-                    Fixer.stradd(dOrg['address']['value'], 'Адрес')
-                    Fixer.stradd(dOrg['address']['unrestricted_value'], 'Полный адрес')
+                    Fixer.strAdd(dOrg['address']['value'], 'Адрес')
+                    Fixer.strAdd(dOrg['address']['unrestricted_value'], 'Полный адрес')
                     if dOrg['address']['data'] is not None:
-                        Fixer.stradd(dOrg['address']['data']['source'], 'Адрес как в ЕГРЮЛ')
+                        Fixer.strAdd(dOrg['address']['data']['source'], 'Адрес как в ЕГРЮЛ')
                 if 'branch_count' in dOrg:
-                    Fixer.stradd(dOrg['branch_count'], 'Количество филиалов')
+                    Fixer.strAdd(dOrg['branch_count'], 'Количество филиалов')
                 if 'branch_type' in dOrg:
                     if dOrg['branch_type'] == 'MAIN': s = 'головная организация'
                     elif dOrg['branch_type'] == 'BRANCH': s = 'филиал'
                     else: s is None
-                    Fixer.stradd(s, 'Тип подразделения')
-                Fixer.stradd(dOrg['inn'], 'ИНН')
+                    Fixer.strAdd(s, 'Тип подразделения')
+                Fixer.strAdd(dOrg['inn'], 'ИНН')
                 if 'kpp' in dOrg:
-                    Fixer.stradd(dOrg['kpp'], 'КПП')
-                Fixer.stradd(dOrg['ogrn'], 'ОГРН')
+                    Fixer.strAdd(dOrg['kpp'], 'КПП')
+                Fixer.strAdd(dOrg['ogrn'], 'ОГРН')
                 if 'ogrn_date' and dOrg['ogrn_date'] is not None in dOrg:
                     s = datetime.datetime.fromtimestamp(int(dOrg['ogrn_date'])/1000).strftime('%Y-%m-%d')
-                    Fixer.stradd(s, 'Дата выдачи ОГРН')
+                    Fixer.strAdd(s, 'Дата выдачи ОГРН')
                 if 'management' in dOrg:
                     if dOrg['management'] is not None:
-                        Fixer.stradd(dOrg['management']['name'], 'Руководитель')
-                        Fixer.stradd(dOrg['management']['post'], 'Должность руководителя')
+                        Fixer.strAdd(dOrg['management']['name'], 'Руководитель')
+                        Fixer.strAdd(dOrg['management']['post'], 'Должность руководителя')
                 if dOrg['name'] is not None:
-                    Fixer.stradd(dOrg['name']['full_with_opf'], 'Полное наименование с ОПФ')
-                    Fixer.stradd(dOrg['name']['short_with_opf'], 'Краткое наименование с ОПФ')
-                    Fixer.stradd(dOrg['name']['full'], 'Полное наименование')
-                    Fixer.stradd(dOrg['name']['short'], 'Краткое наименование')
-                Fixer.stradd(dOrg['okved'], 'Код ОКВЭД')
-                Fixer.stradd(dOrg['okved_type'], 'Версия справочника ОКВЭД')
+                    Fixer.strAdd(dOrg['name']['full_with_opf'], 'Полное наименование с ОПФ')
+                    Fixer.strAdd(dOrg['name']['short_with_opf'], 'Краткое наименование с ОПФ')
+                    Fixer.strAdd(dOrg['name']['full'], 'Полное наименование')
+                    Fixer.strAdd(dOrg['name']['short'], 'Краткое наименование')
+                Fixer.strAdd(dOrg['okved'], 'Код ОКВЭД')
+                Fixer.strAdd(dOrg['okved_type'], 'Версия справочника ОКВЭД')
                 m = SQL.ReadRows('okved', 'code', dOrg['okved'])
                 if len(m) > 0: # если найдены коды ОКВЭД в справочнике
                     sName = m[0][2]
@@ -269,55 +269,55 @@ class strData:
                     if m[0][4] != int(dOrg['okved_type']) and len(m) > 1:
                         sName = m[1][2]
                         sDesc = m[1][3]
-                    Fixer.stradd(sName, 'ОКВЭД')
+                    Fixer.strAdd(sName, 'ОКВЭД')
                     if sDesc is not None: sDesc = sDesc.replace('- ', '\n- ')
-                    Fixer.stradd(sDesc, 'Пояснения')
+                    Fixer.strAdd(sDesc, 'Пояснения')
                 if bId:
-                    Fixer.stradd(dOrg['okveds'], 'Коды ОКВЭД дополнительных видов деятельности')
+                    Fixer.strAdd(dOrg['okveds'], 'Коды ОКВЭД дополнительных видов деятельности')
                 if dOrg['opf'] is None:
-                    Fixer.stradd(dOrg['opf']['full'], 'Полное название ОПФ')
-                    Fixer.stradd(dOrg['opf']['short'], 'Краткое название ОПФ')
-                    Fixer.stradd(dOrg['opf']['code'], 'Код ОКОПФ')
+                    Fixer.strAdd(dOrg['opf']['full'], 'Полное название ОПФ')
+                    Fixer.strAdd(dOrg['opf']['short'], 'Краткое название ОПФ')
+                    Fixer.strAdd(dOrg['opf']['code'], 'Код ОКОПФ')
                 if dOrg['state']['status'] == 'ACTIVE': s = 'действующая'
                 elif dOrg['state']['status'] == 'LIQUIDATING': s = 'ликвидируется'
                 elif dOrg['state']['status'] == 'LIQUIDATED': s = 'ликвидирована'
                 elif dOrg['state']['status'] == 'REORGANIZING': s = 'в процессе присоединения к другому юр.лицу, с последующей ликвидацией'
                 else: s = 'статус неизвестен'
-                Fixer.stradd(s, 'Статус организации')
+                Fixer.strAdd(s, 'Статус организации')
                 s = datetime.datetime.fromtimestamp(int(dOrg['state']['registration_date'])/1000).strftime('%Y-%m-%d')
-                Fixer.stradd(s, 'Дата регистрации')
+                Fixer.strAdd(s, 'Дата регистрации')
                 if dOrg['state']['liquidation_date'] is not None:
                     s = datetime.datetime.fromtimestamp(int(dOrg['state']['liquidation_date'])/1000).strftime('%Y-%m-%d')
-                    Fixer.stradd(s, 'Дата ликвидации')
+                    Fixer.strAdd(s, 'Дата ликвидации')
                 if bId:
                     if dOrg['authorities'] is not None:
-                        Fixer.stradd(dOrg['authorities']['fts_registration'], 'ИФНС регистрации')
-                        Fixer.stradd(dOrg['authorities']['fts_report'], 'ИФНС отчётности')
-                        Fixer.stradd(dOrg['authorities']['pf'], 'Отделение Пенсионного фонда')
-                        Fixer.stradd(dOrg['authorities']['sif'], 'Отделение Фонда соц. страхования')
+                        Fixer.strAdd(dOrg['authorities']['fts_registration'], 'ИФНС регистрации')
+                        Fixer.strAdd(dOrg['authorities']['fts_report'], 'ИФНС отчётности')
+                        Fixer.strAdd(dOrg['authorities']['pf'], 'Отделение Пенсионного фонда')
+                        Fixer.strAdd(dOrg['authorities']['sif'], 'Отделение Фонда соц. страхования')
                     if dOrg['documents'] is not None:
-                        Fixer.stradd(dOrg['documents']['fts_registration'], 'Свидетельство о регистрации в налоговой')
-                        Fixer.stradd(dOrg['documents']['pf_registration'], 'Свидетельство о регистрации в Пенсионном фонде')
-                        Fixer.stradd(dOrg['documents']['sif_registration'], 'Свидетельство о регистрации в Фонде соц. страхования')
+                        Fixer.strAdd(dOrg['documents']['fts_registration'], 'Свидетельство о регистрации в налоговой')
+                        Fixer.strAdd(dOrg['documents']['pf_registration'], 'Свидетельство о регистрации в Пенсионном фонде')
+                        Fixer.strAdd(dOrg['documents']['sif_registration'], 'Свидетельство о регистрации в Фонде соц. страхования')
                     if 'citizenship' in dOrg:
-                        Fixer.stradd(dOrg['citizenship'], 'Гражданство ИП')
+                        Fixer.strAdd(dOrg['citizenship'], 'Гражданство ИП')
                     if 'founders' in dOrg:
-                        Fixer.stradd(dOrg['founders'], 'Учредители компании')
+                        Fixer.strAdd(dOrg['founders'], 'Учредители компании')
                     if 'managers' in dOrg:
-                        Fixer.stradd(dOrg['managers'], 'Руководители компании')
+                        Fixer.strAdd(dOrg['managers'], 'Руководители компании')
                     if 'capital' in dOrg:
-                        Fixer.stradd(dOrg['capital'], 'Уставной капитал компании')
+                        Fixer.strAdd(dOrg['capital'], 'Уставной капитал компании')
                     if 'licenses' in dOrg:
-                        Fixer.stradd(dOrg['licenses'], 'Лицензии')
+                        Fixer.strAdd(dOrg['licenses'], 'Лицензии')
                 s = datetime.datetime.fromtimestamp(int(dOrg['state']['actuality_date'])/1000).strftime('%Y-%m-%d')
-                Fixer.stradd(s, 'Дата актуальности сведений')
+                Fixer.strAdd(s, 'Дата актуальности сведений')
 
                 return Fixer.stxt
             elif len(data['suggestions']) > 1:
                 mName = []
                 for iname in data['suggestions']:
                     mName.append(iname['value'])
-                s = Fixer.strformat(mName, items=10, sobj='имён')
+                s = Fixer.strFormat(mName, items=10, sobj='имён')
                 s += '\n\nВыберите и напишите как надо'
                 return s
             else:
