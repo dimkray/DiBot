@@ -4,6 +4,8 @@ import Fixer
 
 Tests = []  # Хранилище всех тестов
 TestsDef = {}  # Хранилище всех функций для тестирования
+testService = '#'  # Текущий сервис для тестирования
+testDef = '#'  # Текущая функция для тестирования
 
 # Все виды сравнения возвращают значение от 0 до 1
 # (от полного несовпадения, до полного совпадения)
@@ -34,14 +36,17 @@ def fEqual(ftest, fetalon):
 
 # Сравнение с эталонным (для массивов)
 def listEqual(mtest, metalon):
-    if mtest == metalon: return 1
-    if mtest == []: return 0 
+    if mtest == metalon:
+        return 1
+    if mtest == []:
+        return 0
     rez = 0
     fl = 1 / len(mtest)
     i = 0
     for item in mtest:
         if i < len(metalon):
-            if item == metalon[i]: rez += fl
+            if item == metalon[i]:
+                rez += fl
         else:
             et = 0
             for ietalon in metalon:
@@ -68,7 +73,7 @@ class Comp:
     # Проверка на работоспособность (для строкового ответа)
     def sWork(test):
         try:
-            bug, text = Fixer.strfind(test, ['#bug:','#problem:','#err:','#critical:'])
+            bug, text = Fixer.strfind(test, ['#bug:', '#problem:', '#err:', '#critical:'])
             if bug != '':
                 return 0
             return 1
@@ -105,7 +110,8 @@ class Comp:
             if strEqual(stest, setalon) != 0:
                 return strEqual(stest, setalon)
             else:
-                if stest.strip() == '': return 0.0
+                if stest.strip() == '':
+                    return 0.0
                 rez = 0.0
                 scount = String.StringsCount(setalon)
                 fl = 0.9 / scount
@@ -113,11 +119,13 @@ class Comp:
                 for istr in String.GetStrings(stest):
                     if i < scount:
                         stret = String.GetStrings(setalon)[i]
-                        if strEqual(istr, stret) >= 0.9: rez += fl * strEqual(istr, stret)
+                        if strEqual(istr, stret) >= 0.9:
+                            rez += fl * strEqual(istr, stret)
                     else:
                         et = 0
                         for ietalon in String.GetStrings(setalon):
-                            if strEqual(istr, stret) >= 0.9: rez += fl * strEqual(istr, stret) * abs(et-i)/scount
+                            if strEqual(istr, stret) >= 0.9:
+                                rez += fl * strEqual(istr, stret) * abs(et-i)/scount
                             elif String.WordsCount(istr) > 1 and String.WordsCount(ietalon) > 1:
                                 rez += fl * listEqual(String.GetWords(istr), String.GetWords(ietalon)) * 0.9
                             et += 1
@@ -134,13 +142,14 @@ class Comp:
 # Процесс тестирования
 class Test:
     # Добавление теста
-    def Add(nameservice, service, name, testvalue, etalonvalue, time=0, critery=1):
-        print(service, TestsDef)
-        if service in TestsDef:
-            TestsDef[service]['test'] = True
-            TestsDef[service]['tests'].append(name)
+    def Add(name, testvalue, etalonvalue, time=0, critery=1):
+        # print(testService, testDef)
+        if testService in TestsDef:
+            if testDef in TestsDef[testService]:
+                TestsDef[testService][testDef]['test'] = True
+                TestsDef[testService][testDef]['tests'].append(name)
         iTest = []
-        iTest.append(service)  # 0
+        iTest.append(testDef)  # 0
         iTest.append(name)  # 1
         iTest.append(str(testvalue).replace('\n', '\\n'))  # 2
         iTest.append(str(etalonvalue).replace('\n', '\\n'))  # 3
@@ -163,19 +172,21 @@ class Test:
             iTest.append(False)  # 5
         iTest.append(time)  # 6
         iTest.append(comm)  # 7
+        iTest.append(testService)  # 8
         Tests.append(iTest)  # добавление теста
         return iTest
 
     # Добавление прочих тестов: iswork, swork, istype
-    def AddSimple(nameservice, service, name, testvalue, testtype='iswork', time=0, criteries=[]):
-        if service in TestsDef:
-            TestsDef[service]['test'] = True
-            TestsDef[service]['tests'].append(name)
+    def AddSimple(name, testvalue, testtype='iswork', time=0, criteries=[]):
+        if testService in TestsDef:
+            if testDef in TestsDef[testService]:
+                TestsDef[testService][testDef]['test'] = True
+                TestsDef[testService][testDef]['tests'].append(name)
         iTest = []
-        iTest.append(service) # 0 
-        iTest.append(name) # 1
-        iTest.append(str(testvalue)) # 2
-        iTest.append(str(criteries)) # 3
+        iTest.append(testDef)  # 0
+        iTest.append(name)  # 1
+        iTest.append(str(testvalue))  # 2
+        iTest.append(str(criteries))  # 3
         testtype = testtype.lower().strip()
         ftest = 0; comm = 'Проверка ' + testtype
         if testtype == 'istype':
@@ -184,19 +195,22 @@ class Test:
             ftest = Comp.sWork(testvalue)
         else: #iswork
             ftest = Comp.isWork(testvalue, *criteries) 
-        iTest.append(ftest) # 4
-        if ftest == 1: iTest.append(True) # 5
+        iTest.append(ftest)  # 4
+        if ftest == 1:
+            iTest.append(True)  # 5
         else: iTest.append(False)
         iTest.append(time)  # 6
         iTest.append(comm)  # 7
-        iTest.append(nameservice) # 8
-        Tests.append(iTest) # добавление теста
+        iTest.append(testService)  # 8
+        Tests.append(iTest)  # добавление теста
         return iTest
 
     # Добавление функции для тестирования
-    def AddDef(name):
-        if name not in TestsDef:
-            TestsDef[name] = {'test': False, 'tests': []}
+    def AddDef(name, sService=testService):
+        if sService not in TestsDef:
+            TestsDef[sService] = {}
+        if name not in TestsDef[sService]:
+            TestsDef[sService][name] = {'test': False, 'tests': []}
             return True
         else:
             return False
@@ -212,28 +226,37 @@ class Report:
             srep = '+ OK!'
         fl = '{:.3f}'.format(iTest[4])
         #ms = '{:.3f}'.format(iTest[6])
-        s = '%s : %s {%s} - %s: %s: "%s" = "%s"' % (srep, fl, iTest[0], iTest[1], iTest[7], iTest[2], iTest[3])
+        s = '%s : %s {%s.%s} - %s: %s: "%s" = "%s"' % (srep, fl, iTest[8], iTest[0], iTest[1], iTest[7], iTest[2], iTest[3])
         return s
 
     # Универсальный отчёт по сравнению
-    def WriteAll(items=0):
+    def WriteAll(items=0, service=''):
+        print(Tests)
         mreport = []
         for i in range(0, len(Tests)):
-            mreport.append(Report.Write(i))
+            if service == Tests[i][8] or service == '':
+                mreport.append(Report.Write(i))
         if items == 0:
             items = len(Tests)
         return Fixer.strFormat(mreport, items)
 
     # Универсальный отчёт по сравнению
-    def WriteFails(items=0):
+    def WriteFails(items=0, service=''):
         mreport = []
         for i in range(0, len(Tests)):
-            if Tests[i][5] == False:
-                mreport.append(Report.Write(i))
-        for test in TestsDef:
-            if TestsDef[test]['test'] == False:
-                mreport.append('- NOT! Не протестирована функция ' + test)
+            if service == Tests[i][8] or service == '':
+                if Tests[i][5] == False:
+                    mreport.append(Report.Write(i))
+        if service != '':
+            if service in TestsDef:
+                for test in TestsDef[service]:
+                    if TestsDef[service][test]['test'] == False:
+                        mreport.append('- NOT! Не протестирована функция ' + test)
+        else:  # Отображаем все сервисы
+            for iservice in TestsDef:
+                for test in TestsDef[iservice]:
+                    if TestsDef[iservice][test]['test'] == False:
+                        mreport.append('- NOT! Не протестирована функция %s в сервисе %s' % (test, iservice))
         if items == 0:
             items = len(mreport)
         return Fixer.strFormat(mreport, items, sobj='ошибок')
-    

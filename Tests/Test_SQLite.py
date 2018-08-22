@@ -1,21 +1,24 @@
 import Fixer
 from Profiler import Profiler
+from Tests import Testing
 from Tests.Testing import Test, Report
 from DB.SQLite import SQL
 
-service = 'SQLite'
+Testing.testService = 'SQL'
 Fixer.DB = 'Tests/test.db'
 
-print('------- Запущены тесты сервиса %s --------' % service)
+print('------- Запущены тесты сервиса %s --------' % Testing.testService)
 
 # здесь тестовая обработка #
 with Profiler() as p:
     # Read
+    Testing.testDef = 'ReadAll'
     test = SQL.ReadAll('test1')
     etalon = [(0, 'Тест 1'), (1, 'Тест 2')]
-    Test.Add(service, service+'.ReadAll','normal', test, etalon)
+    Test.Add('normal', test, etalon)
     
     # Dict
+    Testing.testDef = 'Dict'
     desc = { 'table=': 'test1',
              'Text': 'text',
              'Region': {'table=': 'region',
@@ -34,14 +37,14 @@ with Profiler() as p:
     etalon = [{'Text': 'Тест 2',
                'Region': [{'typeRegion': 'ГОРОД', 'nameRegion': 'МОСКВА'}],
                'Text2': 'Тест 2', 'typeRegion2': 'ГОРОД', 'nameRegion2': 'МОСКВА'}]
-    Test.Add(service, service+'.Dict','normal', test, etalon)
+    Test.Add('normal', test, etalon)
 
     test = SQL.Dict({'table=': 'test1', 'key': 'id'}, {'text': 'Тест 1'})
-    Test.Add(service, service+'.Dict','normal simple', test, [{'key': 0}])
+    Test.Add('normal simple', test, [{'key': 0}])
 
 print('')
-print('------- Отчёт тестов сервиса %s --------' % service)
+print('------- Отчёт тестов сервиса %s --------' % Testing.testService)
 print(Report.WriteAll())
 print('')
-print('------- Найдены ошибки сервиса %s  --------' % service)
+print('------- Найдены ошибки сервиса %s  --------' % Testing.testService)
 print(Report.WriteFails())
