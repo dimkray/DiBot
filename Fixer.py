@@ -422,6 +422,26 @@ def ListToDict(mNames, mRows, namesRez=[]):
         mRez.append(drow)
     return mRez
 
+
+Defs = {}  # Внутренний словарь всех функций
+serv = ''  # Название текущего сервиса для добавления описания функции
+# ---------------------------------------------------------
+# вн.сервис AddDef - Добавление описание функции
+def AddDef(name, description, sarg={}, sreturn=None, sclass=''):
+    global serv
+    if sclass != '':
+        serv = sclass
+    if serv != '' and sclass == '':
+        if serv not in Defs:
+            Defs[serv] = {}
+        Defs[serv][name] = {}
+        Defs[serv][name]['desc'] = description
+        Defs[serv][name]['arg'] = sarg
+        Defs[serv][name]['return'] = sreturn
+    else:
+        Defs[name] = {'class': description}
+    return Defs
+
 # Загрузка таблиц из БД
 log('Fixer.Start', '------ Загрузка данных ------')
 mCompliment = SQL.ReadAll('complimentMan')

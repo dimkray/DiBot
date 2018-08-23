@@ -2,6 +2,7 @@
 import Fixer
 from DB.SQLite import SQL
 from Services.StrMorph import String, Word
+from Profiler import Profiler
 
 Fixer.DB = 'DB/egr2.db'
 
@@ -97,7 +98,8 @@ while True:
         print()
         continue
 
-    mOrg = SQL.Dict(model, {tQuery: query})
+    with Profiler() as P:
+        mOrg = SQL.Dict(model, {tQuery: query})
 
     for org in mOrg:
         org['Группа статуса'] = dStatusGroup[org['Группа статуса']]

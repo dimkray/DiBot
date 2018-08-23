@@ -8,6 +8,8 @@ from Services.Geo import Geo
 from DB.SQLite import SQL
 from Profiler import decorator
 
+Fixer.serv = 'Yandex'
+
 tformat = '%Y-%m-%d %H:%M:%S'
 path = 'rasp-yandex.json'
 
@@ -26,7 +28,8 @@ trSt = {'': 0, 'unknown': 0, 'train_station': 1, 'platform': 1, 'station': 1,
 
 
 # Поиск идентификатора языка
-
+Fixer.AddDef('FindLang', 'Поиск идентификатора языка',
+             {'slang': 'название языка [string]'}, 'двухзначный код языка [string]')
 def FindLang(slang):
     slang = slang.strip()
     if slang.upper() in Fixer.yaLangs:
@@ -36,6 +39,8 @@ def FindLang(slang):
 
 
 # Функция - есть ли станция/город в базе
+Fixer.AddDef('isStation', 'Есть ли станция/город в базе',
+             {'station': 'название города/станции [string]'}, 'да или нет [bool]')
 def isStation(station):
     if len(SQL.ReadRowLike('stations', 'nameU', station.upper())) > 0:
         return True
@@ -44,6 +49,8 @@ def isStation(station):
 
 
 # Функция - есть ли станция/город в базе (с фиксацией региона)
+Fixer.AddDef('isStational', 'Есть ли станция/город в базе (с фиксацией региона) [string]',
+             {'station': 'название города/станции'}, 'да или нет [bool]')
 def isStational(station):
     iSt = 0
     row = SQL.ReadRowLike('stations', 'nameU', station.upper())
@@ -60,19 +67,23 @@ def isStational(station):
 
 
 # Функция вариантов станции/города в базе
-def eStation(stat):
-    if isStational('Г. ' + stat + ' '): 
-        return 'Г. ' + stat + ' '
-    if isStation('Г. ' + stat + ' '): 
-        return 'Г. ' + stat + ' '
-    if isStation(stat + ' '): 
-        return stat + ' '
-    if isStation(stat):
-        return stat
+Fixer.AddDef('eStation', 'Варианты станции/города в базе',
+             {'station': 'название города/станции [string]'}, 'название города/станции в базе [string]')
+def eStation(station):
+    if isStational('Г. ' + station + ' '):
+        return 'Г. ' + station + ' '
+    if isStation('Г. ' + station + ' '):
+        return 'Г. ' + station + ' '
+    if isStation(station + ' '):
+        return station + ' '
+    if isStation(station):
+        return station
     return ''
 
 
 # Функция поиска станции/города в базе
+Fixer.AddDef('FindStation', 'Поиск станции/города в базе',
+             {'station': 'название города/станции [string]'}, 'код яндекс города/станции в базе [string]')
 def FindStation(station):
     db2 = []; st = []
     sstation = ''
@@ -136,6 +147,7 @@ def FindStation(station):
         Fixer.Coords.append(st[6])
     return istation
 
+Fixer.AddDef('Ya', 'Сервис Яндекс', sclass='Ya')
 class Ya:
     
     # Сервис Яндекс.Расписание
@@ -144,8 +156,10 @@ class Ya:
 
     ##### ОСНОВНОЙ КОД #####
 
+    Fixer.AddDef('FindRasp', 'Поиск расписания в сервисе Яндекс.Расписание',
+                 {'sText': 'свободный текст поиска расписания [string]'}, 'список найденного рассписания [string]')
     @decorator.benchmark
-    def FindRasp(s):
+    def FindRasp(sText):
         try:
             rez = '#bug: Ya.Rasp'
             Fixer.iTr = 0
@@ -154,7 +168,7 @@ class Ya:
             st1 = ''; st2 = ''
             from datetime import date, datetime, timedelta
 
-            words = s.strip().split(' ')
+            words = sText.strip().split(' ')
             sdate = str(date.today());
             stype = 'All'; x = 0
             for word in words:
@@ -316,57 +330,65 @@ class Ya:
     # в русском, украинском или английском тексте. Языковые модели Спеллера
     # включают сотни миллионов слов и словосочетаний.
     # https://tech.yandex.ru/speller/doc/dg/reference/checkText-docpage/
+    Fixer.AddDef('Speller', 'Автоисправление орфографических ошибок в русском, украинском или английском тексте - сервис Яндекс.Спеллер',
+                 {'sText': 'свободный текст для автоисправления [string]'}, 'исправленый текст [string]')
     @decorator.benchmark
-    def Speller(s):
+    def Speller(sText):
         try:
             rez = '#bug: Ya.Speller'
             http = 'https://speller.yandex.net/services/spellservice.json/checkText'
-            payload = {'text': s, 'options': 4} 
+            payload = {'text': sText, 'options': 4}
             r = requests.get(http, params=payload)
             if r.status_code == requests.codes.ok:      
                 data = r.json()
                 rez = ''; x = 0
                 for word in data:
-                    if word['code'] == 2: # Повтор слова
-                        rez += s[x:word['pos']] # вырезаем слово
+                    if word['code'] == 2:  # Повтор слова
+                        rez += sText[x:word['pos']]  # вырезаем слово
                         x = word['pos'] + word['len']
-                    if word['code'] == 1 or word['code'] == 3: # Неверное употребление прописных и строчных букв
-                        if word['s']:
-                            rez += s[x:word['pos']] + word['s'][0] # заменяем слово
+                    if word['code'] == 1 or word['code'] == 3:  # Неверное употребление прописных и строчных букв
+                        if word['sText']:
+                            rez += sText[x:word['pos']] + word['sText'][0]  # заменяем слово
                             x = word['pos'] + word['len']  
-                rez += s[x:]
+                rez += sText[x:]
             else:
                 # Если ошибка - то спец.сообщение с номером ошибки
-                rez = '#problem: '+ str(r.status_code)
+                rez = '#problem: ' + str(r.status_code)
             return rez
         except Exception as e:
             Fixer.errlog('Ya.Speller', str(e))
             return '#bug: ' + str(e)
 
     # Сервис Яндекс.Переводчик
+    Fixer.AddDef('Translate', 'Перевод текста с указанного на другой указанный язык - сервис Яндекс.Переводчик',
+                 {'sText': 'свободный текст для перевода на указанном языке [string]',
+                  'lang_from': 'двухбуквенный код или "auto" - язык оригинала текста [string]',
+                  'lang_to': 'двухбуквенный код или "auto" - на какой язык переводить текст [string]'},
+                 'текст перевода [string]')
+    print(Fixer.Defs)
     @decorator.benchmark
-    def Translate(s, lang1, lang2):
+    def Translate(sText, lang_from, lang_to):
         try:
             rez = ''
             #автоопределение языка
-            if lang1 == 'авто':
+            if lang_from == 'авто':
                 http = 'https://translate.yandex.net/api/v1.5/tr.json/detect'
-                payload = {'key': config.YaTranc_key, 'text': s, 'hint': 'ru,en,fr,it,de'}
+                payload = {'key': config.YaTranc_key, 'text': sText, 'hint': 'ru,en,fr,it,de'}
                 r = requests.get(http, params=payload)
                 if r.status_code == requests.codes.ok:      
                     data = r.json()
-                    if data['lang']: lang1 = data['lang']
+                    if data['lang']: lang_from = data['lang']
                 else:
                     # Если ошибка - то спец.сообщение с номером ошибки
                     return '#problem: '+ str(r.status_code)
-                lang2 = FindLang(lang2)
+                lang_to = FindLang(lang_to)
             else:
-                lang1 = FindLang(lang1)
-                lang2 = FindLang(lang2)
-            dir_tr = lang1 + '-' + lang2
+                lang_from = FindLang(lang_from)
+                lang_to = FindLang(lang_to)
+            dir_tr = lang_from + '-' + lang_to
             http = 'https://translate.yandex.net/api/v1.5/tr.json/translate'
             payload = {'key': config.YaTranc_key,
-                        'text': s, 'lang': dir_tr, 'options': 1} 
+                        'text': sText, 'lang': dir_tr, 'options': 1}
             r = requests.get(http, params=payload)
             if r.status_code == requests.codes.ok:      
                 data = r.json()
