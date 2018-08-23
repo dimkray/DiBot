@@ -37,8 +37,12 @@ def ReadMessage(text):
         fix = text[fix_start+1:fix_end]
         text = no_fix
     # Запуск сервиса Яндекс.Спеллер для исправления пользовательских опечаток
-    text = Ya.Speller(text)
-    Fixer.log('Яндекс.Спеллер: ' + text)
+    if text[:4].upper() != 'DEF:' and text[:5].upper() != 'DEFS:' and text[:5].upper() != 'CODE:' and text[0] != '=':
+        if text[0] == '~':  # Принудительное отключение Спеллера
+            text = text[1:].strip()
+        else:
+            text = Ya.Speller(text)
+            Fixer.log('Яндекс.Спеллер: ' + text)
     stext = text.upper()
     stext = stext.replace('Ё', 'Е')
     # Возвращаем зафиксированные слова

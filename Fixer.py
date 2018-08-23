@@ -338,13 +338,14 @@ def strAdd(value, text=''):
 # ---------------------------------------------------------
 # вн.сервис strFormat - преобразование результата в форматированный текст
 def strFormat(mresult, items=5, sformat='', nameCol=[], sobj='объектов'):
-    if len(mresult) > 0: # если есть результат
-        s = 'По запросу найдено %s: %i' % ( sobj, len(mresult)) 
+    if len(mresult) > 0:  # если есть результат
+        s = 'По запросу найдено %s: %i' % (sobj, len(mresult))
         if items < len(mresult): s += '\nБудут показаны первые %i:' % items
-        else: items = len(mresult)
+        else:
+            items = len(mresult)
         for i in range(0, items):
-            if sformat == '': # если не задан формат
-                if len(nameCol) > 1: # если несколько возвращаемых колонок
+            if sformat == '':  # если не задан формат
+                if len(nameCol) > 1:  # если несколько возвращаемых колонок
                     row = mresult[i]
                     s += '\n[%i] %s:' % (i+1, row[0])
                     ic = 0
@@ -352,9 +353,9 @@ def strFormat(mresult, items=5, sformat='', nameCol=[], sobj='объектов')
                         if col == 0: ic += 1; continue
                         s += '\n%s: %s' % (col, row[ic])
                         ic += 1              
-                else: # если одна возвращаемая колонка
+                else:  # если одна возвращаемая колонка
                     s += '\n[%i] %s' % (i+1, mresult[i])
-            else: # если задан формат
+            else:  # если задан формат
                 sitem = sformat
                 row = mresult[i]
                 while sitem.find('%%') >= 0:
@@ -422,7 +423,8 @@ def ListToDict(mNames, mRows, namesRez=[]):
         mRez.append(drow)
     return mRez
 
-
+# ---------------------------------------------------------
+# Внутренние сервисы по работе с функциями
 Defs = {}  # Внутренний словарь всех функций
 serv = ''  # Название текущего сервиса для добавления описания функции
 # ---------------------------------------------------------
@@ -441,6 +443,57 @@ def AddDef(name, description, sarg={}, sreturn=None, sclass=''):
     else:
         Defs[name] = {'class': description}
     return Defs
+
+# отображение всех записанных классов
+def WriteClasses():
+    mClasses = []
+    for iclass in Defs:
+        mClasses.append([iclass, len(Defs[iclass]) - 1, Defs[iclass]['class']])
+        print(iclass + ' - ' + Defs[iclass]['class'])
+    return strFormat(mClasses, items=30, sformat='%0 : %1 функций - %2', sobj='классов')
+
+# отображение всех записанных функций класса/сервиса
+def WriteDefs(sclass=''):
+    mDefs = []
+    if sclass != '' and sclass in Defs:
+        for iDef in Defs[sclass]:
+            if iDef != 'class':
+                mDefs.append([iDef, len(Defs[sclass][iDef]['arg']), Defs[sclass][iDef]['desc']])
+                print(iDef + ' - ' + Defs[sclass][iDef]['desc'])
+        return strFormat(mDefs, items=30, sformat='%0 : %1 парам. - %2', sobj='функций')
+    else:
+        for iclass in Defs:
+            for iDef in Defs[iclass]:
+                if iDef != 'class':
+                    mDefs.append([iclass, iDef, len(Defs[sclass][iDef]['arg']), Defs[sclass][iDef]['desc']])
+                    print(iclass + '.' + iDef + ' - ' + Defs[sclass][iDef]['desc'])
+        return strFormat(mDefs, items=30, sformat='%0.%1 : %2 парам. - %3', sobj='функций')
+
+# отображение всех параметров функций
+def WriteDef(ClassDef):
+    m = getparams(ClassDef, separator='.')
+    sClass = m[0]
+    sDef = m[1]
+    if sClass in Defs:
+        if sDef in Defs[sClass] and sDef != 'class':
+            sText = sClass + '.' + sDef + '('
+            print(sText)
+        else:
+            return 'Функция %s в классе %s не найдена!' % (sDef, sClass)
+    else:
+        return 'Класс %s не найден!' % sClass
+    mArgs = []
+    for iArg in Defs[sClass][sDef]['arg']:
+        sText += iArg + ', '
+        mArgs.append([iArg, Defs[sClass][sDef]['arg'][iArg]])
+    if len(Defs[sClass][sDef]['arg']) < 1:
+        sText += '  '
+    sText = sText[:-2] + ') - ' + Defs[sClass][sDef]['desc'] + '\n'
+    sText += strFormat(mArgs, items=10, sformat='%0 - %1', sobj='параметров')
+    sText += '\nВозвращаемый параметр: ' + str(Defs[sClass][sDef]['return'])
+    print(sText)
+    return sText
+
 
 # Загрузка таблиц из БД
 log('Fixer.Start', '------ Загрузка данных ------')

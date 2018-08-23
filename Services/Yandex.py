@@ -8,7 +8,7 @@ from Services.Geo import Geo
 from DB.SQLite import SQL
 from Profiler import decorator
 
-Fixer.serv = 'Yandex'
+Fixer.AddDef('Yandex', 'Внутренний сервис Yandex', sclass='Yandex')
 
 tformat = '%Y-%m-%d %H:%M:%S'
 path = 'rasp-yandex.json'
@@ -157,9 +157,9 @@ class Ya:
     ##### ОСНОВНОЙ КОД #####
 
     Fixer.AddDef('FindRasp', 'Поиск расписания в сервисе Яндекс.Расписание',
-                 {'sText': 'свободный текст поиска расписания [string]'}, 'список найденного рассписания [string]')
+                 {'text': 'свободный текст поиска расписания [string]'}, 'список найденного рассписания [string]')
     @decorator.benchmark
-    def FindRasp(sText):
+    def FindRasp(text):
         try:
             rez = '#bug: Ya.Rasp'
             Fixer.iTr = 0
@@ -168,7 +168,7 @@ class Ya:
             st1 = ''; st2 = ''
             from datetime import date, datetime, timedelta
 
-            words = sText.strip().split(' ')
+            words = text.strip().split(' ')
             sdate = str(date.today());
             stype = 'All'; x = 0
             for word in words:
@@ -331,29 +331,33 @@ class Ya:
     # включают сотни миллионов слов и словосочетаний.
     # https://tech.yandex.ru/speller/doc/dg/reference/checkText-docpage/
     Fixer.AddDef('Speller', 'Автоисправление орфографических ошибок в русском, украинском или английском тексте - сервис Яндекс.Спеллер',
-                 {'sText': 'свободный текст для автоисправления [string]'}, 'исправленый текст [string]')
+                 {'s': 'свободный текст для автоисправления [string]'}, 'исправленый текст [string]')
     @decorator.benchmark
-    def Speller(sText):
+    def Speller(s):
+        print(s)
+        if s[0] == '~':  # спеллер должен быть отключён
+            print(s)
+            return s[1:].strip()
         try:
             rez = '#bug: Ya.Speller'
             http = 'https://speller.yandex.net/services/spellservice.json/checkText'
-            payload = {'text': sText, 'options': 4}
+            payload = {'text': s, 'options': 4}
             r = requests.get(http, params=payload)
-            if r.status_code == requests.codes.ok:      
+            if r.status_code == requests.codes.ok:
                 data = r.json()
                 rez = ''; x = 0
                 for word in data:
-                    if word['code'] == 2:  # Повтор слова
-                        rez += sText[x:word['pos']]  # вырезаем слово
+                    if word['code'] == 2: # Повтор слова
+                        rez += s[x:word['pos']] # вырезаем слово
                         x = word['pos'] + word['len']
-                    if word['code'] == 1 or word['code'] == 3:  # Неверное употребление прописных и строчных букв
-                        if word['sText']:
-                            rez += sText[x:word['pos']] + word['sText'][0]  # заменяем слово
-                            x = word['pos'] + word['len']  
-                rez += sText[x:]
+                    if word['code'] == 1 or word['code'] == 3: # Неверное употребление прописных и строчных букв
+                        if word['s']:
+                            rez += s[x:word['pos']] + word['s'][0] # заменяем слово
+                            x = word['pos'] + word['len']
+                rez += s[x:]
             else:
                 # Если ошибка - то спец.сообщение с номером ошибки
-                rez = '#problem: ' + str(r.status_code)
+                rez = '#problem: '+ str(r.status_code)
             return rez
         except Exception as e:
             Fixer.errlog('Ya.Speller', str(e))

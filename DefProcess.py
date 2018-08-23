@@ -2,6 +2,8 @@
 # Сервис по работе с функциями и процедурами
 import Fixer
 import inspect
+from Services import Yandex
+from Services.Yandex import Ya
 from Tests.Testing import Test
 
 def uniq(seq): 
@@ -10,7 +12,7 @@ def uniq(seq):
 # Полчение списка всех функций указанного класса (включая системные)
 def GetAllMembers(iclass):
     ret = dir(iclass)
-    if hasattr(iclass,'__bases__'):
+    if hasattr(iclass, '__bases__'):
         for base in iclass.__bases__:
             ret = ret + GetAllMembers(base)
     return ret
@@ -79,7 +81,8 @@ def Run(module, nameclass, namedef, *args):
         if nameclass != '':
             cl = getattr(mod, nameclass)
             func = getattr(cl, namedef)
-        else: func = getattr(mod, namedef)
+        else:
+            func = getattr(mod, namedef)
         return func(*args)
     except Exception as e: 
         Fixer.errlog('Def.Run', str(e))

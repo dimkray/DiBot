@@ -1007,6 +1007,9 @@ def ServiceProcess(response):
     elif ser == '#dataorgid:':
         print(send)
         tsend = strData.Organization(send, True, False)
+    elif ser == '#classes:': tsend = Fixer.WriteClasses()
+    elif ser == '#defs:': tsend = Fixer.WriteDefs(send)
+    elif ser == '#def:': tsend = Fixer.WriteDef(send)
 
     # Все остальные случаи
     else: tsend = '#problem: Сервис {%s} не найден!' % Fixer.Service
