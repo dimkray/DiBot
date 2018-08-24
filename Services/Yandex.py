@@ -30,6 +30,8 @@ trSt = {'': 0, 'unknown': 0, 'train_station': 1, 'platform': 1, 'station': 1,
 # Поиск идентификатора языка
 Fixer.AddDef('FindLang', 'Поиск идентификатора языка',
              {'slang': 'название языка [string]'}, 'двухзначный код языка [string]')
+
+
 def FindLang(slang):
     slang = slang.strip()
     if slang.upper() in Fixer.yaLangs:
@@ -41,6 +43,8 @@ def FindLang(slang):
 # Функция - есть ли станция/город в базе
 Fixer.AddDef('isStation', 'Есть ли станция/город в базе',
              {'station': 'название города/станции [string]'}, 'да или нет [bool]')
+
+
 def isStation(station):
     if len(SQL.ReadRowLike('stations', 'nameU', station.upper())) > 0:
         return True
@@ -51,6 +55,8 @@ def isStation(station):
 # Функция - есть ли станция/город в базе (с фиксацией региона)
 Fixer.AddDef('isStational', 'Есть ли станция/город в базе (с фиксацией региона) [string]',
              {'station': 'название города/станции'}, 'да или нет [bool]')
+
+
 def isStational(station):
     iSt = 0
     row = SQL.ReadRowLike('stations', 'nameU', station.upper())
@@ -69,6 +75,8 @@ def isStational(station):
 # Функция вариантов станции/города в базе
 Fixer.AddDef('eStation', 'Варианты станции/города в базе',
              {'station': 'название города/станции [string]'}, 'название города/станции в базе [string]')
+
+
 def eStation(station):
     if isStational('Г. ' + station + ' '):
         return 'Г. ' + station + ' '
@@ -84,6 +92,8 @@ def eStation(station):
 # Функция поиска станции/города в базе
 Fixer.AddDef('FindStation', 'Поиск станции/города в базе',
              {'station': 'название города/станции [string]'}, 'код яндекс города/станции в базе [string]')
+
+
 def FindStation(station):
     db2 = []; st = []
     sstation = ''
@@ -156,8 +166,10 @@ class Ya:
 
     ##### ОСНОВНОЙ КОД #####
 
+
     Fixer.AddDef('FindRasp', 'Поиск расписания в сервисе Яндекс.Расписание',
                  {'text': 'свободный текст поиска расписания [string]'}, 'список найденного рассписания [string]')
+
     @decorator.benchmark
     def FindRasp(text):
         try:
@@ -324,7 +336,8 @@ class Ya:
         except Exception as e:
             Fixer.errlog('Ya.FindRasp', str(e))
             return '#bug: ' + str(e)
-    
+
+
     # Сервис Яндекс.Спеллер
     # Яндекс.Спеллер помогает находить и исправлять орфографические ошибки
     # в русском, украинском или английском тексте. Языковые модели Спеллера
@@ -332,6 +345,7 @@ class Ya:
     # https://tech.yandex.ru/speller/doc/dg/reference/checkText-docpage/
     Fixer.AddDef('Speller', 'Автоисправление орфографических ошибок в русском, украинском или английском тексте - сервис Яндекс.Спеллер',
                  {'s': 'свободный текст для автоисправления [string]'}, 'исправленый текст [string]')
+
     @decorator.benchmark
     def Speller(s):
         print(s)
@@ -363,6 +377,7 @@ class Ya:
             Fixer.errlog('Ya.Speller', str(e))
             return '#bug: ' + str(e)
 
+
     # Сервис Яндекс.Переводчик
     Fixer.AddDef('Translate', 'Перевод текста с указанного на другой указанный язык - сервис Яндекс.Переводчик',
                  {'sText': 'свободный текст для перевода на указанном языке [string]',
@@ -370,6 +385,7 @@ class Ya:
                   'lang_to': 'двухбуквенный код или "auto" - на какой язык переводить текст [string]'},
                  'текст перевода [string]')
     print(Fixer.Defs)
+
     @decorator.benchmark
     def Translate(sText, lang_from, lang_to):
         try:
@@ -405,16 +421,24 @@ class Ya:
             Fixer.errlog('Ya.Translate', str(e))
             return '#bug: ' + str(e)
 
+
     # Сервис Яндекс поиск объектов/организаций
+    Fixer.AddDef('Objects', 'Сервис Яндекс поиск объектов/организаций относительно координат и заданного радиуса поиска',
+                 {'Xloc=Fixer.X': 'глобальная координата X (долгота) [float]',
+                  'Yloc=Fixer.Y': 'глобальная координата Y (широта) [float]',
+                  'dr=10': 'размер области поиска (протяжённость по долготе и широте), величина в км [float]',
+                  'fix=1': 'Признак «жесткого» ограничения области поиска, 1 - ограничить поиск, 0 - не ограничивать поиск [integer]'},
+                 'список найденных объектов [string], а также сохраняются в Fixer.Obj [list of list<string>]')
+
     @decorator.benchmark
     def Objects(text, Xloc=Fixer.X, Yloc=Fixer.Y, dr=10, fix=1):
         try:
             rez = ''
-            if Xloc == Yloc == 0: # если координаты не заданы
+            if Xloc == Yloc == 0:  # если координаты не заданы
                 Xloc = 37.619955
                 Yloc = 55.753767
                 rez = 'Не определены координаты старта поиска. Ищу ближайшие объекты от мавзалея :)\nЧтобы поиск можно было осуществлять от текущего местоположения, необходимо включить геолокацию (кнопочка в меню).'
-            dxy = dr/55 # преобразование км в угловые расстояния
+            dxy = dr/55  # преобразование км в угловые расстояния
             http = 'https://search-maps.yandex.ru/v1/'
             payload = { 'apikey': config.YaObj_key,
                         'text': text,
@@ -445,26 +469,26 @@ class Ya:
                         if 'url' in ft['properties']['CompanyMetaData']:
                             url = ft['properties']['CompanyMetaData']['url']
                         aft = [True, ft['properties']['CompanyMetaData']['name'],  # название организации
-                               address, # полный адрес
+                               address,  # полный адрес
                                cats, hours, tels, url,
-                               ft['geometry']['coordinates'][0], # Координата X
-                               ft['geometry']['coordinates'][1]] # Координата Y
+                               ft['geometry']['coordinates'][0],  # Координата X
+                               ft['geometry']['coordinates'][1]]  # Координата Y
                     else:
-                        aft = [False, # признак географического объекта
-                               ft['properties']['name'], # Название объекта
-                               ft['properties']['GeocoderMetaData']['text'], # Полное название (географический адрес)
-                               '','','','',
-                               ft['geometry']['coordinates'][0], # Координата X
-                               ft['geometry']['coordinates'][1]] # Координата Y
-                    Fixer.Obj.append(aft)                
+                        aft = [False,  # признак географического объекта
+                               ft['properties']['name'],  # Название объекта
+                               ft['properties']['GeocoderMetaData']['text'],  # Полное название (географический адрес)
+                               '', '', '', '',
+                               ft['geometry']['coordinates'][0],  # Координата X
+                               ft['geometry']['coordinates'][1]]  # Координата Y
+                    Fixer.Obj.append(aft)
             else:
                 return '#problem: ' + str(r.status_code)
 
             # Обработка результатов поиска
             gObj = 0; oObj = 0
             for i in Fixer.Obj:
-                if i[0]: oObj +=1 # число организаций
-                else: gObj +=1 # число геогр. объектов				
+                if i[0]: oObj +=1  # число организаций
+                else: gObj +=1  # число геогр. объектов
             sorg = ''; sobj = ''; sand = ''
             if oObj > 0: sorg = str(oObj) + ' организаций/ию'
             if oObj > 499: sorg = 'более ' + str(oObj) + ' организаций'
@@ -472,17 +496,14 @@ class Ya:
             if oObj != 0 and gObj != 0: sand = ' и '
             if oObj == 0 and gObj == 0:
                 rez = 'Не нашёл ни одного объекта с названием "'+text+'" в радиусе '+str(dr)+'км :(\nМожет надо указать другие параметры поиска? Либо задать больший радуис поиска, указав дополнительно ...в пределах 500 км, например.'
-            #print(oObj)
-            #print(gObj)
             rez = 'Нашёл ' + sorg + sand + sobj + ' в радиусе '+ str(dr) + ' км.\n'
-            #print(Fixer.Obj)
             if oObj + gObj > 5: rez += 'Из них будут показаны 5 ближайших:'
             srez = []; dis = 0; stext = ''
             for i in Fixer.Obj:
                 if i[0]:
                     stext = 'Организация: '+i[1]+'\nАдрес: '+i[2]+'\nGPS-координаты: '+str(i[8])+','+str(i[7]) + '\n'
                     stext += 'Категории: '+i[3]+'\nЧасы работы: '+i[4]+'\nТелефоны: '+i[5]+'\nURL: '+i[6]
-                else: # геогр. объект
+                else:  # геогр. объект
                     stext = 'Объект: '+i[1]+'Расположение: '+i[2]+'\nGPS-координаты: '+str(i[8])+','+str(i[7])
                 dis = Geo.Distance(Xloc, Yloc, i[7], i[8])
                 drez = [dis, stext]
@@ -507,8 +528,13 @@ class Ya:
             Fixer.errlog('Ya.Objects', str(e))
             return '#bug: ' + str(e)
 
+
     # Сервис Яндекс.Координаты
     # Яндекс.Координаты возвращает географические координаты города/станции
+    Fixer.AddDef('Coordinates', 'Возвращает географические координаты города/станции - сервис Яндекс.Координаты',
+                 {'station': 'название города/станции [string]'},
+                 'глобальные координаты в формате "yy.yyyyy, xx.xxxxx" [string]')
+
     @decorator.benchmark
     def Coordinates(station):
         try:
@@ -517,14 +543,20 @@ class Ya:
             if s == '': return '#problem: не найдено ни одного объекта'
             s = FindStation(s)
             if s == '': return '#problem: не найдено ни одного объекта'
-            if Fixer.Coords[0] == Fixer.Coords[1] == 0: return '#poblem: не заданы координаты'
+            if Fixer.Coords[0] == Fixer.Coords[1] == 0:
+                return '#poblem: не заданы координаты'
             return str(Fixer.Coords[1]) + ', ' + str(Fixer.Coords[0])
         except Exception as e:
             Fixer.errlog('Ya.Coordinates', str(e))
             return '#bug: ' + str(e)
 
+
     # Сервис Яндекс.Каталог
     # Яндекс.Каталог возвращает информацию о сайте (тиц, раздел, регион)
+    Fixer.AddDef('Catalog', 'Возвращает информацию о сайте (тиц, раздел, регион) - сервис Яндекс.Каталог',
+                 {'url': 'адрес сайта или часть сайта [string]'},
+                 'информация о найденном сайте/сайтах: тиц, раздел, регион [string]')
+
     @decorator.benchmark
     def Catalog(url):
         try:
@@ -554,36 +586,43 @@ class Ya:
         except Exception as e:
             Fixer.errlog('Ya.Catalog', str(e))
             return '#bug: ' + str(e)
-        
+
+
     # Сервис Яндекс.Каталог
     # Яндекс.Каталог ищет сайт по запросу
+    Fixer.AddDef('FindCatalog', 'Ищет сайт по свободному запросу - сервис Яндекс.Каталог',
+                 {'text': 'свободный текст для поиска: название сайта, описание, тема, регион распространения [string]'},
+                 'информация о найденном сайте/сайтах: тиц, раздел, регион [string]')
+
     @decorator.benchmark
     def FindCatalog(text):
         try:
             text = text.upper().strip()
             if len(text) > 2:
                 mfind = []
-                for col in ['site','section','section2','section3','section4',
-                      'section5','section6','region','region2','region3','region4',
-                      'titleU','regionRuU']:
+                for col in ['site', 'section', 'section2', 'section3', 'section4',
+                            'section5', 'section6', 'region', 'region2', 'region3', 'region4',
+                            'titleU', 'regionRuU']:
                     mfind += SQL.ReadRowsLike('yaCatalog', col, text)
                 icount = len(mfind)    
                 s = 'Найдено совпадений: ' + str(icount)
-                if icount == 0: return 'Сайт по поисковой строке "%s" не найден :(' % text
-                if icount > 5: s += '. Но будут показаны первые 5:'; icount = 5
+                if icount == 0:
+                    return 'Сайт по поисковой строке "%s" не найден :(' % text
+                if icount > 5:
+                    s += '. Но будут показаны первые 5:'; icount = 5
                 else: s += ':'
                 print(icount)
                 try:
                     mfind = sorted(mfind, key=lambda st: st[3], reverse=True)
                 except: pass
-                for i in range(0,icount):
+                for i in range(0, icount):
                     s +='\n[%i] %s - %s (ТИЦ: %s)' % (i+1, mfind[i][1], mfind[i][2], mfind[i][3])
                     s +='\nРаздел: %s' % mfind[i][4]
-                    for j in range (5,10):
+                    for j in range(5, 10):
                         if mfind[i][j].strip() != '':
                             s +=' -> ' + mfind[i][j]
                     s +='\nРегион: %s' % mfind[i][10]
-                    for j in range (11,14):
+                    for j in range(11, 14):
                         if mfind[i][j].strip() != '':
                             s +=' -> ' + mfind[i][j]
                 return s
@@ -591,4 +630,3 @@ class Ya:
         except Exception as e:
             Fixer.errlog('Ya.FindCatalog', str(e))
             return '#bug: ' + str(e)
-

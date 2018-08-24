@@ -1,17 +1,23 @@
 # -*- coding: utf-8 -*-
 # Сервис обработки сообщений о пользователе
 import Fixer
-import Bot
+# import Bot
 
-def getpar(text, separator=','):
-    print(text.split(separator))
-    return text.split(separator)
+Fixer.AddDef('User', 'Сервис обработки сообщений о пользователе', sclass='User')
 
 class User:
+
     # ообработка основной информации о пользователе
+
+    Fixer.AddDef('Info', 'Обработка основной информации о пользователе',
+                 {'param': """обработка параметра Fixer: age (возраст), name (имя), family (фамилия), type (пол), 
+                 birthday (день рождения), phone (номер телефона), email, interest (интересы), contact (контакты), thing (собсвенность) [string]""",
+                  'text': 'текст для обработки информации'},
+                 'фиксация данных и реакция бота на информацию [string]')
     def Info(param, text):
+        import Bot
         try:
-            if param == 'age': # возраст
+            if param == 'age':  # возраст
                 try:
                     Fixer.Age = int(text)
                     s = str(Fixer.Age) +Fixer.Dialog('age_get')
@@ -20,10 +26,10 @@ class User:
                     Bot.SendMessage(s)
                 except:
                     return 'Хм... Не понял... Напиши лучше свой возраст цифрами.'
-            if param == 'name': # Имя
+            if param == 'name':  # Имя
                 Fixer.Name = text
                 Bot.SendMessage('Тебя зовут ' + Fixer.Name +'! Хорошо! Запомнил :)')
-            if param == 'type': # Тип
+            if param == 'type':  # Тип
                 s = text[6:8]
                 if s.lower() == 'да' or s.lower() == 'аг' or s.lower() == 'му':
                     Fixer.Type = 1
@@ -32,32 +38,32 @@ class User:
                     Fixer.Type = 2
                     s = 'женщина'
                 Bot.SendMessage('Хорошо! Понял, что '+s+' :)')
-            if param == 'birthday': # День Рождения
+            if param == 'birthday':  # День Рождения
                 Fixer.BirthDay = text
                 Bot.SendMessage('Хорошо! Запомнил и непременно поздравлю в этот день! :)')
-            if param == 'family': # Фамилия
+            if param == 'family':  # Фамилия
                 Fixer.Family = text
                 Bot.SendMessage(Fixer.Name +' '+ Fixer.Family +'! Хорошо! Запомнил :)')
-            if param == 'phone': # Телефон
+            if param == 'phone':  # Телефон
                 Fixer.Phone = text
                 Bot.SendMessage('Хорошо! Запомнил :)')
-            if param == 'email': # eMail
+            if param == 'email':  # eMail
                 Fixer.eMail = text
                 Bot.SendMessage('Хорошо! Запомнил :)')
-            if param == 'interest': # Интересы
-                m = getpar(text)
+            if param == 'interest':  # Интересы
+                m = Fixer.getparams(text, separator=',')
                 for i in m:
-                    i = i.strip().lower()
+                    i = i.lower()
                     Fixer.Interests.append(i)
                 Bot.SendMessage('Хорошо! Запомнил интересы :)')
-            if param == 'contact': # контакты
+            if param == 'contact':  # контакты
                 m = text.split(' | ')
                 if len(m) == 1:
                     Fixer.Contacts['vk'] = m[0]
                 else:
                     Fixer.Contacts[m[0]] = m[1]
                 Bot.SendMessage('Хорошо! Запомнил контакт :)')	
-            if param == 'thing': # вещи/собсвенность
+            if param == 'thing':  # вещи/собсвенность
                 i = text.strip().lower()
                 Fixer.Interests.append(i)
                 Bot.SendMessage('Хорошо! Я это запомнил :)')				
@@ -66,7 +72,11 @@ class User:
             Fixer.errlog('User.Info', str(e))
             return '#bug: ' + str(e)
 
+
     # сервис знакомства
+    Fixer.AddDef('Acquaintance', 'Автознакомство по данным Fixer - получение информации о пользователе', {},
+                 'фиксация данных и реакция бота на информацию [string]')
+
     def Acquaintance():
         from DB.SQLite import SQL
         Fixer.bAI = False
@@ -77,11 +87,11 @@ class User:
         if Fixer.Type == 0:
             rName = SQL.ReadRow('names', 'nameU', Fixer.Name.upper().replace('Ё','Е'))
             if len(rName) > 0:
-                if rName[1] == 1: # мужчина
+                if rName[1] == 1:  # мужчина
                     Fixer.Type = 1
                 else:
                     Fixer.Type = 2
-            if Fixer.Type == 0: # если не удалось определить пол по имени
+            if Fixer.Type == 0:  # если не удалось определить пол по имени
                 Fixer.Service = 'user-type'
                 return 'Извини за нескромный вопрос. Ты мужчина?'
         if Fixer.Age == 0:

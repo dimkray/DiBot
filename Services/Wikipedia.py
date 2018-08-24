@@ -4,40 +4,72 @@
 import Fixer
 import wikipedia
 from Services.Geo import Geo
-#import SMath
+from Profiler import decorator
 
 wikipedia.set_lang('ru')
 
+Fixer.AddDef('Wiki', 'Сервис Wikipedia - доступ к статьям интернет-ресурса wikipedia.org', sclass='Wiki')
+
+
 class Wiki:
+
     # Поиск страниц по заданному названию
-    def SearchPage(sname, resnum = 10):
+    Fixer.AddDef('SearchPage', 'Поиск страниц по заданному названию',
+                 {'sname': 'свободный текст для поиска',
+                  'resnum=10': 'максимальное число отображаемых страниц'},
+                 'список найденных статей Wikipedia [list<string>/string]')
+
+    @decorator.benchmark
+    def SearchPage(sname, resnum=10):
         try:
             rez = []
-            if sname == '': return rez
-            rez = wikipedia.search(sname, results = resnum)
+            if sname == '':
+                return rez
+            rez = wikipedia.search(sname, results=resnum)
             return rez
         except Exception as e:
             Fixer.errlog('Wikipedia.SearchPage', str(e))
             return '#bug: ' + str(e)        
 
+
     # Вся информация о статье по типу: content, categories, coordinates, html, images, links
+    Fixer.AddDef('Page', 'Вся информация о статье по типу',
+                 {'spage': 'страница статьи wiki - залоговок статьи [string]',
+                  'stype="summary"': 'информация по типу: content, categories, coordinates, html, images, links [string]'},
+                 'информация из статьи по типу [string]')
+
+    @decorator.benchmark
     def Page(spage, stype='summary'):
         try:
             rez = wikipedia.page(spage)
-            if stype == 'content': return rez.content
-            elif stype == 'categories': return rez.categories
-            elif stype == 'coordinates': return rez.coordinates
-            elif stype == 'html': return rez.html
-            elif stype == 'images': return rez.images
-            elif stype == 'links': return rez.links
-            elif stype == 'references': return rez.references
-            elif stype == 'sections': return rez.sections
+            if stype == 'content':
+                return rez.content
+            elif stype == 'categories':
+                return rez.categories
+            elif stype == 'coordinates':
+                return rez.coordinates
+            elif stype == 'html':
+                return rez.html
+            elif stype == 'images':
+                return rez.images
+            elif stype == 'links':
+                return rez.links
+            elif stype == 'references':
+                return rez.references
+            elif stype == 'sections':
+                return rez.sections
             return rez.summary
         except Exception as e:
             Fixer.errlog('Wikipedia.Page', str(e))
             return '#bug: ' + str(e)         
 
+
     # Весь текстовый контент статьи
+    Fixer.AddDef('FullContent', 'Весь текстовый контент статьи',
+                 {'spage': 'страница статьи wiki - залоговок статьи [string]'},
+                 'текстовый контент статьи [string]')
+
+    @decorator.benchmark
     def FullContent(spage):
         try:
             rez = wikipedia.page(spage)
@@ -46,13 +78,20 @@ class Wiki:
             return text
         except Exception as e:
             Fixer.errlog('Wikipedia.FullContent', str(e))
-            return '#bug: ' + str(e) 
-    
+            return '#bug: ' + str(e)
+
+
     # Минимальный контент статьи - первый абзац
+    Fixer.AddDef('MiniContent', 'Минимальный контент статьи - первый абзац',
+                 {'spage': 'страница статьи wiki - залоговок статьи [string]'},
+                 'первый абзац статьи [string]')
+
+    @decorator.benchmark
     def MiniContent(spage):
         try:
             rez = wikipedia.page(spage)
-            if rez.content == '': return '#problem: 404'
+            if rez.content == '':
+                return '#problem: 404'
             Fixer.LastPage.append(Fixer.Page)
             Fixer.Page = spage
             num = rez.content.find('\n==')
@@ -63,11 +102,18 @@ class Wiki:
             Fixer.errlog('Wikipedia.MiniContent', str(e))
             return '#bug: ' + str(e)             
 
-    # Минимальный контент статьи - первый абзац
+
+    # Минимальный контент статьи - следующий абзац (за предыдущим)
+    Fixer.AddDef('More', 'Следующий абзац статьи (за предыдущим)',
+                 {'spage': 'страница статьи wiki - залоговок статьи [string]'},
+                 'первый абзац статьи [string]')
+
+    @decorator.benchmark
     def More(spage):
         try:
             rez = wikipedia.page(spage)
-            if rez.content == '': return '#problem: 404'
+            if rez.content == '':
+                return '#problem: 404'
             num = rez.content.find('\n==', Fixer.WikiStart+1)
             text = rez.content[Fixer.WikiStart:num] #.encode('utf8')
             Fixer.WikiStart = num
@@ -75,8 +121,11 @@ class Wiki:
         except Exception as e:
             Fixer.errlog('Wikipedia.More', str(e))
             return '#bug: ' + str(e)  
-			
+
     # Произвольная статья в Wikipedia
+    Fixer.AddDef('PageRandom', 'Произвольная статья в Wikipedia', {},
+                 'первый абзац статьи [string]')
+    @decorator.benchmark
     def PageRandom():
         try:
             rez = wikipedia.random()
@@ -86,20 +135,37 @@ class Wiki:
             return '#bug: ' + str(e)                
 
     # Найти объекты wiki поблизости от location (x, y)
-    def GeoSearch(x,y,resnom=10,rad=1000):
+    Fixer.AddDef('GeoSearch', 'Найти объекты wiki поблизости от location (x, y)',
+                 {'x': 'глобальная координата X (долгота) [float]',
+                  'y': 'глобальная координата Y (широта) [float]',
+                  'resnom=10': 'макисмальное количество найденных объектов [integer]',
+                  'rad=1000': 'радиус поиска от указанных координат в метрах [float]'},
+                 'список найденных статей Wikipedia [list<string>/string]')
+
+    @decorator.benchmark
+    def GeoSearch(x, y, resnom=10, rad=1000):
         try:
             rez = wikipedia.geosearch(y, x, title=None, results=resnom, radius=rad)
-            if len(rez) == 0: return '#problem: no objects'
+            if len(rez) == 0:
+                return '#problem: no objects'
             return rez
         except Exception as e:
             Fixer.errlog('Wikipedia.GeoSearch', str(e))
             return '#bug: ' + str(e)
 
     # Найти ближайший объект wiki поблизости от location (x, y) - возвращает MiniContent
-    def GeoFirst(x,y,rad=1000):
+    Fixer.AddDef('GeoFirst', 'Найти ближайший объект wiki поблизости от location (x, y)',
+                 {'x': 'глобальная координата X (долгота) [float]',
+                  'y': 'глобальная координата Y (широта) [float]',
+                  'rad=1000': 'радиус поиска от указанных координат в метрах [float]'},
+                 'первый абзац статьи [string]')
+
+    @decorator.benchmark
+    def GeoFirst(x, y, rad=1000):
         try:
             rez = wikipedia.geosearch(y, x, title=None, results=10, radius=rad)
-            if len(rez) == 0: return 'В радиусе '+str(rad)+' метров не найдено ни одного интересного объекта!'
+            if len(rez) == 0:
+                return 'В радиусе '+str(rad)+' метров не найдено ни одного интересного объекта!'
             for ip in rez:
                 try:
                     irez = wikipedia.page(ip)
@@ -113,10 +179,13 @@ class Wiki:
             return '#bug: ' + str(e)
 
     # Найти ближайший объект wiki поблизости от меня - возвращает MiniContent
+    Fixer.AddDef('GeoFirstMe', 'Найти ближайший объект wiki поблизости от меня (Fixer.X/Y)',
+                 {'rad=1000': 'радиус поиска от текущей позиции в метрах [float]'},
+                 'первый абзац статьи [string]')
+
     def GeoFirstMe(rad=1000):
         try:
             return Wiki.GeoFirst(Fixer.X, Fixer.Y, rad=rad)
         except Exception as e:
             Fixer.errlog('Wikipedia.GeoFirstMe', str(e))
             return '#bug: ' + str(e)
-

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Сервис уведомлений
-import Bot
+# import Bot
 import Fixer
 import Processor
 from Chats.Chats import Chat
@@ -23,6 +23,7 @@ Tasks = {}
 # Сервис уведомлений (по сервису #task)
 #-----------------------------------
 def Process():
+    import Bot
     try:
         bChange = False; delKeys = []
         Tasks = Fixer.LoadB('Tasks')

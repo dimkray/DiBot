@@ -61,21 +61,6 @@ Radius = 100   # радиус интресера
 
 stxt = ''      # строка для ответа
 
-
-# возвращает процент информации о пользователе
-def KnowUser():
-    rez = 0
-    if Name != '': rez += 20
-    if Family != '': rez += 10
-    if BirthDay != '': rez += 10
-    if Phone != '': rez += 10
-    if eMail != '': rez += 10
-    if Age > 0: rez += 10
-    if Type > 0: rez += 10
-    if len(Contacts) > 0: rez += 10
-    if len(Interests) > 0: rez += 10
-    return rez
-
 htext = ''    # гиперссылка
 
 # сервис Локация
@@ -125,6 +110,45 @@ Notes = {}  # Записи пользователя
 # Сервис RSS-каналов
 RSS = []
 LastRSS = []
+
+
+# ---------------------------------------------------------
+# Внутренние сервисы по работе с функциями
+Defs = {}  # Внутренний словарь всех функций
+serv = ''  # Название текущего сервиса для добавления описания функции
+# ---------------------------------------------------------
+# вн.сервис AddDef - Добавление описание функции
+def AddDef(name, description, sarg={}, sreturn=None, sclass=''):
+    global serv
+    if sclass != '':
+        serv = sclass
+    if serv != '' and sclass == '':
+        if serv not in Defs:
+            Defs[serv] = {}
+        Defs[serv][name] = {}
+        Defs[serv][name]['desc'] = description
+        Defs[serv][name]['arg'] = sarg
+        Defs[serv][name]['return'] = sreturn
+    else:
+        Defs[name] = {'class': description}
+    return Defs
+
+
+# ------------------- основные функции Fixer -------------------------
+
+# возвращает процент информации о пользователе
+def KnowUser():
+    rez = 0
+    if Name != '': rez += 20
+    if Family != '': rez += 10
+    if BirthDay != '': rez += 10
+    if Phone != '': rez += 10
+    if eMail != '': rez += 10
+    if Age > 0: rez += 10
+    if Type > 0: rez += 10
+    if len(Contacts) > 0: rez += 10
+    if len(Interests) > 0: rez += 10
+    return rez
 
 
 # Запись лога
@@ -215,6 +239,7 @@ def LoadB(name):
     except Exception as e:
         errlog('Fixer.LoadB', name + '.db - ' + str(e))
         return dictionary
+
 
 # ---------------------------------------------------------
 # вн.сервис Dialog - использование внутреннего диалога
@@ -375,17 +400,27 @@ def strFormat(mresult, items=5, sformat='', nameCol=[], sobj='объектов')
 # ---------------------------------------------------------
 # вн.сервис getparams - получение переменных в массив [] из строки переменных для сервиса
 def getparams(text, separator='|'):
-        if text.find(separator) < 0 and separator != ';' : # нет текущего сепаратора
-            if text.find(' - ') > 0: separator = ' - '
+    global Radius
+    if text.find(separator) < 0 and separator != ';':  # нет текущего сепаратора
+        if text.find(' - ') > 0:
+            separator = ' - '
+        else:
+            if text.find(',') > 0:
+                separator = ','
             else:
-                if text.find(',') > 0: separator = ','
-                else: separator = ' '
-        m = text.split(separator)
-        x = 0
-        for im in m:
-            m[x] = im.strip() # убираем лишние пробелы
-            x += 1
-        return m
+                separator = ' '
+    if text.find('[R') >= 0:  # Признак радиуса интереса
+        poz = text.find('[R')
+        end = text.find(']', poz)
+        print(text[poz+2, end-1])
+        Radius = float(text[poz+2, end-1])
+        text = text.replace('[R'+text[poz+2, end-1]+']', '')  # Убираем радуис интереса
+    m = text.split(separator)
+    x = 0
+    for im in m:
+        m[x] = im.strip();  # убираем лишние пробелы
+        x += 1
+    return m
 
 # ---------------------------------------------------------
 # вн.сервис Sort для сортировки двухмерных массивов (сортировка по номеру колонки)
@@ -423,76 +458,13 @@ def ListToDict(mNames, mRows, namesRez=[]):
         mRez.append(drow)
     return mRez
 
-# ---------------------------------------------------------
-# Внутренние сервисы по работе с функциями
-Defs = {}  # Внутренний словарь всех функций
-serv = ''  # Название текущего сервиса для добавления описания функции
-# ---------------------------------------------------------
-# вн.сервис AddDef - Добавление описание функции
-def AddDef(name, description, sarg={}, sreturn=None, sclass=''):
-    global serv
-    if sclass != '':
-        serv = sclass
-    if serv != '' and sclass == '':
-        if serv not in Defs:
-            Defs[serv] = {}
-        Defs[serv][name] = {}
-        Defs[serv][name]['desc'] = description
-        Defs[serv][name]['arg'] = sarg
-        Defs[serv][name]['return'] = sreturn
-    else:
-        Defs[name] = {'class': description}
-    return Defs
 
-# отображение всех записанных классов
-def WriteClasses():
-    mClasses = []
-    for iclass in Defs:
-        mClasses.append([iclass, len(Defs[iclass]) - 1, Defs[iclass]['class']])
-        print(iclass + ' - ' + Defs[iclass]['class'])
-    return strFormat(mClasses, items=30, sformat='%0 : %1 функций - %2', sobj='классов')
+AddDef('uniq', 'Получение списка уникальных записей',
+       {'seq': 'список записей [list]'},
+       'список уникальных записей [list]')
 
-# отображение всех записанных функций класса/сервиса
-def WriteDefs(sclass=''):
-    mDefs = []
-    if sclass != '' and sclass in Defs:
-        for iDef in Defs[sclass]:
-            if iDef != 'class':
-                mDefs.append([iDef, len(Defs[sclass][iDef]['arg']), Defs[sclass][iDef]['desc']])
-                print(iDef + ' - ' + Defs[sclass][iDef]['desc'])
-        return strFormat(mDefs, items=30, sformat='%0 : %1 парам. - %2', sobj='функций')
-    else:
-        for iclass in Defs:
-            for iDef in Defs[iclass]:
-                if iDef != 'class':
-                    mDefs.append([iclass, iDef, len(Defs[sclass][iDef]['arg']), Defs[sclass][iDef]['desc']])
-                    print(iclass + '.' + iDef + ' - ' + Defs[sclass][iDef]['desc'])
-        return strFormat(mDefs, items=30, sformat='%0.%1 : %2 парам. - %3', sobj='функций')
-
-# отображение всех параметров функций
-def WriteDef(ClassDef):
-    m = getparams(ClassDef, separator='.')
-    sClass = m[0]
-    sDef = m[1]
-    if sClass in Defs:
-        if sDef in Defs[sClass] and sDef != 'class':
-            sText = sClass + '.' + sDef + '('
-            print(sText)
-        else:
-            return 'Функция %s в классе %s не найдена!' % (sDef, sClass)
-    else:
-        return 'Класс %s не найден!' % sClass
-    mArgs = []
-    for iArg in Defs[sClass][sDef]['arg']:
-        sText += iArg + ', '
-        mArgs.append([iArg, Defs[sClass][sDef]['arg'][iArg]])
-    if len(Defs[sClass][sDef]['arg']) < 1:
-        sText += '  '
-    sText = sText[:-2] + ') - ' + Defs[sClass][sDef]['desc'] + '\n'
-    sText += strFormat(mArgs, items=10, sformat='%0 - %1', sobj='параметров')
-    sText += '\nВозвращаемый параметр: ' + str(Defs[sClass][sDef]['return'])
-    print(sText)
-    return sText
+def uniq(seq):
+    return list(set(seq))
 
 
 # Загрузка таблиц из БД

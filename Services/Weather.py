@@ -3,10 +3,21 @@
 import requests
 import Fixer
 import config
+from Profiler import decorator
+
+
+Fixer.AddDef('Weather', 'Сервис прогноза погоды - accuweather.com', sclass='Weather')
 
 # основной класс
 class Weather:
+
     # поиск локации
+    Fixer.AddDef('GetLocation', 'Поиск локации по координатам',
+                 {'x': 'глобальная координата X (долгота) [float]',
+                  'y': 'глобальная координата Y (широта) [float]'},
+                 'информация в виде списка: [Key, Type, Название, Район/область, Страна, Часовой пояс] [list<string>/string]')
+
+    @decorator.benchmark
     def GetLocation(x, y):
         try:
             m = []
@@ -32,12 +43,24 @@ class Weather:
                 return m
             else:
                 # Если ошибка - то спец.сообщение с номером ошибки
-                m.append('#problem: '+ str(r.status_code))
+                m.append('#problem: ' + str(r.status_code))
                 return m
         except Exception as e:
             Fixer.errlog('Weather.GetLocation', str(e))
-            return '#bug: ' + str(e) 
-    
+            return '#bug: ' + str(e)
+
+
+    # прогноз погоды по координатам
+    Fixer.AddDef('Forecast', 'Прогноз погоды по координатам',
+                 {'x': 'глобальная координата X (долгота) [float]',
+                  'y': 'глобальная координата Y (широта) [float]',
+                  'edate="0"': 'указанный день: "0", "СЕЙЧАС", "СЕГОДНЯ" - сегодня, "ЗАВТРА", "ПОСЛЕЗАВТРА", "2018-11-01" [string]'},
+                 """информация в виде списка: [[0] восход солнца, [1] заход солнца, [2] температура днём, [3] описание погоды днём, 
+                 [4] вероятность осадков, [5] объём осадков, [6] продолжительность осадков, [7] облачность, [8] ветер,
+                 [9] солнечные часы, [10] температура ночью, [11] описание погоды ночью, [12] вероятность осадков, [13] объём осадков, 
+                 [14] продолжительность осадков, [15] облачность, [16] ветер, [17] общая информация, [18] день, [19] ночь] [list<string>/string]""")
+
+    @decorator.benchmark
     def Forecast(x, y, edate='0'):
         try:
             from datetime import date, datetime, timedelta
@@ -56,7 +79,7 @@ class Weather:
                 s = 'Прогноз погоды на ' + edate + ': '
             print(edate)
             # определение локации
-            m = Weather.GetLocation(x,y)
+            m = Weather.GetLocation(x, y)
             s += m[2] +' ['+m[1]+'] '+m[3]+' ('+m[4]+')\n'
             # прогноз погоды
             http = 'http://dataservice.accuweather.com/forecasts/v1/daily/5day/' + m[0]
@@ -73,28 +96,28 @@ class Weather:
                         poz = rsun.find('T')+1
                         poz2 = rsun.find('+')
                         s += 'Восход солнца: ' + rsun[poz:poz2] + '\n'
-                        m.append(rsun[poz:poz2]) # 0 восход солнца
+                        m.append(rsun[poz:poz2])  # 0 восход солнца
                         s += 'Заход солнца: ' + ssun[poz:poz2]
-                        m.append(ssun[poz:poz2]) # 1 заход солнца
+                        m.append(ssun[poz:poz2])  # 1 заход солнца
                         s1 = 'Прогноз погоды днём:\n'
                         d = day['Temperature']['Maximum']['Value']
                         if d > 0: ss = '+' 
                         else: ss = ''
                         s1 += 'Температура максимум: ' + ss + str(d) + 'º\n'
-                        m.append(ss + str(d) + 'º') # 2 температура днём
+                        m.append(ss + str(d) + 'º')  # 2 температура днём
                         s1 += 'Описание погоды: ' + day['Day']['LongPhrase'] + ' - вероятность осадков ' + str(day['Day']['PrecipitationProbability']) + '%\n'
-                        m.append(day['Day']['LongPhrase']) # 3 описание погоды
-                        m.append(str(day['Day']['PrecipitationProbability']) + '%') # 4 вероятность осадков
+                        m.append(day['Day']['LongPhrase'])  # 3 описание погоды
+                        m.append(str(day['Day']['PrecipitationProbability']) + '%')  # 4 вероятность осадков
                         s1 += 'Объём осадков: ' + str(day['Day']['TotalLiquid']['Value']) + ' мм\n'
-                        m.append(str(day['Day']['TotalLiquid']['Value']) + ' мм') # 5 объём осадков
+                        m.append(str(day['Day']['TotalLiquid']['Value']) + ' мм')  # 5 объём осадков
                         s1 += 'Продолжительность осадков: ' + str(day['Day']['HoursOfPrecipitation']) + ' ч\n'
-                        m.append(str(day['Day']['HoursOfPrecipitation']) + ' ч') # 6 Продолжительность осадков
+                        m.append(str(day['Day']['HoursOfPrecipitation']) + ' ч')  # 6 Продолжительность осадков
                         s1 += 'Облачность: ' + str(day['Day']['CloudCover']) + '%\n'
-                        m.append(str(day['Day']['CloudCover']) + '%') # 7 Облачность
+                        m.append(str(day['Day']['CloudCover']) + '%')  # 7 Облачность
                         s1 += 'Ветер: ' + str(day['Day']['Wind']['Speed']['Value']) + ' км/ч - направление ' + day['Day']['Wind']['Direction']['Localized'] + '\n'
                         m.append(str(day['Day']['Wind']['Speed']['Value']) + ' км/ч - направление ' + day['Day']['Wind']['Direction']['Localized']) # 8 Ветер
                         s1 += 'Солнечные часы: ' + str(day['HoursOfSun'])
-                        m.append(str(day['HoursOfSun']) + ' ч.') # 9 Солнечные часы
+                        m.append(str(day['HoursOfSun']) + ' ч.')  # 9 Солнечные часы
                         s2 = 'Прогноз погоды ночью:\n'
                         d = day['Temperature']['Minimum']['Value']
                         if d > 0: ss = '+' 
@@ -103,23 +126,23 @@ class Weather:
                         m.append(ss + str(d) + 'º') # 10 температура ночью
                         s2 += 'Описание погоды: ' + day['Night']['LongPhrase'] + ' - вероятность осадков ' + str(day['Night']['PrecipitationProbability']) + '%\n'
                         m.append(day['Night']['LongPhrase']) # 11 описание погоды
-                        m.append(str(day['Night']['PrecipitationProbability']) + '%') # 12 вероятность осадков
+                        m.append(str(day['Night']['PrecipitationProbability']) + '%')  # 12 вероятность осадков
                         s2 += 'Объём осадков: ' + str(day['Night']['TotalLiquid']['Value']) + ' мм\n'
-                        m.append(str(day['Night']['TotalLiquid']['Value']) + ' мм') # 13 объём осадков
+                        m.append(str(day['Night']['TotalLiquid']['Value']) + ' мм')  # 13 объём осадков
                         s2 += 'Продолжительность осадков: ' + str(day['Night']['HoursOfPrecipitation']) + ' ч\n'
-                        m.append(str(day['Night']['HoursOfPrecipitation']) + ' ч') # 14 Продолжительность осадков
+                        m.append(str(day['Night']['HoursOfPrecipitation']) + ' ч')  # 14 Продолжительность осадков
                         s2 += 'Облачность: ' + str(day['Night']['CloudCover']) + '%\n'
                         m.append(str(day['Night']['CloudCover']) + '%') # 15 Облачность
                         s2 += 'Ветер: ' + str(day['Night']['Wind']['Speed']['Value']) + ' км/ч - направление ' + day['Night']['Wind']['Direction']['Localized'] + '\n'
                         m.append(str(day['Night']['Wind']['Speed']['Value']) + ' км/ч - направление ' + day['Night']['Wind']['Direction']['Localized']) # 16 Ветер
-                        m.append(s) # 17 Общая информация
-                        m.append(s1) # 18 День
-                        m.append(s2) # 19 Ночь
+                        m.append(s)  # 17 Общая информация
+                        m.append(s1)  # 18 День
+                        m.append(s2)  # 19 Ночь
                 if m == []: return '#problem: нет данных о погоде или не правильно указан запрос'
                 return m
             else:
                 # Если ошибка - то спец.сообщение с номером ошибки
-                return '#problem: '+ str(r.status_code)
+                return '#problem: ' + str(r.status_code)
         except Exception as e:
             Fixer.errlog('Weather.Forecast', str(e))
             return '#bug: ' + str(e) 

@@ -12,7 +12,7 @@
 import config
 import Fixer
 import PreProcessor
-import Processor
+from Processor import Processor
 
 import telebot
 #from geolocation.distance_matrix.client import DistanceMatrixApiClient

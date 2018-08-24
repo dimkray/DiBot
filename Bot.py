@@ -17,8 +17,8 @@ import Fixer
 # import logging
 import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
+from Processor import Processor
 import PreProcessor
-import Processor
 import PostProcessor
 import Notification
 
