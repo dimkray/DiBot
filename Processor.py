@@ -30,7 +30,8 @@ from Services.StrMorph import String, Word
 from Services.DaData import strData
 from Chats.Chats import Chat
 from DB.SQLite import SQL
-from Tests.Testing import Comp, Test, Report
+from Tests.Testing import Comp, Test, Report, Tests
+from Tests.Autotest import AutoTest
 
 
 class Processor:
@@ -885,6 +886,17 @@ class Processor:
         return s
 
     # ---------------------------------------------------------
+    # сервис AutoTest : #autotests:
+    def tests():
+        import Bot
+        Fixer.log('AutoTest')
+        AutoTest.Alltests()
+        for iserv in Fixer.Defs:
+            Bot.SendMessage(AutoTest.Tests(iserv))
+            Bot.SendMessage(AutoTest.Fails(iserv))
+        return 'Все тесты успешно проведены!\nВсего проведено %i тестов.' % len(Tests)
+
+    # ---------------------------------------------------------
     # Обработчик сервисов - на вход строка с сервисом (#servicename:)
     # ---------------------------------------------------------
     def ServiceProcess(response):
@@ -1007,6 +1019,7 @@ class Processor:
         elif ser == '#classes:': tsend = Run.WriteClasses()
         elif ser == '#defs:': tsend = Run.WriteDefs(send)
         elif ser == '#def:': tsend = Run.WriteDef(send)
+        elif ser == '#autotests:': tsend = Processor.tests()
 
         # Все остальные случаи
         else: tsend = '#problem: Сервис {%s} не найден!' % Fixer.Service
@@ -1268,15 +1281,19 @@ class Run:
         mDefs = []
         if sclass != '':
             mMem = Run.GetMemberList(Run.GetClass(sclass))
+            print(mMem)
             for iMem in mMem:
-                if iMem in Fixer.Defs[sclass]:
-                    mDefs.append([iMem, len(Fixer.Defs[sclass][iMem]['arg']), Fixer.Defs[sclass][iMem]['desc']])
-                    print(iMem + ' - ' + Fixer.Defs[sclass][iMem]['desc'])
-                else:
+                bDesc = False
+                if sclass in Fixer.Defs:
+                    if iMem in Fixer.Defs[sclass]:
+                        mDefs.append([iMem, len(Fixer.Defs[sclass][iMem]['arg']), Fixer.Defs[sclass][iMem]['desc']])
+                        print(iMem + ' - ' + Fixer.Defs[sclass][iMem]['desc'])
+                        bDesc = True
+                if bDesc == False:
                     mDefs.append([iMem, '?', '? описания нет ?'])
                     print(iMem + ' - ? описания нет')
             return Fixer.strFormat(mDefs, items=100, sformat='%0 : %1 парам. - %2', sobj='функций')
-        else: # если надо получить все классы
+        else:  # если надо получить все классы
             for iclass in Fixer.Defs:
                 for iDef in Fixer.Defs[iclass]:
                     if iDef != 'class':

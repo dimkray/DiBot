@@ -323,5 +323,7 @@
 	"RSS-ALL:": "#rss-all: ",
 	"TASK-ALL:": "#task: all ",
 	"RSS-DEL: ": "#rss-del: ",
-	"TASK-DEL:": "#task: del | "
+	"TASK-DEL:": "#task: del | ",
+	"AUTOTESTS:": "#autotests: ",
+	"АВТОТЕСТЫ:": "#autotests: "
 }

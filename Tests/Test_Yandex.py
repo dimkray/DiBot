@@ -4,7 +4,7 @@ from Tests import Testing
 from Tests.Testing import Test, Report
 from Services import Yandex
 from Services.Yandex import Ya
-from Services.DefProcess import Run
+from Services.DefProcess import Runner
 
 Testing.testService = 'Yandex'
 print('------- Запущены тесты сервиса %s --------' % Testing.testService)
@@ -86,7 +86,7 @@ Test.Add('unreal', test, etalon)
 
 Testing.testService = 'Ya'
 # Добавляем все функции класса Ya
-for idef in Run.GetMemberList(Ya):
+for idef in Runner.GetMemberList(Ya):
     Test.AddDef(idef)
 
 
