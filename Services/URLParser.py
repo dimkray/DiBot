@@ -8,6 +8,9 @@ from urllib.parse import urlencode
 from urllib.parse import quote
 from bs4 import BeautifulSoup
 
+
+Fixer.AddDef('URLParser', 'Внутренний сервис URLParser', sclass='URLParser')
+
 def cln(text):
     m = []
     texts = text.split('\n')
@@ -20,7 +23,19 @@ def cln(text):
         text += i + '\n'
     return text[:-1]
 
+
+Fixer.AddDef('URL', 'Сервис URL для работы с http', sclass='URL')
+
+
 class URL:
+
+    Fixer.AddDef('GetURL', 'Возвращает URL',
+                 {'shttp': "адрес URL [string]",
+                  'stext=""': 'текст для передачи в качестве параметра [string]',
+                  'textparam=""': "параметр передаваемого текста [string]",
+                  'params={}': 'передаваемый список параметров [dict]'},
+                 'возвращаемая страница или текст [string]')
+
     # Возвращает URL
     def GetURL(shttp, stext='', textparam='', params={}):
         try:
@@ -31,9 +46,10 @@ class URL:
             if len(params) > 0:
                 req = ''; x = 0
                 for param in params:
-                    if params[param] is not str: params[param] = str(params[param])
+                    if params[param] is not str:
+                        params[param] = str(params[param])
                     if x != 0: req += '&'
-                    req += param +'='+ params[param]
+                    req += param + '=' + params[param]
                     x += 1
                 shttp += '?'+req             
             return shttp
@@ -41,11 +57,16 @@ class URL:
             Fixer.errlog('URL.GetURL', str(e))
             print('#bug: ' + str(e))
 
+    Fixer.AddDef('OpenURL', 'Открывает URL без параметров',
+                 {'url': "адрес URL [string]",
+                  'bsave=False': 'признак сохранения страницы для тестирования [boolean]'},
+                 'возвращаемый текст страницы [string]')
+
     # Открывает URL без параметров
-    def OpenURL(url, bsave = False):
+    def OpenURL(url, bsave=False):
         try:
             headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:45.0) Gecko/20100101 Firefox/45.0'}
-            r = requests.get(url, headers = headers)
+            r = requests.get(url, headers=headers)
             # для тестирования
             if bsave:
                 with open('URL.html', 'w', encoding='utf-8') as f:
@@ -54,12 +75,24 @@ class URL:
         except Exception as e:
             Fixer.errlog('URL.OpenURL', str(e))
             return '#bug: ' + str(e)
-        
+
+    Fixer.AddDef('GetData', 'Получение html/основного текста по запросу методом GET',
+                 {'shttp': "адрес URL [string]",
+                  'stext=""': 'текст для передачи в качестве параметра [string]',
+                  'textparam=""': "параметр передаваемого текста [string]",
+                  'params={}': 'передаваемый список параметров [dict]',
+                  'headers={}': 'передаваемый список заголовков [dict]',
+                  'brequest=True': 'признак использования спец.модуля request [boolean]',
+                  'bsave=False': 'признак сохранения страницы для тестирования [boolean]',
+                  'bjson=False': 'признак возвращаемого JSON-ответа [boolean]',
+                  'google=True': 'признак гугл-запросов [boolean]'},
+                 'возвращаемый текст страницы/ответа [string]; при bjson=True возвращается [dict]')
+
     # Получение html/основного текста по запросу
-    def GetData(shttp, stext = '', textparam = '', params = {}, headers = {},
-                brequest = True, bsave = False, bjson = False, google = True):
+    def GetData(shttp, stext='', textparam='', params={}, headers={},
+                brequest=True, bsave=False, bjson=False, google=True):
         try:
-            if google == True: stext = stext.replace(' ','+')
+            if google == True: stext = stext.replace(' ', '+')
             stext = format(quote(stext))
             if len(textparam) > 0:
                 params[textparam] = stext
@@ -67,20 +100,20 @@ class URL:
                 if len(stext) > 0:
                     shttp += format(quote(stext))
             status = 0; d = ''  # Данные для ответа
-            if brequest: # Если через request
+            if brequest:  # Если через request
                 r = requests.get(shttp, params=params, headers=headers, verify=False)
                 print(shttp)
                 status = r.status_code
                 if status == requests.codes.ok:
                     if bjson: d = r.json()
                     else: d = r.text
-            else: # Если через URLlib
+            else:  # Если через URLlib
                 if len(params) > 0:
                     req = ''; x = 0
                     for param in params:
                         if params[param] is not str: params[param] = str(params[param])
                         if x != 0: req += '&'
-                        req += param +'='+ params[param]
+                        req += param + '=' + params[param]
                         x += 1
                     shttp += '?'+req       
                 http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
@@ -88,7 +121,7 @@ class URL:
                 r = http.request('GET', shttp)
                 status = r.status
                 if status == requests.codes.ok:
-                    d = r.data.decode('utf-8','ignore')
+                    d = r.data.decode('utf-8', 'ignore')
                     if bjson: d = json.loads(d)
                 
             if status != requests.codes.ok:
@@ -96,7 +129,7 @@ class URL:
             else:
                 if bsave:
                     # Для тестирования
-                    with open('test.html','w', encoding='utf-8') as f:
+                    with open('test.html', 'w', encoding='utf-8') as f:
                         f.write(d)
                     f.close()
                 return d
@@ -104,6 +137,11 @@ class URL:
             Fixer.errlog('URL.GetData', str(e))
             print('#bug: ' + str(e))
 
+    Fixer.AddDef('PostData', 'Использование метода POST',
+                 {'shttp': "адрес URL [string]",
+                  'dheaders={}': 'передаваемый список заголовков [dict]',
+                  'djson={}': 'передаваемый JSON-запрос [dict]'},
+                 'возвращаемый JSON-ответ [dict]')
 
     # Использование метода POST
     def PostData(shttp, dheaders={}, djson={}):
@@ -124,9 +162,20 @@ class URL:
             print('#bug: ' + str(e))
 
 
-class Parser: # Класс парсинга
-    # Поиск значений в html (если ball то выводится список значений)
-    def Find(data, sfind, sstart = '', send = '', ball = True):
+Fixer.AddDef('Parser', 'Класс парсинга', sclass='Parser')
+
+
+class Parser:  # Класс парсинга
+
+    Fixer.AddDef('Find', 'Поиск значений в html (если ball то выводится список значений)',
+                 {'data': "текстовый контент для поиска [string]",
+                  'sfind': 'поисковая строка [string]',
+                  'sstart=""': 'начальная ограничивающая строка [string]',
+                  'send=""': 'конечная ограничивающая строка [string]',
+                  'ball=True': 'признак поиска всех вхождений [boolean]'},
+                 'найденный текст между sstart и send с вхождением sfind [string]; если ball=True, то [list]')
+
+    def Find(data, sfind, sstart='', send='', ball=True):
         try:
             mtext = []
             start = 0; end = 0
@@ -148,9 +197,15 @@ class Parser: # Класс парсинга
             return mtext
         except Exception as e:
             Fixer.errlog('URL.Find', str(e))
-            print('#bug: ' + str(e))   
+            print('#bug: ' + str(e))
 
-    # Парсинг html
+    Fixer.AddDef('Parse', 'Парсинг html',
+                 {'htmltext': "текс страницы в формате html [string]",
+                  'sdiv="div"': 'поиск соотвествующего узла [string]',
+                  'sclass=""': 'поиск соотвествующего class в узле [string]',
+                  'stype="text"': 'поиск соотвествующего типа в узле: text/href/... [string]'},
+                 'возвращаемый список найденных вхождений [list]')
+
     def Parse(htmltext, sdiv='div', sclass='', stype='text'):
         Fixer.log('URL.Parse')
         results = []
