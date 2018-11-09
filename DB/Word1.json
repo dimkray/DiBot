@@ -246,6 +246,10 @@
 	"ЕГР: ": "#dataorg: ",
 	"ИНН: ": "#dataorgid: ",
 	"ОГРН: ": "#dataorgid: ",
+	"ФИЛЬМЫ: ": "#movies: ",
+	"ФИЛЬМ: ": "#movie: ",
+	"НАЙДИ ФИЛЬМЫ: ": "#movies: ",
+	"НАЙДИ ФИЛЬМ: ": "#movie: ",
 	"TRANSLATE: ": "#translate: ",
 	"TIMETABLE: ": "#timetable: ",
 	"COORDINATES: ": "#coordinates: ",
@@ -324,6 +328,8 @@
 	"TASK-ALL:": "#task: all ",
 	"RSS-DEL: ": "#rss-del: ",
 	"TASK-DEL:": "#task: del | ",
+	"MOVIES: ": "#movies: ",
+	"MOVIE: ": "#movie: ",
 	"AUTOTESTS:": "#autotests: ",
 	"АВТОТЕСТЫ:": "#autotests: "
 }

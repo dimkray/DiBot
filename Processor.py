@@ -28,6 +28,7 @@ from Services import StrMorph
 from Services.URLParser import URL, Parser
 from Services.StrMorph import String, Word
 from Services.DaData import strData
+from Services.Kinopoisk import Movies
 from Chats.Chats import Chat
 from DB.SQLite import SQL
 from Tests.Testing import Comp, Test, Report, Tests
@@ -94,7 +95,7 @@ class Processor:
         m = [] # наполняем массив
         smsg = params[0] +'-'+ str(random.randint(100000, 999999)) # key
         skey = str(Fixer.ChatID) +':'+ smsg
-        etime = datetime.strptime(str(date.today())+' '+params[1],tformat) + timedelta(hours=Fixer.TimeZone)
+        etime = datetime.strptime(str(date.today())+' '+params[1], tformat) + timedelta(hours=Fixer.TimeZone)
         if etime < datetime.today():
             etime = etime + timedelta(days=1)
         s += '\nНазвание: '+smsg+'\nСообщение\\сервис: '+params[3]+'\nВремя срабатывания: '+str(etime + timedelta(hours=Fixer.TimeZone))+'\nКоличество повторений: '+params[2]
@@ -121,9 +122,9 @@ class Processor:
         Fixer.log('Answer')
         if text == 'yes':
             Bot.SendMessage('Отлично!')
-            if Fixer.Thema == 'Знакомство':
-                Fixer.Service == 'acquaintance'
-                tsend = User.Acquaintance()
+            # if Fixer.Thema == 'Знакомство':
+            #     Fixer.Service == 'acquaintance'
+            #     tsend = User.Acquaintance()
         elif text == 'no':
             tsend = 'Хорошо. Значит в другой раз.\nГотов помочь, чем смогу!'
             Fixer.Thema == ''
@@ -164,9 +165,10 @@ class Processor:
     # ---------------------------------------------------------
     # сервис Acquaintance - #acquaintance:
     def acquaintance():
-        Fixer.log('Acquaintance')
-        tsend = User.Acquaintance()
-        Fixer.log('Acquaintance', tsend)
+        # Fixer.log('Acquaintance')
+        # tsend = User.Acquaintance()
+        # Fixer.log('Acquaintance', tsend)
+        tsend = 'Я бы с тобой познакомился... Но я бот ('
         return tsend
 
     # ---------------------------------------------------------
@@ -676,15 +678,12 @@ class Processor:
     # сервис date / time / datetime : location - type
     def datetime(location, ttype='datetime'):
         Fixer.log('DateTime: %s | %s' % (location, ttype))
-        #s = Ya.Coordinates(location)
-        tz = float(Processor.timezone(location))
+        Fixer.TimeZone = float(Processor.timezone(location))
         import datetime
-        now = datetime.datetime.utcnow() + datetime.timedelta(hours=tz)
+        now = datetime.datetime.utcnow() + datetime.timedelta(hours=Fixer.TimeZone)
         if ttype == 'time':
-            #print('time')
             return now.strftime('%H:%M:%S')
         elif ttype == 'date':
-            #print('date')
             return now.strftime('%Y-%m-%d')
         else:
             return now.strftime('%Y-%m-%d %H:%M:%S')
@@ -897,6 +896,28 @@ class Processor:
         return 'Все тесты успешно проведены!\nВсего проведено %i тестов.' % len(Tests)
 
     # ---------------------------------------------------------
+    # сервис movies : #movies: текст поиска фильма
+    def movies(text):
+        Fixer.log('Kinopoisk.movies')
+        mMovies = Movies.Find(text)
+        Fixer.strFormat(mMovies, sobj='фильмов')
+        return Fixer.strFormat(mMovies, sobj='фильмов')
+
+    # ---------------------------------------------------------
+    # сервис movie : #movie: инфорация о фильме
+    def movie(text):
+        Fixer.log('Kinopoisk.movie')
+        mMovies = Movies.Find(text)
+        print(mMovies)
+        if len(mMovies) > 0:
+            iMovie = Movies.GetContent(mMovies[0][0])
+            return '%s\n(англ: %s)\nГод: %s\nПродолжительность: %s мин.\nРейтинг: %s\n\n%s' \
+                   % (iMovie[0], iMovie[1], iMovie[2], iMovie[3], iMovie[4], iMovie[5])
+        else:
+            return 'Фильм с таким названием не удалось найти :('
+        return Fixer.strFormat(mMovies, sobj='фильмов')
+
+    # ---------------------------------------------------------
     # Обработчик сервисов - на вход строка с сервисом (#servicename:)
     # ---------------------------------------------------------
     def ServiceProcess(response):
@@ -1020,6 +1041,8 @@ class Processor:
         elif ser == '#defs:': tsend = Run.WriteDefs(send)
         elif ser == '#def:': tsend = Run.WriteDef(send)
         elif ser == '#autotests:': tsend = Processor.tests()
+        elif ser == '#movies:': tsend = Processor.movies(send)
+        elif ser == '#movie:': tsend = Processor.movie(send)
 
         # Все остальные случаи
         else: tsend = '#problem: Сервис {%s} не найден!' % Fixer.Service

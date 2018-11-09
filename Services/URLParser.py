@@ -193,7 +193,8 @@ class Parser:  # Класс парсинга
                     if ball == False: return ftext
                     mtext.append(ftext)
                 else:
-                    if len(mtext) == 0: return '#bug: none'
+                    if len(mtext) == 0:
+                        return '#bug: none'
             return mtext
         except Exception as e:
             Fixer.errlog('URL.Find', str(e))

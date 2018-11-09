@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from DB.SQLite import SQL
 import json
 import pickle
@@ -240,6 +240,25 @@ def LoadB(name):
         errlog('Fixer.LoadB', name + '.db - ' + str(e))
         return dictionary
 
+# ---------------------------------------------------------
+# вн.сервис TimeNow - узнать текущее время пользователя
+def TimeNow():
+    log('Fixer.TimeNow')
+    return datetime.utcnow() + timedelta(hours=TimeZone)
+
+# ---------------------------------------------------------
+# вн.сервис GoodTime - определить текущее привествие по времени
+def GoodTime():
+    log('Fixer.GoodTime')
+    tNow = TimeNow()
+    print(tNow.hour)
+    if tNow.hour < 6:
+        return('Доброй ночи')
+    if tNow.hour < 13:
+        return('Доброе утро')
+    if tNow.hour < 19:
+        return('Добрый день')
+    return('Добрый вечер')
 
 # ---------------------------------------------------------
 # вн.сервис Dialog - использование внутреннего диалога
@@ -270,6 +289,7 @@ def Subs(text):
         if s.lower() == '[phone]': ss = Phone
         if s.lower() == '[email]': ss = eMail
         if s.lower() == '[age]': ss = str(Age)
+        if s.lower() == '[good time]': ss = GoodTime()
         if s.lower() == '[contacts]':
             for i in Contacts:
                 ss += i + ': ' + Contacts[i] + '\n'
