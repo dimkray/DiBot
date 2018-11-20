@@ -1042,6 +1042,7 @@ class Processor:
         elif ser == '#def:': tsend = Run.WriteDef(send)
         elif ser == '#autotests:': tsend = Processor.tests()
         elif ser == '#movies:': tsend = Processor.movies(send)
+        elif ser == '#movies-essay:': tsend = Processor.movies(send)
         elif ser == '#movie:': tsend = Processor.movie(send)
 
         # Все остальные случаи

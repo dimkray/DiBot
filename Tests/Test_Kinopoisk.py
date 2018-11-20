@@ -1,7 +1,7 @@
 from Profiler import Profiler
 from Tests import Testing
 from Tests.Testing import Test, Report
-from Services.Kinopoisk import Movies
+from Services.Kinopoisk import Movies, Persons
 from Services.DefProcess import Runner
 
 service = 'Kinopoisk'
@@ -15,34 +15,37 @@ for idef in Runner.GetMemberList(Movies):
     Test.AddDef(idef)
 
 # Find
+# Testing.testDef = 'Find'
+# with Profiler() as p:
+#     test = Movies.Find('Хан Соло')
+#     etalon = 'Solo: A Star Wars Story'
+# Test.Add('normal', test[0][2], etalon)
+#
+# with Profiler() as p:
+#     test = Movies.Find('Элийский')
+#     etalon = []
+# Test.Add('unreal', test, etalon)
+#
+# # GetContent
+# Testing.testDef = 'GetContent'
+# with Profiler() as p:
+#     test = Movies.GetContent(841277)
+#     etalon = 'Хан Соло: Звёздные войны. Истории'
+# Test.Add('normal', test[0], etalon)
+
+# Find
 Testing.testDef = 'Find'
 with Profiler() as p:
-    test = Movies.Find('Хан Соло')
-    etalon = 'ru'
-Test.Add('normal', test, etalon)
-
-# with Profiler() as p:
-#     test = Movie.Find('Элийский')
-#     etalon = ''
-# Test.Add('unreal', test, etalon)
+    test = Persons.Find('Том Круз')
+    etalon = 'Tom Cruise'
+Test.Add('normal', test[0][2], etalon)
 
 # GetContent
 Testing.testDef = 'GetContent'
 with Profiler() as p:
-    test = Movies.GetContent('Интердевочка')
-    etalon = ""
-Test.Add('normal', test, etalon)
-
-# with Profiler() as p:
-#     test = Movie.GetContent('xxxx')
-#     etalon = ""
-# Test.Add('unreal', test, etalon)
-#
-# with Profiler() as p:
-#     test = Movie.GetContent(0)
-#     etalon = "#bug: ..."
-# Test.Add('crush', test, etalon)
-
+    test = Persons.GetContent(20302)
+    etalon = 'Том Круз'
+Test.Add('normal', test[0], etalon)
 
 print('')
 print('------- Отчёт тестов сервиса %s --------' % service)
