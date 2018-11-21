@@ -250,6 +250,12 @@
 	"ФИЛЬМ: ": "#movie: ",
 	"НАЙДИ ФИЛЬМЫ: ": "#movies: ",
 	"НАЙДИ ФИЛЬМ: ": "#movie: ",
+	"АКТЕРЫ: ": "#actors: ",
+	"АКТЕР: ": "#actor: ",
+	"АКТРИСА: ": "#actor: ",
+	"НАЙДИ АКТЕРОВ: ": "#actors: ",
+	"НАЙДИ АКТЕРА: ": "#actor: ",
+	"НАЙДИ АКТРИСУ: ": "#actor: ",
 	"TRANSLATE: ": "#translate: ",
 	"TIMETABLE: ": "#timetable: ",
 	"COORDINATES: ": "#coordinates: ",
@@ -330,6 +336,8 @@
 	"TASK-DEL:": "#task: del | ",
 	"MOVIES: ": "#movies: ",
 	"MOVIE: ": "#movie: ",
+	"ACTORS: ": "#actors: ",
+	"ACTOR: ": "#actor: ",
 	"AUTOTESTS:": "#autotests: ",
 	"АВТОТЕСТЫ:": "#autotests: "
 }

@@ -14,38 +14,38 @@ Testing.testService = service
 for idef in Runner.GetMemberList(Movies):
     Test.AddDef(idef)
 
-# Find
-# Testing.testDef = 'Find'
-# with Profiler() as p:
-#     test = Movies.Find('Хан Соло')
-#     etalon = 'Solo: A Star Wars Story'
-# Test.Add('normal', test[0][2], etalon)
-#
-# with Profiler() as p:
-#     test = Movies.Find('Элийский')
-#     etalon = []
-# Test.Add('unreal', test, etalon)
-#
-# # GetContent
-# Testing.testDef = 'GetContent'
-# with Profiler() as p:
-#     test = Movies.GetContent(841277)
-#     etalon = 'Хан Соло: Звёздные войны. Истории'
-# Test.Add('normal', test[0], etalon)
+# Find movie
+Testing.testDef = 'Find'
+with Profiler() as p:
+    test = Movies.Find('Хан Соло')
+    etalon = 'Solo: A Star Wars Story'
+Test.Add('normal', test[0][2], etalon)
 
-# Find
+with Profiler() as p:
+    test = Movies.Find('Элийский')
+    etalon = []
+Test.Add('unreal', test, etalon)
+
+# GetContent movie
+Testing.testDef = 'GetContent'
+with Profiler() as p:
+    test = Movies.GetContent(841277)
+    etalon = 'Хан Соло: Звёздные войны. Истории'
+Test.Add('normal', test['title'], etalon)
+
+# Find person
 Testing.testDef = 'Find'
 with Profiler() as p:
     test = Persons.Find('Том Круз')
     etalon = 'Tom Cruise'
 Test.Add('normal', test[0][2], etalon)
 
-# GetContent
+# GetContent person
 Testing.testDef = 'GetContent'
 with Profiler() as p:
     test = Persons.GetContent(20302)
     etalon = 'Том Круз'
-Test.Add('normal', test[0], etalon)
+Test.Add('normal', test['name'], etalon)
 
 print('')
 print('------- Отчёт тестов сервиса %s --------' % service)

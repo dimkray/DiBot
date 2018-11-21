@@ -28,7 +28,7 @@ from Services import StrMorph
 from Services.URLParser import URL, Parser
 from Services.StrMorph import String, Word
 from Services.DaData import strData
-from Services.Kinopoisk import Movies
+from Services.Kinopoisk import Movies, Persons
 from Chats.Chats import Chat
 from DB.SQLite import SQL
 from Tests.Testing import Comp, Test, Report, Tests
@@ -841,18 +841,18 @@ class Processor:
             m1 = IATA.Airport(code=text)
             m2 = IATA.City(code=text)
             if len(m2) > 0:
-                s += Fixer.strFormat(m2, sformat=sfrm, sobj ='аэропортов в городах') + '\n'
-            s += '\n' + Fixer.strFormat(m1, sformat=sfrm, sobj ='отдельных аэропортов')
+                s += Fixer.mFormat(m2, sformat=sfrm, sobj ='аэропортов в городах') + '\n'
+            s += '\n' + Fixer.mFormat(m1, sformat=sfrm, sobj ='отдельных аэропортов')
         elif stype == 'air':
             m = IATA.Airport(name=text)
-            s = Fixer.strFormat(m, sformat=sfrm, sobj ='аэропортов')
+            s = Fixer.mFormat(m, sformat=sfrm, sobj ='аэропортов')
         elif stype == 'city':
             m = IATA.City(name=text)
-            s = Fixer.strFormat(m, sformat=sfrm, sobj ='аэропортов в городах')
+            s = Fixer.mFormat(m, sformat=sfrm, sobj ='аэропортов в городах')
         elif stype == 'code3':
             if Word.Type(text) == 50: m = IATA.Country(code=text) # если латиница
             else: m = IATA.Country(name=text)
-            s = Fixer.strFormat(m, sformat='код: %0, код3: %1, iso: %2\nназвание: %3', sobj ='стран')
+            s = Fixer.mFormat(m, sformat='код: %0, код3: %1, iso: %2\nназвание: %3', sobj ='стран')
         return s
 
     # ---------------------------------------------------------
@@ -900,22 +900,68 @@ class Processor:
     def movies(text):
         Fixer.log('Kinopoisk.movies')
         mMovies = Movies.Find(text)
-        Fixer.strFormat(mMovies, sobj='фильмов')
-        return Fixer.strFormat(mMovies, sobj='фильмов')
+        return Fixer.mFormat(mMovies, sformat='%1\n(ин: %2)\n%3 мин. (%4 год)\nРейтинг: %5 [%6]\n', sobj='фильмов')
 
     # ---------------------------------------------------------
     # сервис movie : #movie: инфорация о фильме
     def movie(text):
         Fixer.log('Kinopoisk.movie')
         mMovies = Movies.Find(text)
-        print(mMovies)
         if len(mMovies) > 0:
-            iMovie = Movies.GetContent(mMovies[0][0])
-            return '%s\n(англ: %s)\nГод: %s\nПродолжительность: %s мин.\nРейтинг: %s\n\n%s' \
-                   % (iMovie[0], iMovie[1], iMovie[2], iMovie[3], iMovie[4], iMovie[5])
+            dMovie = Movies.GetContent(mMovies[0][0])
+            s = dMovie['title']
+            if len(dMovie['title_en']) > 0:
+                s += '\n(ин: %s)' % dMovie['title_en']
+            s += '\nГод: %s\nПродолжительность: %i мин.\nРейтинг: %i [%i]\nIMDB: %i [%i]\n' % \
+                 (dMovie['year'], dMovie['runtime'], dMovie['rating'], dMovie['votes'],
+                  dMovie['imdb_rating'], dMovie['imdb_votes'])
+            s += '\n%s\nСлоган: %s\nЖанр: %s\nСтрана: %s\n\n' % (dMovie['plot'], dMovie['tagline'],
+                                            Fixer.strList(dMovie['genres']), Fixer.strList(dMovie['countries']))
+            s += 'Актёры: %s\nРежиссёр: %s\nСценарист: %s\nБюджет: %s млн. $\nКассовые сборы: %s млн. $' % \
+                 (Fixer.strList(dMovie['actors']), Fixer.strList(dMovie['producers']), Fixer.strList(dMovie['writers']),
+                  Fixer.strOperand(dMovie['budget'], 1000000, '/'), Fixer.strOperand(dMovie['profit'], 1000000, '/'))
         else:
             return 'Фильм с таким названием не удалось найти :('
-        return Fixer.strFormat(mMovies, sobj='фильмов')
+        return s
+
+    # ---------------------------------------------------------
+    # сервис actors : #actors: текст поиска актёра / продюссера
+    def actors(text):
+        Fixer.log('Kinopoisk.actors')
+        mPersons = Persons.Find(text)
+        return Fixer.mFormat(mPersons, sformat='%1\n(ин: %2)\nГоды: %3-%4\n', sobj='персон')
+
+    # ---------------------------------------------------------
+    # сервис actor : #actor: актёр / продюссер
+    def actor(text):
+        from _datetime import datetime
+        Fixer.log('Kinopoisk.actor')
+        mPersons = Persons.Find(text)
+        if len(mPersons) > 0:
+            dPerson = Persons.GetContent(mPersons[0][0])
+            s = dPerson['name']
+            if len(dPerson['name_en']) > 0:
+                s += '\n(ин: %s)' % dPerson['name_en']
+            last_year = int(datetime.now().year)
+            if dPerson['year_death'] is not None:
+                last_year = dPerson['year_death']
+            if dPerson['year_birth'] is not None:
+                age = str(last_year - dPerson['year_birth'])
+            else:
+                age = 'неизвестно'
+            s += '\nГоды жизни: %s-%s\nВозраст: %s лет\nИнформация: %s\n\n' % \
+                 (Fixer.strPut(dPerson['year_birth']), Fixer.strPut(dPerson['year_death']), age, dPerson['information'])
+            s += Fixer.dFormat(dPerson['actor'], sformat='{title} ({year})\nВ роли {name}\nРейтинг: {rating}\n',
+                               sobj='ролей в фильмах') + '\n\n'
+            s += Fixer.dFormat(dPerson['producer'], sformat='{title} ({year})\nВ роли {name}\nРейтинг: {rating}\n',
+                               sobj='в качестве продюссера') + '\n\n'
+            s += Fixer.dFormat(dPerson['director'], sformat='{title} ({year})\nВ роли {name}\nРейтинг: {rating}\n',
+                               sobj='в качестве директора') + '\n\n'
+            s += Fixer.dFormat(dPerson['writer'], sformat='{title} ({year})\nВ роли {name}\nРейтинг: {rating}\n',
+                               sobj='в качестве сценариста')
+        else:
+            return 'Актёра или продюссера с таким названием не удалось найти :('
+        return s
 
     # ---------------------------------------------------------
     # Обработчик сервисов - на вход строка с сервисом (#servicename:)
@@ -1044,6 +1090,8 @@ class Processor:
         elif ser == '#movies:': tsend = Processor.movies(send)
         elif ser == '#movies-essay:': tsend = Processor.movies(send)
         elif ser == '#movie:': tsend = Processor.movie(send)
+        elif ser == '#actors:': tsend = Processor.actors(send)
+        elif ser == '#actor:': tsend = Processor.actor(send)
 
         # Все остальные случаи
         else: tsend = '#problem: Сервис {%s} не найден!' % Fixer.Service
@@ -1297,7 +1345,7 @@ class Run:
             else:
                 mClasses.append([iclass, '?', '? описания нет ?'])
                 print(iclass + ' - ? описания нет')
-        return Fixer.strFormat(mClasses, items=100, sformat='%0 : %1 функций - %2', sobj='классов')
+        return Fixer.mFormat(mClasses, items=100, sformat='%0 : %1 функций - %2', sobj='классов')
 
 
     # отображение всех записанных и используемых функций класса/сервиса
@@ -1316,14 +1364,14 @@ class Run:
                 if bDesc == False:
                     mDefs.append([iMem, '?', '? описания нет ?'])
                     print(iMem + ' - ? описания нет')
-            return Fixer.strFormat(mDefs, items=100, sformat='%0 : %1 парам. - %2', sobj='функций')
+            return Fixer.mFormat(mDefs, items=100, sformat='%0 : %1 парам. - %2', sobj='функций')
         else:  # если надо получить все классы
             for iclass in Fixer.Defs:
                 for iDef in Fixer.Defs[iclass]:
                     if iDef != 'class':
                         mDefs.append([iclass, iDef, len(Fixer.Defs[sclass][iDef]['arg']), Fixer.Defs[sclass][iDef]['desc']])
                         print(iclass + '.' + iDef + ' - ' + Fixer.Defs[sclass][iDef]['desc'])
-            return Fixer.strFormat(mDefs, items=100, sformat='%0.%1 : %2 парам. - %3', sobj='функций')
+            return Fixer.mFormat(mDefs, items=100, sformat='%0.%1 : %2 парам. - %3', sobj='функций')
 
 
     # отображение всех параметров функций
@@ -1347,7 +1395,7 @@ class Run:
         if len(Fixer.Defs[sClass][sDef]['arg']) < 1:
             sText += '  '
         sText = sText[:-2] + ') - ' + Fixer.Defs[sClass][sDef]['desc'] + '\n'
-        sText += Fixer.strFormat(mArgs, items=10, sformat='%0 - %1', sobj='параметров')
+        sText += Fixer.mFormat(mArgs, items=10, sformat='%0 - %1', sobj='параметров')
         sText += '\nВозвращаемый параметр: ' + str(Fixer.Defs[sClass][sDef]['return'])
         print(sText)
         return sText

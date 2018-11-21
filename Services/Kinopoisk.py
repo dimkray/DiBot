@@ -11,7 +11,8 @@ class Movies:
             movie_list = Movie.objects.search(NameMovie)
             mMovies = []  # список найденных фильмов
             for iMovie in movie_list:
-                mMovies.append([iMovie.id, iMovie.title, iMovie.title_en, iMovie.runtime, iMovie.rating, iMovie.votes])
+                mMovies.append([iMovie.id, iMovie.title, iMovie.title_en, iMovie.runtime, iMovie.year,
+                iMovie.rating, iMovie.votes])
             return mMovies
         except Exception as e:
             Fixer.errlog('Kinopoisk.Movies.Find', str(e))
@@ -22,38 +23,56 @@ class Movies:
         try:
             movie = Movie(id=idMovie)
             movie.get_content('main_page')
-            mMovie = []  # контент фильма
-            mMovie.append(movie.title)
-            mMovie.append(movie.title_en)
-            mMovie.append(movie.year)
-            mMovie.append(movie.runtime)
-            mMovie.append(movie.rating)
-            mMovie.append(movie.votes)
-            mMovie.append(movie.imdb_rating)
-            mMovie.append(movie.imdb_votes)
-            mMovie.append(movie.plot)
-            mMovie.append(movie.tagline)
-            mMovie.append(movie.genres)
-            mMovie.append(movie.countries)
-            mMovie.append(movie.actors)
-            mMovie.append(movie.directors)
-            mMovie.append(movie.screenwriters)
-            mMovie.append(movie.producers)
-            mMovie.append(movie.budget)
-            mMovie.append(movie.profit_world)
+            dMovie = {}  # контент фильма
+            dMovie['title'] = movie.title
+            dMovie['title_en'] = movie.title_en
+            dMovie['year'] = movie.year
+            dMovie['runtime'] = movie.runtime
+            dMovie['rating'] = movie.rating
+            dMovie['votes'] = movie.votes
+            dMovie['imdb_rating'] = movie.imdb_rating
+            dMovie['imdb_votes'] = movie.imdb_votes
+            dMovie['plot'] = movie.plot
+            dMovie['tagline'] = movie.tagline
+            dMovie['genres'] = movie.genres
+            dMovie['countries'] = movie.countries
+            dMovie['actors'] = movie.actors
+            dMovie['directors'] = movie.directors
+            dMovie['writers'] = movie.screenwriters
+            dMovie['producers'] = movie.producers
+            dMovie['budget'] = movie.budget
+            dMovie['profit'] = movie.profit_world
             movie.get_content('trailers')
-            mMovie.append(movie.trailers)
-            mMovie.append(movie.youtube_ids)
-            # trailers_ids = [trailer.id for trailer in movie.trailers]
-            # trailers_files = [trailer.file for trailer in movie.trailers]
+            dMovie['youtube_ids'] = movie.youtube_ids
+            dMovie['trailers'] = [trailer.file for trailer in movie.trailers]
             movie.get_content('cast')
-            mMovie.append(movie.cast['actor'])
-            mMovie.append(movie.cast['voice'])
-            mMovie.append(movie.cast['producer'])
-            movie.get_content('series')
-            mMovie.append(movie.seasons)
-            print(mMovie)
-            return mMovie
+            actors = movie.cast['actor']
+            mActors = []
+            for actor in actors:
+                mActors.append({'id': actor.person.id, 'name': actor.person.name, 'name_en': actor.person.name,
+                                'names': actor.name})
+            dMovie['actors_full'] = mActors
+            if 'voice' in movie.cast:
+                voices = movie.cast['voice']
+                mVoices = []
+                for voice in voices:
+                    mVoices.append({'id': voice.person.id, 'name': voice.person.name, 'name_en': voice.person.name,
+                                    'names': voice.name})
+                dMovie['voices'] = mVoices
+            else:
+                dMovie['voices'] = []
+            producers = movie.cast['producer']
+            mProducers = []
+            for producer in producers:
+                mProducers.append({'id': producer.person.id, 'name': producer.person.name, 'name_en': producer.person.name})
+            dMovie['producers_full'] = mProducers
+            # movie.get_content('series')
+            # series = movie.seasons
+            # mseries = []
+            # for serie in series:
+            #     mVoices.append({'id': producer.person.id, 'name': producer.person.name, 'name_en': producer.person.name})
+            # dMovie['seasons'] = movie.seasons
+            return dMovie
         except Exception as e:
             Fixer.errlog('Kinopoisk.Movies.GetContent', str(e))
             return '#bug: ' + str(e)
@@ -73,7 +92,6 @@ class Persons:
                 except:
                     year_death = None
                 mPersons.append([iPerson.id, iPerson.name, iPerson.name_en, iPerson.year_birth, year_death])
-            print(mPersons)
             return mPersons
         except Exception as e:
             Fixer.errlog('Kinopoisk.Persons.Find', str(e))
@@ -84,27 +102,55 @@ class Persons:
         try:
             person = Person(id=idPerson)
             person.get_content('main_page')
-            mPerson = []  # контент персонажа
-            mPerson.append(person.name)
-            mPerson.append(person.name_en)
-            mPerson.append(person.year_birth)
-            year_death = None
+            dPerson = {}  # контент персонажа
+            dPerson['name'] = person.name
+            dPerson['name_en'] = person.name_en
+            dPerson['year_birth'] = person.year_birth
             try:
                 year_death = person.year_death
             except:
                 year_death = None
-            mPerson.append(year_death)
-            mPerson.append(person.information)
-            mPerson.append(person.career['actor'])
-            mPerson.append(person.career['producer'])
-            mPerson.append(person.career['director'])
-            mPerson.append(person.career['writer'])
-            mPerson.append(person.career['hrono_titr_male'])
-            mPerson.append(person.career['himself'])
+            dPerson['year_death'] = year_death
+            dPerson['information'] = person.information
+            if 'actor' in person.career:
+                roles = person.career['actor']
+                mActors = []
+                for role in roles:
+                    mActors.append({'id': role.movie.id, 'name': role.name, 'title': role.movie.title_en,
+                                    'title_en': role.movie.title, 'year': role.movie.year, 'rating': role.movie.rating})
+                dPerson['actor'] = mActors
+            else:
+                dPerson['actor'] = []
+            if 'producer' in person.career:
+                roles = person.career['producer']
+                mActors = []
+                for role in roles:
+                    mActors.append({'id': role.movie.id, 'name': role.name, 'title': role.movie.title_en,
+                                    'title_en': role.movie.title, 'year': role.movie.year, 'rating': role.movie.rating})
+                dPerson['producer'] = mActors
+            else:
+                dPerson['producer'] = []
+            if 'director' in person.career:
+                roles = person.career['director']
+                mActors = []
+                for role in roles:
+                    mActors.append({'id': role.movie.id, 'name': role.name, 'title': role.movie.title_en,
+                                    'title_en': role.movie.title, 'year': role.movie.year, 'rating': role.movie.rating})
+                dPerson['director'] = mActors
+            else:
+                dPerson['director'] = []
+            if 'writer' in person.career:
+                roles = person.career['writer']
+                mActors = []
+                for role in roles:
+                    mActors.append({'id': role.movie.id, 'name': role.name, 'title': role.movie.title,
+                                    'title_en': role.movie.title_en, 'year': role.movie.year, 'rating': role.movie.rating})
+                dPerson['writer'] = mActors
+            else:
+                dPerson['writer'] = []
             person.get_content('photos')
-            mPerson.append(person.photos)
-            print(mPerson)
-            return mPerson
+            dPerson['photos'] = person.photos
+            return dPerson
         except Exception as e:
             Fixer.errlog('Kinopoisk.Persons.GetContent', str(e))
-            return '#bug: ' + str(e)
+            return dPerson  #'#bug: ' + str(e)

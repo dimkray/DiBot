@@ -97,7 +97,7 @@ class strData:
                 mName = []
                 for iname in data['suggestions']:
                     mName.append(iname['value'])
-                s = Fixer.strFormat(mName, items=10, sobj='имён')
+                s = Fixer.mFormat(mName, items=10, sobj='имён')
                 s += '\n\nВыберите и напишите как надо'
                 return s
             else:
@@ -197,7 +197,7 @@ class strData:
                 mAddr = []
                 for iaddr in data['suggestions']:
                     mAddr.append(iaddr['value'])
-                s = Fixer.strFormat(mAddr, items=10, sobj='адресов')
+                s = Fixer.mFormat(mAddr, items=10, sobj='адресов')
                 s += '\n\nВыберите и напишите как надо'
             else:
                 s = 'Не удалось распознать'
@@ -317,7 +317,7 @@ class strData:
                 mName = []
                 for iname in data['suggestions']:
                     mName.append(iname['value'])
-                s = Fixer.strFormat(mName, items=10, sobj='имён')
+                s = Fixer.mFormat(mName, items=10, sobj='имён')
                 s += '\n\nВыберите и напишите как надо'
                 return s
             else:

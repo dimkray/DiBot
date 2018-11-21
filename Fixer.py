@@ -268,8 +268,8 @@ def Dialog(key):
         return random.choice(dialogs[key])
     else:
         errlog('Fixer.Dialog', 'не найден ключ: ' + key)
-        return key		
-	
+        return key
+
 # ---------------------------------------------------------
 # вн.сервис substitution - подстановка строковых переменных
 def Subs(text):
@@ -315,6 +315,24 @@ def Subs(text):
     #log('Fixer.Substitution', text)
     return text
 
+
+# ---------------------------------------------------------
+# вн.сервис strOperand - преобразование различных операций с возможными числами
+def strOperand(value, number, operand='*'):
+    s = ''
+    if value is not None:
+        value = float(value)
+        if operand == '*':
+            return str(value * number)
+        elif operand == '/':
+            return str(value / number)
+        elif operand == '-':
+            return str(value - number)
+        else:
+            return str(value + number)
+    return s
+
+
 # ---------------------------------------------------------
 # вн.сервис strfind - поиск строки и обрезка по найденному (регистронезависимый)
 def strfind(text, mfind, poz = 0):
@@ -331,6 +349,7 @@ def strfind(text, mfind, poz = 0):
                     textU = text.upper()
                 return sfind, text.strip()
     return '', text # ничего не нашлось
+
 
 # ---------------------------------------------------------
 # вн.сервис servicefind - поиск сервиса и обрезка по найденному (регистронезависимый)
@@ -357,7 +376,7 @@ def strCleaner(text):
 
 
 # ---------------------------------------------------------
-# вн.сервис strFormat - заменяет спецсимволы на номальные символы
+# вн.сервис strSpec - заменяет спецсимволы на номальные символы
 def strSpec(text):
     dFormat = {'&quot;': '"', '&nbsp;': ' ', '&ensp;': ' ', '&emsp;': '  ', '&ndash;': '-', '&mdash;': '—',
                '&shy;': ' ', '&copy;': '©', '&reg;': '®', '&trade;': '™', '&permil;': '‰', '&deg;': '°'}
@@ -379,13 +398,69 @@ def strAdd(value, text=''):
     stxt += s
     return s
 
+# ---------------------------------------------------------
+# вн.сервис strPut - добавление строки, если есть
+def strPut(value, aletertext=''):
+    if value is not None:
+        s = str(value)
+    else:
+        s = aletertext
+    return s
 
 # ---------------------------------------------------------
-# вн.сервис strFormat - преобразование результата в форматированный текст
-def strFormat(mresult, items=5, sformat='', nameCol=[], sobj='объектов'):
+# вн.сервис strList - преобразование списка в строку с разделителями
+def strList(mlist, separator=', '):
+    s = ''
+    if len(mlist) > 0:
+        for item in mlist:
+            s += str(item) + separator
+        s = s[:-len(separator)]
+    return s
+
+# ---------------------------------------------------------
+# вн.сервис dFormat - преобразование результата dict в форматированный текст - список
+# если задан формат: sformat = 'Номер: {number} - значение: {value}' - приоритетно
+# если заданы подписи ключей: nameKey = {'number': 'номер', 'value': 'значение', 'no_write': '#'}  # - не подписывать
+def dFormat(dresult, items=5, sformat='', nameKey={}, sobj='объектов'):
+    if len(dresult) > 0:  # если есть результат
+        s = 'По запросу найдено %s: %i' % (sobj, len(dresult))
+        if items < len(dresult):
+            s += '\nБудут показаны первые %i:' % items
+        else:
+            items = len(dresult)
+        for i in range(0, items):
+            obj = dresult[i]
+            if sformat == '':  # если не задан формат
+                if len(nameKey) == 1:  # если нужен только один ключ
+                    s += '\n[%i] %s' % (i + 1, obj[nameKey.keys()[0]])
+                elif len(nameKey) > 1:  # если есть подписи для ключей
+                    s += '\n[%i] ' % (i + 1)
+                    for key in nameKey.keys():
+                        if nameKey[key] == '#':
+                            s += '%s' % (obj[key])
+                        else:
+                            s += '\n%s: %s' % (nameKey[key], obj[key])
+                else:  # если нет подписей для ключей
+                    s += '\n[%i] %s' % (i + 1, obj[nameKey.keys()[0]])
+                    for key in nameKey.keys():
+                        s += '\n%s: %s' % (nameKey[key], dresult[i])
+            else:  # если задан формат: sformat = 'Номер: {number} - значение: {value}'
+                sitem = sformat
+                for key in obj.keys():
+                    sitem = sitem.replace('{%s}' % key, str(obj[key]))
+                s += '\n['+str(i+1)+'] ' + sitem
+    else: s = 'По данному запросу нет результата'
+    return s
+
+# ---------------------------------------------------------
+# вн.сервис mFormat - преобразование результата list в форматированный текст - список
+# если задан формат: sformat = 'Номер: %0 - значение: %1 \\%' - приоритетно
+# если заданы названия колонок: nameCol = ['номер', 'значение'] - название первой колонка игнорируется
+def mFormat(mresult, items=5, sformat='', nameCol=[], sobj='объектов'):
     if len(mresult) > 0:  # если есть результат
         s = 'По запросу найдено %s: %i' % (sobj, len(mresult))
-        if items < len(mresult): s += '\nБудут показаны первые %i:' % items
+        if items < len(mresult):
+            s += '\nБудут показаны первые %i:' % items
         else:
             items = len(mresult)
         for i in range(0, items):
@@ -397,10 +472,10 @@ def strFormat(mresult, items=5, sformat='', nameCol=[], sobj='объектов')
                     for col in nameCol:
                         if col == 0: ic += 1; continue
                         s += '\n%s: %s' % (col, row[ic])
-                        ic += 1              
+                        ic += 1
                 else:  # если одна возвращаемая колонка
                     s += '\n[%i] %s' % (i+1, mresult[i])
-            else:  # если задан формат
+            else:  # если задан формат: sformat = 'Номер: %0 - значение: %1 \\%'
                 sitem = sformat
                 row = mresult[i]
                 while sitem.find('%%') >= 0:
