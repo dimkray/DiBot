@@ -749,7 +749,8 @@ class Processor:
         if len(params) < 2: params.append('3')
         titles = RSS.GetTitles(params[0])
         if titles['status'] == 'ok':
-            stext = '%s\n%s\nЯзык публикации: %s\nАвтор: %s\nСайт: %s' % (titles['title'], titles['subtitle'], titles['lang'], titles['author'], titles['link'])
+            stext = '%s\n%s\nЯзык публикации: %s\nАвтор: %s\nСайт: %s' % (titles['title'], titles['subtitle'],
+                                                                titles['lang'], titles['author'], titles['link'])
             posts = RSS.GetPosts(params[0])
             for i in range(0, int(params[1])):
                 stext += '\n\n[%s]\n%s\n(%s)\n%s' % (posts[i]['title'], posts[i]['description'], posts[i]['date'], posts[i]['link'])
@@ -912,7 +913,7 @@ class Processor:
             s = dMovie['title']
             if len(dMovie['title_en']) > 0:
                 s += '\n(ин: %s)' % dMovie['title_en']
-            s += '\nГод: %s\nПродолжительность: %i мин.\nРейтинг: %i [%i]\nIMDB: %i [%i]\n' % \
+            s += '\nГод: %s\nПродолжительность: %i мин.\nРейтинг: %f [%i]\nIMDB: %f [%i]\n' % \
                  (dMovie['year'], dMovie['runtime'], dMovie['rating'], dMovie['votes'],
                   dMovie['imdb_rating'], dMovie['imdb_votes'])
             s += '\n%s\nСлоган: %s\nЖанр: %s\nСтрана: %s\n\n' % (dMovie['plot'], dMovie['tagline'],
