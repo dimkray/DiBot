@@ -76,6 +76,7 @@ def getInfo():
                 m = Fixer.getparams(user['interests'], ', ')
                 for im in m:
                     Fixer.Interests.append(im)
+            Fixer.TimeZone = Processor.timezone(location)
             return True
     except Exception as e:
         print('Ошибка доступа к информации пользователя '+str(Fixer.UserID)+': '+str(e))

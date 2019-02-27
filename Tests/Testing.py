@@ -246,7 +246,7 @@ class Report:
                 mreport.append(Report.Write(i))
         if items == 0:
             items = len(Tests)
-        return Fixer.strFormat(mreport, items)
+        return Fixer.mFormat(mreport, items)
 
     # Универсальный отчёт по сравнению
     def WriteFails(items=0, service=''):
@@ -267,4 +267,4 @@ class Report:
                         mreport.append('- NOT! Не протестирована функция %s в сервисе %s' % (test, iservice))
         if items == 0:
             items = len(mreport)
-        return Fixer.strFormat(mreport, items, sobj='ошибок')
+        return Fixer.mFormat(mreport, items, sobj='ошибок')
