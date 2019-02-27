@@ -668,7 +668,7 @@ class Processor:
         Fixer.Save(Fixer.NewDialogs, 'NewDialogs')
         s = '\nНа запрос: ' + Fixer.strCleaner(Fixer.Query)
         for i in Fixer.getparams(text, ';'):
-            s += '\nВариант ответа: '+ i
+            s += '\nВариант ответа: ' + i
         Bot.SendAuthor('Уведомление от пользователя ' + str(Fixer.UserID) + s)
         s = Fixer.Dialog('correction') + s
         Fixer.bAI = True; Fixer.Service = 'ai'; Fixer.Conext = False
