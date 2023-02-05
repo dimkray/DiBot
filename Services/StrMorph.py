@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Сервис морфологического анализа
 import re
-import Fixer
+import fixer
 import pymorphy2
 
 dic = Fixer.Load('morth') # словарь морфологических определений

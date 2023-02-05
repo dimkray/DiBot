@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Сервис уведомлений
 # import Bot
-import Fixer
+import fixer
 import Processor
 from Chats.Chats import Chat
 from datetime import datetime, timedelta
@@ -26,7 +26,7 @@ def Process():
     import Bot
     try:
         bChange = False; delKeys = []
-        Tasks = Fixer.LoadB('Tasks')
+        Tasks = Fixer.load_byte('Tasks')
         #if Tasks != {}: print(Tasks)
         if len(Tasks) == 0: return False # print('Ошибка загрузки или пустой Tasks.db!');
         tdate = datetime.today()
@@ -55,6 +55,6 @@ def Process():
                 del(Tasks[k])
         if bChange:
             print(Tasks)
-            Fixer.SaveB(Tasks, 'Tasks')
+            Fixer.save_byte(Tasks, 'Tasks')
     except Exception as e:
         Fixer.errlog('Notification', str(e))                              

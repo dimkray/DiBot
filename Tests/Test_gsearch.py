@@ -1,6 +1,6 @@
 from Services.Google import Google
 from Services.Geo import Geo
-import Fixer
+import fixer
 
 x = float(input('Введите координату X: '))
 y = float(input('Введите координату Y: '))

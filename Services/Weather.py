@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 # Сервис прогноза погоды
 import requests
-import Fixer
+import fixer
 import config
 from Profiler import decorator
 
 
-Fixer.AddDef('Weather', 'Сервис прогноза погоды - accuweather.com', sclass='Weather')
+Fixer.add_fun('Weather', 'Сервис прогноза погоды - accuweather.com', sclass='Weather')
 
 # основной класс
 class Weather:
 
     # поиск локации
-    Fixer.AddDef('GetLocation', 'Поиск локации по координатам',
-                 {'x': 'глобальная координата X (долгота) [float]',
+    Fixer.add_fun('GetLocation', 'Поиск локации по координатам',
+                  {'x': 'глобальная координата X (долгота) [float]',
                   'y': 'глобальная координата Y (широта) [float]'},
                  'информация в виде списка: [Key, Type, Название, Район/область, Страна, Часовой пояс] [list<string>/string]')
 
@@ -22,7 +22,7 @@ class Weather:
         try:
             m = []
             http = 'http://dataservice.accuweather.com/locations/v1/cities/geoposition/search'
-            payload = {'apikey': config.Weather_key, 'q': str(y) + ',' + str(x), 'language': 'ru-ru', 'details': 'true'} 
+            payload = {'apikey': config.WEATHER_KEY, 'q': str(y) + ',' + str(x), 'language': 'ru-ru', 'details': 'true'}
             r = requests.get(http, params=payload)
             if r.status_code == requests.codes.ok:      
                 data = r.json()
@@ -51,8 +51,8 @@ class Weather:
 
 
     # прогноз погоды по координатам
-    Fixer.AddDef('Forecast', 'Прогноз погоды по координатам',
-                 {'x': 'глобальная координата X (долгота) [float]',
+    Fixer.add_fun('Forecast', 'Прогноз погоды по координатам',
+                  {'x': 'глобальная координата X (долгота) [float]',
                   'y': 'глобальная координата Y (широта) [float]',
                   'edate="0"': 'указанный день: "0", "СЕЙЧАС", "СЕГОДНЯ" - сегодня, "ЗАВТРА", "ПОСЛЕЗАВТРА", "2018-11-01" [string]'},
                  """информация в виде списка: [[0] восход солнца, [1] заход солнца, [2] температура днём, [3] описание погоды днём, 
@@ -83,7 +83,7 @@ class Weather:
             s += m[2] +' ['+m[1]+'] '+m[3]+' ('+m[4]+')\n'
             # прогноз погоды
             http = 'http://dataservice.accuweather.com/forecasts/v1/daily/5day/' + m[0]
-            payload = {'apikey': config.Weather_key, 'language': 'ru-ru', 'details': 'true', 'metric': 'true'} 
+            payload = {'apikey': config.WEATHER_KEY, 'language': 'ru-ru', 'details': 'true', 'metric': 'true'}
             r = requests.get(http, params=payload)
             m = []
             if r.status_code == requests.codes.ok:

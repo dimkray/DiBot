@@ -1,12 +1,12 @@
 from Profiler import Profiler
-import Fixer
+import fixer
 import config
 import json
 from Services.URLParser import URL
 from DB.SQLite import Finder
 
 api = 'https://dibotapi.herokuapp.com'
-params = {'api_key': config.IATA_key, 'lang': 'ru'}
+params = {'api_key': config.IATA_KEY, 'lang': 'ru'}
 
 # Получение данных по коду/имени
 def GetData(path=''):

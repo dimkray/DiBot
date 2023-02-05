@@ -1,4 +1,4 @@
-import Fixer
+import fixer
 import wikipedia
 from Services.Geo import Geo
 #import SMath

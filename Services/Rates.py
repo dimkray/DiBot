@@ -1,4 +1,4 @@
-import Fixer
+import fixer
 import requests
 
 # Класс курсы валют. Для работы вначале нужно вызвать GetRates

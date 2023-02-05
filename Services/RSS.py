@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import feedparser
-import Fixer
+import fixer
 
 # обработка абзацев
 def formatting(text):

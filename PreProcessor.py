@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # ПреПроцессор - стартовый обработчик пользовательских запросов
-import Fixer
+import fixer
 from Services.Yandex import Ya
 from Services.Analyzer import TextFinder
 from Services.StrMorph import String, Word

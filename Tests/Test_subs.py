@@ -1,4 +1,4 @@
-import Fixer
+import fixer
 
 text = input('Введите тестовую фразу: ')
 

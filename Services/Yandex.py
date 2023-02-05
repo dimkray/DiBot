@@ -3,12 +3,12 @@ import requests
 import json
 # import logging
 import config
-import Fixer
+import fixer
 from Services.Geo import Geo
 from DB.SQLite import SQL
 from Profiler import decorator
 
-Fixer.AddDef('Yandex', 'Внутренний сервис Yandex', sclass='Yandex')
+Fixer.add_fun('Yandex', 'Внутренний сервис Yandex', sclass='Yandex')
 
 tformat = '%Y-%m-%d %H:%M:%S'
 path = 'rasp-yandex.json'
@@ -28,8 +28,8 @@ trSt = {'': 0, 'unknown': 0, 'train_station': 1, 'platform': 1, 'station': 1,
 
 
 # Поиск идентификатора языка
-Fixer.AddDef('FindLang', 'Поиск идентификатора языка',
-             {'slang': 'название языка [string]'}, 'двухзначный код языка [string]')
+Fixer.add_fun('FindLang', 'Поиск идентификатора языка',
+              {'slang': 'название языка [string]'}, 'двухзначный код языка [string]')
 
 
 def FindLang(slang):
@@ -41,8 +41,8 @@ def FindLang(slang):
 
 
 # Функция - есть ли станция/город в базе
-Fixer.AddDef('isStation', 'Есть ли станция/город в базе',
-             {'station': 'название города/станции [string]'}, 'да или нет [bool]')
+Fixer.add_fun('isStation', 'Есть ли станция/город в базе',
+              {'station': 'название города/станции [string]'}, 'да или нет [bool]')
 
 
 def isStation(station):
@@ -53,8 +53,8 @@ def isStation(station):
 
 
 # Функция - есть ли станция/город в базе (с фиксацией региона)
-Fixer.AddDef('isStational', 'Есть ли станция/город в базе (с фиксацией региона) [string]',
-             {'station': 'название города/станции'}, 'да или нет [bool]')
+Fixer.add_fun('isStational', 'Есть ли станция/город в базе (с фиксацией региона) [string]',
+              {'station': 'название города/станции'}, 'да или нет [bool]')
 
 
 def isStational(station):
@@ -73,8 +73,8 @@ def isStational(station):
 
 
 # Функция вариантов станции/города в базе
-Fixer.AddDef('eStation', 'Варианты станции/города в базе',
-             {'station': 'название города/станции [string]'}, 'название города/станции в базе [string]')
+Fixer.add_fun('eStation', 'Варианты станции/города в базе',
+              {'station': 'название города/станции [string]'}, 'название города/станции в базе [string]')
 
 
 def eStation(station):
@@ -90,8 +90,8 @@ def eStation(station):
 
 
 # Функция поиска станции/города в базе
-Fixer.AddDef('FindStation', 'Поиск станции/города в базе',
-             {'station': 'название города/станции [string]'}, 'код яндекс города/станции в базе [string]')
+Fixer.add_fun('FindStation', 'Поиск станции/города в базе',
+              {'station': 'название города/станции [string]'}, 'код яндекс города/станции в базе [string]')
 
 
 def FindStation(station):
@@ -157,7 +157,7 @@ def FindStation(station):
         Fixer.Coords.append(st[6])
     return istation
 
-Fixer.AddDef('Ya', 'Сервис Яндекс', sclass='Ya')
+Fixer.add_fun('Ya', 'Сервис Яндекс', sclass='Ya')
 class Ya:
     
     # Сервис Яндекс.Расписание
@@ -167,8 +167,8 @@ class Ya:
     ##### ОСНОВНОЙ КОД #####
 
 
-    Fixer.AddDef('FindRasp', 'Поиск расписания в сервисе Яндекс.Расписание',
-                 {'text': 'свободный текст поиска расписания [string]'}, 'список найденного рассписания [string]')
+    Fixer.add_fun('FindRasp', 'Поиск расписания в сервисе Яндекс.Расписание',
+                  {'text': 'свободный текст поиска расписания [string]'}, 'список найденного рассписания [string]')
 
     @decorator.benchmark
     def FindRasp(text):
@@ -279,7 +279,7 @@ class Ya:
             http = 'https://api.rasp.yandex.net/v3.0/search/'
             payload = {'from': st1, 'to': st2, 'format': 'json', 
                             'lang': 'ru_RU', 
-                            'apikey': config.YaRasp_key, 
+                            'apikey': config.YA_RASP_KEY,
                             'date': sdate,
                             'transport_types': stype,
                             'limit': '100'} 
@@ -343,8 +343,8 @@ class Ya:
     # в русском, украинском или английском тексте. Языковые модели Спеллера
     # включают сотни миллионов слов и словосочетаний.
     # https://tech.yandex.ru/speller/doc/dg/reference/checkText-docpage/
-    Fixer.AddDef('Speller', 'Автоисправление орфографических ошибок в русском, украинском или английском тексте - сервис Яндекс.Спеллер',
-                 {'s': 'свободный текст для автоисправления [string]'}, 'исправленый текст [string]')
+    Fixer.add_fun('Speller', 'Автоисправление орфографических ошибок в русском, украинском или английском тексте - сервис Яндекс.Спеллер',
+                  {'s': 'свободный текст для автоисправления [string]'}, 'исправленый текст [string]')
 
     @decorator.benchmark
     def Speller(s):
@@ -379,8 +379,8 @@ class Ya:
 
 
     # Сервис Яндекс.Переводчик
-    Fixer.AddDef('Translate', 'Перевод текста с указанного на другой указанный язык - сервис Яндекс.Переводчик',
-                 {'sText': 'свободный текст для перевода на указанном языке [string]',
+    Fixer.add_fun('Translate', 'Перевод текста с указанного на другой указанный язык - сервис Яндекс.Переводчик',
+                  {'sText': 'свободный текст для перевода на указанном языке [string]',
                   'lang_from': 'двухбуквенный код или "auto" - язык оригинала текста [string]',
                   'lang_to': 'двухбуквенный код или "auto" - на какой язык переводить текст [string]'},
                  'текст перевода [string]')
@@ -393,7 +393,7 @@ class Ya:
             #автоопределение языка
             if lang_from == 'авто':
                 http = 'https://translate.yandex.net/api/v1.5/tr.json/detect'
-                payload = {'key': config.YaTranc_key, 'text': sText, 'hint': 'ru,en,fr,it,de'}
+                payload = {'key': config.YA_TRANSLATE_KEY, 'text': sText, 'hint': 'ru,en,fr,it,de'}
                 r = requests.get(http, params=payload)
                 if r.status_code == requests.codes.ok:      
                     data = r.json()
@@ -407,7 +407,7 @@ class Ya:
                 lang_to = FindLang(lang_to)
             dir_tr = lang_from + '-' + lang_to
             http = 'https://translate.yandex.net/api/v1.5/tr.json/translate'
-            payload = {'key': config.YaTranc_key,
+            payload = {'key': config.YA_TRANSLATE_KEY,
                         'text': sText, 'lang': dir_tr, 'options': 1}
             r = requests.get(http, params=payload)
             if r.status_code == requests.codes.ok:      
@@ -423,8 +423,8 @@ class Ya:
 
 
     # Сервис Яндекс поиск объектов/организаций
-    Fixer.AddDef('Objects', 'Сервис Яндекс поиск объектов/организаций относительно координат и заданного радиуса поиска',
-                 {'Xloc=Fixer.X': 'глобальная координата X (долгота) [float]',
+    Fixer.add_fun('Objects', 'Сервис Яндекс поиск объектов/организаций относительно координат и заданного радиуса поиска',
+                  {'Xloc=Fixer.X': 'глобальная координата X (долгота) [float]',
                   'Yloc=Fixer.Y': 'глобальная координата Y (широта) [float]',
                   'dr=10': 'размер области поиска (протяжённость по долготе и широте), величина в км [float]',
                   'fix=1': 'Признак «жесткого» ограничения области поиска, 1 - ограничить поиск, 0 - не ограничивать поиск [integer]'},
@@ -440,7 +440,7 @@ class Ya:
                 rez = 'Не определены координаты старта поиска. Ищу ближайшие объекты от мавзалея :)\nЧтобы поиск можно было осуществлять от текущего местоположения, необходимо включить геолокацию (кнопочка в меню).'
             dxy = dr/55  # преобразование км в угловые расстояния
             http = 'https://search-maps.yandex.ru/v1/'
-            payload = { 'apikey': config.YaObj_key,
+            payload = { 'apikey': config.YA_OBJ_KEY,
                         'text': text,
                         'lang': 'ru_RU',
                         'll': str(Xloc) + ',' + str(Yloc), #координаты центра поиска - по умолчанию Геолокация
@@ -531,8 +531,8 @@ class Ya:
 
     # Сервис Яндекс.Координаты
     # Яндекс.Координаты возвращает географические координаты города/станции
-    Fixer.AddDef('Coordinates', 'Возвращает географические координаты города/станции - сервис Яндекс.Координаты',
-                 {'station': 'название города/станции [string]'},
+    Fixer.add_fun('Coordinates', 'Возвращает географические координаты города/станции - сервис Яндекс.Координаты',
+                  {'station': 'название города/станции [string]'},
                  'глобальные координаты в формате "yy.yyyyy, xx.xxxxx" [string]')
 
     @decorator.benchmark
@@ -553,8 +553,8 @@ class Ya:
 
     # Сервис Яндекс.Каталог
     # Яндекс.Каталог возвращает информацию о сайте (тиц, раздел, регион)
-    Fixer.AddDef('Catalog', 'Возвращает информацию о сайте (тиц, раздел, регион) - сервис Яндекс.Каталог',
-                 {'url': 'адрес сайта или часть сайта [string]'},
+    Fixer.add_fun('Catalog', 'Возвращает информацию о сайте (тиц, раздел, регион) - сервис Яндекс.Каталог',
+                  {'url': 'адрес сайта или часть сайта [string]'},
                  'информация о найденном сайте/сайтах: тиц, раздел, регион [string]')
 
     @decorator.benchmark
@@ -590,8 +590,8 @@ class Ya:
 
     # Сервис Яндекс.Каталог
     # Яндекс.Каталог ищет сайт по запросу
-    Fixer.AddDef('FindCatalog', 'Ищет сайт по свободному запросу - сервис Яндекс.Каталог',
-                 {'text': 'свободный текст для поиска: название сайта, описание, тема, регион распространения [string]'},
+    Fixer.add_fun('FindCatalog', 'Ищет сайт по свободному запросу - сервис Яндекс.Каталог',
+                  {'text': 'свободный текст для поиска: название сайта, описание, тема, регион распространения [string]'},
                  'информация о найденном сайте/сайтах: тиц, раздел, регион [string]')
 
     @decorator.benchmark

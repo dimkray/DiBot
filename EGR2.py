@@ -1,5 +1,5 @@
 # Работа с базой данных EGR2
-import Fixer
+import fixer
 from DB.SQLite import SQL
 from Services.StrMorph import String, Word
 from Profiler import Profiler

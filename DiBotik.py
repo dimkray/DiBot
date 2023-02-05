@@ -13,7 +13,7 @@
 # pip install feedparser
 
 import config
-import Fixer
+import fixer
 import time
 import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
@@ -76,7 +76,7 @@ def GetInfo():
             Fixer.Contacts['страна'] = user['country']['title']
             Fixer.Contacts['VK'] = user['domain']
             if 'interests' in user:
-                m = Fixer.getparams(user['interests'],', ')
+                m = Fixer.get_params(user['interests'], ', ')
                 for im in m:
                     Fixer.Interests.append(im)
             return True
@@ -93,7 +93,7 @@ def SendAuthor(text):
 
 def SendMessage(text): 
     if Fixer.ChatID == 0: return False
-    text = Fixer.Subs(text)
+    text = Fixer.insert_substring(text)
     # print({'user_id': Fixer.UserID, 'chat_id': Fixer.ChatID, 'peer_id': Fixer.PeerID, 'message': text})
     if Fixer.bChats == 0:
         vk.method('messages.send', {'user_id': Fixer.UserID, 'message': text})
@@ -161,7 +161,7 @@ def LongPoll():
                     # Идентификатор юзера
                     Fixer.UserID = event.user_id
                     # if Fixer.UserID != Author: SendAuthor('~Уведомление: пользователь VK '+str(Fixer.UserID)+' пишет: ' + text)
-                    Fixer.Time.append(Fixer.time())
+                    Fixer.Time.append(Fixer.time_str())
                     Fixer.Chat.append(text)
                     if Chat.Load() == False:
                         # Получение информации о пользователе

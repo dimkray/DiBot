@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # DaData
 
-import Fixer
+import fixer
 import datetime
 from Services.URLParser import URL
 

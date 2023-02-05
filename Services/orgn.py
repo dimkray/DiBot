@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Сервис ОГРН.Онлайн - информация о ЮЛ и ИП
-import Fixer
+import fixer
 import config
 from Services.URLParser import URL
 from urllib.parse import quote

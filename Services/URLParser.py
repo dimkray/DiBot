@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import Fixer
+import fixer
 import requests
 import certifi
 import urllib3
@@ -9,7 +9,7 @@ from urllib.parse import quote
 from bs4 import BeautifulSoup
 
 
-Fixer.AddDef('URLParser', 'Внутренний сервис URLParser', sclass='URLParser')
+Fixer.add_fun('URLParser', 'Внутренний сервис URLParser', sclass='URLParser')
 
 def cln(text):
     m = []
@@ -24,13 +24,13 @@ def cln(text):
     return text[:-1]
 
 
-Fixer.AddDef('URL', 'Сервис URL для работы с http', sclass='URL')
+Fixer.add_fun('URL', 'Сервис URL для работы с http', sclass='URL')
 
 
 class URL:
 
-    Fixer.AddDef('GetURL', 'Возвращает URL',
-                 {'shttp': "адрес URL [string]",
+    Fixer.add_fun('GetURL', 'Возвращает URL',
+                  {'shttp': "адрес URL [string]",
                   'stext=""': 'текст для передачи в качестве параметра [string]',
                   'textparam=""': "параметр передаваемого текста [string]",
                   'params={}': 'передаваемый список параметров [dict]'},
@@ -57,8 +57,8 @@ class URL:
             Fixer.errlog('URL.GetURL', str(e))
             print('#bug: ' + str(e))
 
-    Fixer.AddDef('OpenURL', 'Открывает URL без параметров',
-                 {'url': "адрес URL [string]",
+    Fixer.add_fun('OpenURL', 'Открывает URL без параметров',
+                  {'url': "адрес URL [string]",
                   'bsave=False': 'признак сохранения страницы для тестирования [boolean]'},
                  'возвращаемый текст страницы [string]')
 
@@ -76,8 +76,8 @@ class URL:
             Fixer.errlog('URL.OpenURL', str(e))
             return '#bug: ' + str(e)
 
-    Fixer.AddDef('GetData', 'Получение html/основного текста по запросу методом GET',
-                 {'shttp': "адрес URL [string]",
+    Fixer.add_fun('GetData', 'Получение html/основного текста по запросу методом GET',
+                  {'shttp': "адрес URL [string]",
                   'stext=""': 'текст для передачи в качестве параметра [string]',
                   'textparam=""': "параметр передаваемого текста [string]",
                   'params={}': 'передаваемый список параметров [dict]',
@@ -137,8 +137,8 @@ class URL:
             Fixer.errlog('URL.GetData', str(e))
             print('#bug: ' + str(e))
 
-    Fixer.AddDef('PostData', 'Использование метода POST',
-                 {'shttp': "адрес URL [string]",
+    Fixer.add_fun('PostData', 'Использование метода POST',
+                  {'shttp': "адрес URL [string]",
                   'dheaders={}': 'передаваемый список заголовков [dict]',
                   'djson={}': 'передаваемый JSON-запрос [dict]'},
                  'возвращаемый JSON-ответ [dict]')
@@ -162,13 +162,13 @@ class URL:
             print('#bug: ' + str(e))
 
 
-Fixer.AddDef('Parser', 'Класс парсинга', sclass='Parser')
+Fixer.add_fun('Parser', 'Класс парсинга', sclass='Parser')
 
 
 class Parser:  # Класс парсинга
 
-    Fixer.AddDef('Find', 'Поиск значений в html (если ball то выводится список значений)',
-                 {'data': "текстовый контент для поиска [string]",
+    Fixer.add_fun('Find', 'Поиск значений в html (если ball то выводится список значений)',
+                  {'data': "текстовый контент для поиска [string]",
                   'sfind': 'поисковая строка [string]',
                   'sstart=""': 'начальная ограничивающая строка [string]',
                   'send=""': 'конечная ограничивающая строка [string]',
@@ -200,8 +200,8 @@ class Parser:  # Класс парсинга
             Fixer.errlog('URL.Find', str(e))
             print('#bug: ' + str(e))
 
-    Fixer.AddDef('Parse', 'Парсинг html',
-                 {'htmltext': "текс страницы в формате html [string]",
+    Fixer.add_fun('Parse', 'Парсинг html',
+                  {'htmltext': "текс страницы в формате html [string]",
                   'sdiv="div"': 'поиск соотвествующего узла [string]',
                   'sclass=""': 'поиск соотвествующего class в узле [string]',
                   'stype="text"': 'поиск соотвествующего типа в узле: text/href/... [string]'},

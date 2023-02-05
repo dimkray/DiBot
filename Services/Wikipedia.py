@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 # Сервис Wikipedia - доступ к статьям интернет-ресурса wikipedia.org
 # https://wikipedia.readthedocs.io/en/latest/code.html
-import Fixer
+import fixer
 import wikipedia
 from Services.Geo import Geo
 from Profiler import decorator
 
 wikipedia.set_lang('ru')
 
-Fixer.AddDef('Wiki', 'Сервис Wikipedia - доступ к статьям интернет-ресурса wikipedia.org', sclass='Wiki')
+Fixer.add_fun('Wiki', 'Сервис Wikipedia - доступ к статьям интернет-ресурса wikipedia.org', sclass='Wiki')
 
 
 class Wiki:
 
     # Поиск страниц по заданному названию
-    Fixer.AddDef('SearchPage', 'Поиск страниц по заданному названию',
-                 {'sname': 'свободный текст для поиска',
+    Fixer.add_fun('SearchPage', 'Поиск страниц по заданному названию',
+                  {'sname': 'свободный текст для поиска',
                   'resnum=10': 'максимальное число отображаемых страниц'},
                  'список найденных статей Wikipedia [list<string>/string]')
 
@@ -33,8 +33,8 @@ class Wiki:
 
 
     # Вся информация о статье по типу: content, categories, coordinates, html, images, links
-    Fixer.AddDef('Page', 'Вся информация о статье по типу',
-                 {'spage': 'страница статьи wiki - залоговок статьи [string]',
+    Fixer.add_fun('Page', 'Вся информация о статье по типу',
+                  {'spage': 'страница статьи wiki - залоговок статьи [string]',
                   'stype="summary"': 'информация по типу: content, categories, coordinates, html, images, links [string]'},
                  'информация из статьи по типу [string]')
 
@@ -65,8 +65,8 @@ class Wiki:
 
 
     # Весь текстовый контент статьи
-    Fixer.AddDef('FullContent', 'Весь текстовый контент статьи',
-                 {'spage': 'страница статьи wiki - залоговок статьи [string]'},
+    Fixer.add_fun('FullContent', 'Весь текстовый контент статьи',
+                  {'spage': 'страница статьи wiki - залоговок статьи [string]'},
                  'текстовый контент статьи [string]')
 
     @decorator.benchmark
@@ -82,8 +82,8 @@ class Wiki:
 
 
     # Минимальный контент статьи - первый абзац
-    Fixer.AddDef('MiniContent', 'Минимальный контент статьи - первый абзац',
-                 {'spage': 'страница статьи wiki - залоговок статьи [string]'},
+    Fixer.add_fun('MiniContent', 'Минимальный контент статьи - первый абзац',
+                  {'spage': 'страница статьи wiki - залоговок статьи [string]'},
                  'первый абзац статьи [string]')
 
     @decorator.benchmark
@@ -104,8 +104,8 @@ class Wiki:
 
 
     # Минимальный контент статьи - следующий абзац (за предыдущим)
-    Fixer.AddDef('More', 'Следующий абзац статьи (за предыдущим)',
-                 {'spage': 'страница статьи wiki - залоговок статьи [string]'},
+    Fixer.add_fun('More', 'Следующий абзац статьи (за предыдущим)',
+                  {'spage': 'страница статьи wiki - залоговок статьи [string]'},
                  'первый абзац статьи [string]')
 
     @decorator.benchmark
@@ -123,7 +123,7 @@ class Wiki:
             return '#bug: ' + str(e)  
 
     # Произвольная статья в Wikipedia
-    Fixer.AddDef('PageRandom', 'Произвольная статья в Wikipedia', {},
+    Fixer.add_fun('PageRandom', 'Произвольная статья в Wikipedia', {},
                  'первый абзац статьи [string]')
     @decorator.benchmark
     def PageRandom():
@@ -135,8 +135,8 @@ class Wiki:
             return '#bug: ' + str(e)                
 
     # Найти объекты wiki поблизости от location (x, y)
-    Fixer.AddDef('GeoSearch', 'Найти объекты wiki поблизости от location (x, y)',
-                 {'x': 'глобальная координата X (долгота) [float]',
+    Fixer.add_fun('GeoSearch', 'Найти объекты wiki поблизости от location (x, y)',
+                  {'x': 'глобальная координата X (долгота) [float]',
                   'y': 'глобальная координата Y (широта) [float]',
                   'resnom=10': 'макисмальное количество найденных объектов [integer]',
                   'rad=1000': 'радиус поиска от указанных координат в метрах [float]'},
@@ -154,8 +154,8 @@ class Wiki:
             return '#bug: ' + str(e)
 
     # Найти ближайший объект wiki поблизости от location (x, y) - возвращает MiniContent
-    Fixer.AddDef('GeoFirst', 'Найти ближайший объект wiki поблизости от location (x, y)',
-                 {'x': 'глобальная координата X (долгота) [float]',
+    Fixer.add_fun('GeoFirst', 'Найти ближайший объект wiki поблизости от location (x, y)',
+                  {'x': 'глобальная координата X (долгота) [float]',
                   'y': 'глобальная координата Y (широта) [float]',
                   'rad=1000': 'радиус поиска от указанных координат в метрах [float]'},
                  'первый абзац статьи [string]')
@@ -179,8 +179,8 @@ class Wiki:
             return '#bug: ' + str(e)
 
     # Найти ближайший объект wiki поблизости от меня - возвращает MiniContent
-    Fixer.AddDef('GeoFirstMe', 'Найти ближайший объект wiki поблизости от меня (Fixer.X/Y)',
-                 {'rad=1000': 'радиус поиска от текущей позиции в метрах [float]'},
+    Fixer.add_fun('GeoFirstMe', 'Найти ближайший объект wiki поблизости от меня (Fixer.X/Y)',
+                  {'rad=1000': 'радиус поиска от текущей позиции в метрах [float]'},
                  'первый абзац статьи [string]')
 
     def GeoFirstMe(rad=1000):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Анализатор строк (поиск города/страны/времени/даты/обращения)
-import Fixer
+import fixer
 import random
 from datetime import date, datetime, timedelta
 from Services.StrMorph import String, Word

@@ -2,7 +2,7 @@ from Profiler import Profiler
 from Tests import Testing
 from Tests.Testing import Test, Report
 from Processor import Run
-import Fixer
+import fixer
 
 
 service = 'Fixer'

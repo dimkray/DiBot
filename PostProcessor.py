@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # ПостПроцессор - финальный обработчик пользовательских запросов, реагирует на ошибки
-import Fixer
+import fixer
 from datetime import datetime
 from DB.SQLite import SQL
 

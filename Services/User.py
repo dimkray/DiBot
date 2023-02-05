@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 # Сервис обработки сообщений о пользователе
-import Fixer
+import fixer
 # import Bot
 
-Fixer.AddDef('User', 'Сервис обработки сообщений о пользователе', sclass='User')
+Fixer.add_fun('User', 'Сервис обработки сообщений о пользователе', sclass='User')
 
 class User:
 
     # ообработка основной информации о пользователе
 
-    Fixer.AddDef('Info', 'Обработка основной информации о пользователе',
-                 {'param': """обработка параметра Fixer: age (возраст), name (имя), family (фамилия), type (пол), 
+    Fixer.add_fun('Info', 'Обработка основной информации о пользователе',
+                  {'param': """обработка параметра Fixer: age (возраст), name (имя), family (фамилия), type (пол), 
                  birthday (день рождения), phone (номер телефона), email, interest (интересы), contact (контакты), thing (собсвенность) [string]""",
                   'text': 'текст для обработки информации'},
                  'фиксация данных и реакция бота на информацию [string]')
@@ -51,7 +51,7 @@ class User:
                 Fixer.eMail = text
                 Bot.SendMessage('Хорошо! Запомнил :)')
             if param == 'interest':  # Интересы
-                m = Fixer.getparams(text, separator=',')
+                m = Fixer.get_params(text, separator=',')
                 for i in m:
                     i = i.lower()
                     Fixer.Interests.append(i)
@@ -74,7 +74,7 @@ class User:
 
 
     # сервис знакомства
-    Fixer.AddDef('Acquaintance', 'Автознакомство по данным Fixer - получение информации о пользователе', {},
+    Fixer.add_fun('Acquaintance', 'Автознакомство по данным Fixer - получение информации о пользователе', {},
                  'фиксация данных и реакция бота на информацию [string]')
 
     def Acquaintance():

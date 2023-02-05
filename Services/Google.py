@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import config
-import Fixer
+import fixer
 import certifi
 import urllib3
 import requests
@@ -55,7 +55,7 @@ class Google:
             #payload = {'key': config.GShort_Key, 'longUrl': url} 
             #r = requests.post(http, params=payload)
             post_url = 'https://www.googleapis.com/urlshortener/v1/url'
-            payload = {'key': config.GShort_key, 'longUrl': url}
+            payload = {'key': config.GOOGLE_SHORT_KEY, 'longUrl': url}
             headers = {'content-type': 'application/json'}
             r = requests.post(post_url, data=json.dumps(payload), headers=headers)
             #client = googl.Googl(config.GShort_Key)

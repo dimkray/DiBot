@@ -3,14 +3,14 @@
 # Key f09869c0-33d9-4f10-8fe3-5467b99492f7
 # https://iatacodes.org/api/VERSION/ENDPOINT?api_key=YOUR-API-KEY&lang=ru
 
-import Fixer
+import fixer
 import config
 import json
 from Services.URLParser import URL
 from DB.SQLite import Finder
 
 api = 'https://iatacodes.org/api/v6/'
-params = {'api_key': config.IATA_key, 'lang': 'ru'}
+params = {'api_key': config.IATA_KEY, 'lang': 'ru'}
 
 # Получение данных по коду/имени
 def GetData(stype, code, name, db=True):

@@ -2,7 +2,7 @@ from Profiler import Profiler
 from Tests import Testing
 from Tests.Testing import Test, Report
 from DB.Worker import Worker
-import Fixer
+import fixer
 
 Testing.testService = 'Worker'
 

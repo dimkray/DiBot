@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Простой сервис универсальных развлечений
-import Fixer
+import fixer
 from DB.SQLite import SQL, Finder
 
 tb = 'anecdotes'

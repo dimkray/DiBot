@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Простой сервис математики
 import math
-import Fixer
+import fixer
 
 # Измерение расстояние от одной точки до другой
 def Distance(x1,y1,x2,y2):

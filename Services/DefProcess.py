@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 # Сервис по работе с функциями и процедурами
-import Fixer
+import fixer
 
 # Основной класс по работе с функциями и другими классами
-Fixer.AddDef('Runner', 'Класс по работе с функциями и другими классами', sclass='Runner')
+Fixer.add_fun('Runner', 'Класс по работе с функциями и другими классами', sclass='Runner')
 
 class Runner:
 
     # Полчение списка всех функций указанного класса (включая системные)
-    Fixer.AddDef('GetAllMembers', 'Получение списка всех функций указанного класса (включая системные)',
-                 {'iclass': 'класс [class]'},
+    Fixer.add_fun('GetAllMembers', 'Получение списка всех функций указанного класса (включая системные)',
+                  {'iclass': 'класс [class]'},
                  'список функций [list<string>]')
 
     def GetAllMembers(iclass):
@@ -20,8 +20,8 @@ class Runner:
         return ret
 
     # Полчение списка всех функций указанного класса
-    Fixer.AddDef('GetMemberList', 'Полчение списка всех функций указанного класса',
-                 {'iclass': 'класс [class]'},
+    Fixer.add_fun('GetMemberList', 'Полчение списка всех функций указанного класса',
+                  {'iclass': 'класс [class]'},
                  'список всех функций класса [list<string>]')
 
     def GetMemberList(iclass):

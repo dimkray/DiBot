@@ -1,4 +1,4 @@
-import Fixer
+import fixer
 from DB.SQLite import SQL
 
 def AddTable(NameTable, dCols, data):

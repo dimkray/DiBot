@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Сервис по работе с базами данных (wrapper)
 
-import Fixer
+import fixer
 from DB.SQLite import SQL, CSV
 
 tDel = [] # Список удалённых таблиц

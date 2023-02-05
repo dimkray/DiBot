@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Сервис работы с координатами земли и приём/возврат адреса
-import Fixer
+import fixer
 import config
 import json
 from urllib.parse import quote_plus
@@ -11,7 +11,7 @@ from Services.URLParser import URL
 # Локатор Google
 def Geolocator():
     try:
-        return GoogleV3(api_key=config.GMaps_key, timeout=1)
+        return GoogleV3(api_key=config.GOOGLE_MAPS_KEY, timeout=1)
     except Exception as e:
         Fixer.errlog('Geolocator', str(e))
         return '#bug: ' + str(e)

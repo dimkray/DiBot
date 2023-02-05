@@ -1,4 +1,4 @@
-import Fixer
+import fixer
 from Profiler import Profiler
 from Tests import Testing
 from Tests.Testing import Test, Report

@@ -1,4 +1,4 @@
-import Fixer
+import fixer
 from DB.SQLite import SQL
 from DB.SQLite import Finder
 from Services.Yandex import Ya

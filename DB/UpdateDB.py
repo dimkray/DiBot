@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Обновление базы данных DiBot из открытых источников
 
-import Fixer
+import fixer
 from Services.IATA import IATA
 from DB.SQLite import SQL
 

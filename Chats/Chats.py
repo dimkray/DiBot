@@ -1,4 +1,4 @@
-import Fixer
+import fixer
 import pickle
 
 class Chat:
@@ -33,7 +33,7 @@ class Chat:
     # Функция загрузки данных о текущем пользователе (по id chat)
     def Load():
         try:
-            if Fixer.Exists('Chats\\' + str(Fixer.ChatID) + '.chat') == False: return False
+            if Fixer.exist('Chats\\' + str(Fixer.ChatID) + '.chat') == False: return False
             f = open('Chats\\' + str(Fixer.ChatID) + '.chat', 'rb')
             data = pickle.load(f)
             Fixer.Version = data['version']

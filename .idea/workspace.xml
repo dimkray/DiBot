@@ -1,14 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="7df0a8d4-d6b2-44a6-b16b-18195551d848" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/csv-editor.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DB/create/AddRSS.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/run.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/file.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/function.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/logging.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/string.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/time.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Bot.py" beforeDir="false" afterPath="$PROJECT_DIR$/Bot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Bot_Telegram.py" beforeDir="false" afterPath="$PROJECT_DIR$/Bot_Telegram.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chats/Chats.py" beforeDir="false" afterPath="$PROJECT_DIR$/Chats/Chats.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CreateCities.py" beforeDir="false" afterPath="$PROJECT_DIR$/CreateCities.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CreateEGR.py" beforeDir="false" afterPath="$PROJECT_DIR$/CreateEGR.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CreateEGR2.py" beforeDir="false" afterPath="$PROJECT_DIR$/CreateEGR2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DB/AddRSS.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DB/CreateDB.py" beforeDir="false" afterPath="$PROJECT_DIR$/DB/CreateDB.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DB/NewDialogs.json" beforeDir="false" afterPath="$PROJECT_DIR$/DB/NewDialogs.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DB/SQLite.py" beforeDir="false" afterPath="$PROJECT_DIR$/DB/SQLite.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DB/UpdateDB.py" beforeDir="false" afterPath="$PROJECT_DIR$/DB/UpdateDB.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DB/Worker.py" beforeDir="false" afterPath="$PROJECT_DIR$/DB/Worker.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DB/YandexCatalog.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DB/create/YandexCatalog.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DiApi.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiApi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DiBot.iml" beforeDir="false" afterPath="$PROJECT_DIR$/DiBot.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DiBotik.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiBotik.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EGR2.py" beforeDir="false" afterPath="$PROJECT_DIR$/EGR2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Fixer.py" beforeDir="false" afterPath="$PROJECT_DIR$/fixer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Notification.py" beforeDir="false" afterPath="$PROJECT_DIR$/Notification.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PostProcessor.py" beforeDir="false" afterPath="$PROJECT_DIR$/PostProcessor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PreProcessor.py" beforeDir="false" afterPath="$PROJECT_DIR$/PreProcessor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/Processor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Procfile" beforeDir="false" afterPath="$PROJECT_DIR$/Procfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Procfile.windows" beforeDir="false" afterPath="$PROJECT_DIR$/Procfile.windows" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Analyzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/DaData.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/DaData.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/DefProcess.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/DefProcess.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Fun.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Fun.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Geo.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Geo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Google.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Google.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/House.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/House.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/IATA.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/IATA.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Kinopoisk.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Kinopoisk.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/RSS.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/RSS.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Rates.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Rates.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/SMath.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/SMath.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/StrMorph.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/StrMorph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/URLParser.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/URLParser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/User.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/User.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Weather.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Weather.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Web.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Web.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Wikipedia.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Wikipedia.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/Yandex.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Yandex.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Services/orgn.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/orgn.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/Autotest.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Autotest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/Test_Booking3.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_Booking3.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/Test_Booking4.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_Booking4.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/Test_DB.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_DB.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/Test_Error.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_Error.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/Test_Fixer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_Fixer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/Test_Fun.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_Fun.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/Test_Geo.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_Geo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/Test_RatesFull.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_RatesFull.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/Test_SQLite.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_SQLite.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/Test_Site.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_Site.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/Test_Wiki.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_Wiki.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/Test_Yandex.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_Yandex.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/Test_gsearch.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_gsearch.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/Test_subs.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_subs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/Test_worker.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_worker.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/Testing.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Testing.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rasp.json" beforeDir="false" afterPath="$PROJECT_DIR$/rasp.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
-    <ignored path="$PROJECT_DIR$/out/" />
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
-    <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,18 +91,12 @@
     <SUITE FILE_PATH="coverage/DiBot$EGR2.coverage" NAME="EGR2 Coverage Results" MODIFIED="1535038735491" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/DiBot$Bot.coverage" NAME="Bot Coverage Results" MODIFIED="1540897852211" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
-  <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Processor.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Processor.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="326">
-              <caret line="87" column="47" selection-start-line="87" selection-start-column="47" selection-end-line="87" selection-end-column="47" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
@@ -86,11 +151,18 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="2158" />
     <option name="y" value="146" />
     <option name="width" value="1936" />
     <option name="height" value="1056" />
+  </component>
+  <component name="ProjectId" id="2LJfpm8gAkf6qmUj8bKAPG9l7Be" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -118,31 +190,24 @@
       </pane>
     </panes>
   </component>
-  <component name="PropertiesComponent">
-    <property name="SearchEverywhereHistoryKey" value="Test.Add&#9;null&#9;null" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="aspect.path.notification.shown" value="true" />
-    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
-    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
   </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\d.povarnitsyn\PycharmProjects\DiBot\system" />
+      <recent name="C:\Users\d.povarnitsyn\PycharmProjects\DiBot\DB\create" />
       <recent name="C:\Users\PovarnitsynDA\Desktop\Python\Bot_Telegram\DiBot\Services" />
     </key>
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
-  </component>
-  <component name="RunManager" selected="Python.Bot">
+  <component name="RunManager" selected="Python.Bot_Telegram">
     <configuration default="true" type="Application" factoryName="Application">
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
     </configuration>
@@ -161,82 +226,6 @@
         <value defaultName="singleModule" />
       </option>
       <patterns />
-    </configuration>
-    <configuration name="Bot" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="DiBot" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Bot.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-    </configuration>
-    <configuration name="EGR2" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="DiBot" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/EGR2.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-    </configuration>
-    <configuration name="Test_Fixer" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="DiBot" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Test_Fixer.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-    </configuration>
-    <configuration name="Test_Yandex" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="DiBot" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Test_Yandex.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
     </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -260,7 +249,117 @@
       <properties />
       <listeners />
     </configuration>
+    <configuration name="Bot" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="DiBot" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Bot.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Bot_Telegram" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="DiBot" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Bot_Telegram.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="EGR2" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="DiBot" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/EGR2.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Test_Fixer" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="DiBot" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Test_Fixer.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Test_Yandex" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="DiBot" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Test_Yandex.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
+      <item itemvalue="Python.Bot_Telegram" />
       <item itemvalue="Python.EGR2" />
       <item itemvalue="Python.Test_Yandex" />
       <item itemvalue="Python.Bot" />
@@ -268,6 +367,7 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.Bot_Telegram" />
         <item itemvalue="Python.Bot" />
         <item itemvalue="Python.Test_Fixer" />
         <item itemvalue="Python.EGR2" />
@@ -275,6 +375,7 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration>C:\Users\PovarnitsynDA\AppData\Roaming\Subversion</configuration>
   </component>
@@ -344,9 +445,6 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
-  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
@@ -356,7 +454,6 @@
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="2" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">

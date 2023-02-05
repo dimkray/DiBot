@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Сервис для получения информации о фильмах/кино
-import Fixer
+import fixer
 from kinopoisk.movie import Movie
 from kinopoisk.person import Person
 

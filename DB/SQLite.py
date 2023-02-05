@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Сервис по работе с БД
 
-import Fixer
+import fixer
 import sqlite3
 import csv
 

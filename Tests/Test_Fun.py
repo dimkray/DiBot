@@ -1,4 +1,4 @@
-import Fixer
+import fixer
 from Profiler import Profiler
 from Services.Fun import Fun
 

@@ -1,6 +1,6 @@
 # Обновление базы данных ЕГР из открытых источников
 import csv
-import Fixer
+import fixer
 from DB.SQLite import SQL, CSV
 from Services.StrMorph import String, Word
 from DB.Worker import Worker
