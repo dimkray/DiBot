@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Сервис по работе с подбором жилья (отели, хостелы, квартиры)
 import fixer
-from Services.URLParser import URL, Parser
+from services.URLParser import URL, Parser
 
 class Booking: # Работа с booking.com
     # 'score' - по оценке

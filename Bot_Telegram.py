@@ -17,7 +17,7 @@ from Processor import Processor
 import telebot
 # from geolocation.distance_matrix.client import DistanceMatrixApiClient
 from telebot import types
-from Services.Yandex import Ya
+from services.Yandex import Ya
 from Chats.Chats import Chat
 
 Author = '172009889'
@@ -91,7 +91,7 @@ def default_test(message):
         request = PreProcessor.ReadMessage(message.text)
         Fixer.log('PreProcessor', request)
         # Процессорный обработчик
-        request = Processor.FormMessage(request)
+        request = Processor.message_form(request)
         Fixer.log('Processor', request)
         # Постпроцессорный обработчик
         # if request[0:7] == 'http://': # текст - это гиперссылка

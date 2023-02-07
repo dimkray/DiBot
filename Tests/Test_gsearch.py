@@ -1,5 +1,5 @@
-from Services.Google import Google
-from Services.Geo import Geo
+from services.Google import Google
+from services.Geo import Geo
 import fixer
 
 x = float(input('Введите координату X: '))

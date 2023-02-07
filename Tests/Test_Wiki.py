@@ -1,6 +1,6 @@
 import fixer
 import wikipedia
-from Services.Geo import Geo
+from services.Geo import Geo
 #import SMath
 
 wikipedia.set_lang('ru')

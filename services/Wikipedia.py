@@ -3,7 +3,7 @@
 # https://wikipedia.readthedocs.io/en/latest/code.html
 import fixer
 import wikipedia
-from Services.Geo import Geo
+from services.Geo import Geo
 from Profiler import decorator
 
 wikipedia.set_lang('ru')

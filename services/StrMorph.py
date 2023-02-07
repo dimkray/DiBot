@@ -4,7 +4,7 @@ import re
 import fixer
 import pymorphy2
 
-dic = Fixer.Load('morth') # словарь морфологических определений
+dic = Fixer.load('morth') # словарь морфологических определений
 morph = pymorphy2.MorphAnalyzer()
 
 phr = {'NOUN': 1,  # существительное

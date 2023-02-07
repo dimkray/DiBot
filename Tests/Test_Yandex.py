@@ -2,9 +2,9 @@ import fixer
 from Profiler import Profiler
 from Tests import Testing
 from Tests.Testing import Test, Report
-from Services import Yandex
-from Services.Yandex import Ya
-from Services.DefProcess import Runner
+from services import Yandex
+from services.Yandex import Ya
+from services.DefProcess import Runner
 
 Testing.testService = 'Yandex'
 print('------- Запущены тесты сервиса %s --------' % Testing.testService)

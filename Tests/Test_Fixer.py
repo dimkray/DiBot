@@ -12,14 +12,14 @@ print('------- Запущены тесты сервиса %s --------' % service
 
 Testing.testService = service
 # Добавляем все функции класса
-for idef in Run.GetMemberList(Fixer):
+for idef in Run.get_member_list(Fixer):
     Test.AddDef(idef)
     #print(idef)
 
 with Profiler() as p:
     # WriteClasses
     Testing.testDef = 'WriteClasses'
-    test = Run.WriteClasses()
+    test = Run.write_classes()
     etalon = 'ru'
     Test.Add('normal', test, etalon)
 

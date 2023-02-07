@@ -1,5 +1,5 @@
 import fixer
-from Services.Yandex import Ya
+from services.Yandex import Ya
 
 stest = input('Введите тестовую фразу: ')
 

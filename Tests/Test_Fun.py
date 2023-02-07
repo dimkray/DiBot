@@ -1,6 +1,6 @@
 import fixer
 from Profiler import Profiler
-from Services.Fun import Fun
+from services.Fun import Fun
 
 # автотесты #
 

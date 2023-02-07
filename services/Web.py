@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Сервис работы с сайтами
 import fixer
-from Services.URLParser import URL, Parser
+from services.URLParser import URL, Parser
 
 # Основной класс работы с сайтами
 class Web:

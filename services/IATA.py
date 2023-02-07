@@ -6,7 +6,7 @@
 import fixer
 import config
 import json
-from Services.URLParser import URL
+from services.URLParser import URL
 from DB.SQLite import Finder
 
 api = 'https://iatacodes.org/api/v6/'

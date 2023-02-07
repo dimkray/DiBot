@@ -1,4 +1,4 @@
-from Services.URLParser import URL
+from services.URLParser import URL
 from urllib.parse import quote_plus
 from urllib.request import urlopen
 #from lxml.html import parse

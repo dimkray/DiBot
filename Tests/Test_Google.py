@@ -1,5 +1,5 @@
-from Services.Yandex import Ya
-from Services.URLParser import URL, Parser
+from services.Yandex import Ya
+from services.URLParser import URL, Parser
 import certifi
 import urllib3
 from urllib.parse import urlencode

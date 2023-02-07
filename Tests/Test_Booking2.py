@@ -1,4 +1,4 @@
-from Services.URLParser import URL, Parser
+from services.URLParser import URL, Parser
 
 # здесь тестовая обработка #
 def Search(stext):

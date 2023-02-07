@@ -1,4 +1,4 @@
-from Services.Yandex import Ya
+from services.Yandex import Ya
 
 # Обработка результатов сервиса Яндекс.Расписание
 def FormRasp(s):

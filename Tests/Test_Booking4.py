@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # Сервис по работе с подбором жилья (отели, хостелы, квартиры)
 import fixer
-#from Services.URLParser import URL, Parser
-from Services.House import Booking
+#from services.URLParser import URL, Parser
+from services.House import Booking
 
 # Тест
 text = input('Введите город: ')

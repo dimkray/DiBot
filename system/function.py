@@ -1,36 +1,34 @@
+"""
+    Модуль управления функциями
+"""
 from system.string import list_str
 import traceback
 import os
 
-# ---------------------------------------------------------
-# Внутренние сервисы по работе с функциями
-Defs = {}  # Внутренний словарь всех функций
+FUNCTIONS = {}  # Внутренний словарь всех функций
 
 
 # ---------------------------------------------------------
 # вн.сервис AddDef - Добавление описание функции
-def add_fun(name, description, sarg={}, sreturn=None, sclass=''):
-    global serv
+def add_fun(name: str, description: str, arguments: dict = None, return_str: str = None, sclass: str = ''):
+    from config import serv
     if sclass != '':
         serv = sclass
     if serv != '' and sclass == '':
-        if serv not in Defs:
-            Defs[serv] = {}
-        Defs[serv][name] = {}
-        Defs[serv][name]['desc'] = description
-        Defs[serv][name]['arg'] = sarg
-        Defs[serv][name]['return'] = sreturn
+        if serv not in FUNCTIONS:
+            FUNCTIONS[serv] = {}
+        FUNCTIONS[serv][name] = {}
+        FUNCTIONS[serv][name]['desc'] = description
+        FUNCTIONS[serv][name]['arg'] = arguments
+        FUNCTIONS[serv][name]['return'] = return_str
     else:
-        Defs[name] = {'class': description}
-    return Defs
-
-
-# ------------------- основные функции fixer -------------------------
+        FUNCTIONS[name] = {'class': description}
+    return FUNCTIONS
 
 
 # Получить имя текущей функции
 def get_fun(from_index: int = 3) -> [str, str, str]:
-    """Получить имя текущей функции"""
+    """Получить [модуль, имя, путь] текущей функции по уровню индекса [from_index]"""
     module = ''
     paths: list = []
     stack = traceback.extract_stack()

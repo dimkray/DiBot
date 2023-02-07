@@ -7,7 +7,7 @@ from DB.SQLite import SQL
 # постпроцессорный обработчик пользовательских запросов, где есть ошибки
 def ErrorProcessor(text):
     try:
-        bug, text = Fixer.strfind(text, ['#bug:', '#problem:', '#err:',' #critical:'])
+        bug, text = Fixer.str_find(text, ['#bug:', '#problem:', '#err:', ' #critical:'])
         iNum = 0
         if bug != '':  # если обработан
             iNum = SQL.Count('bugs')+1  # число строк -> порядковый номер

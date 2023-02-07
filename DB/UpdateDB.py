@@ -2,7 +2,7 @@
 # Обновление базы данных DiBot из открытых источников
 
 import fixer
-from Services.IATA import IATA
+from services.IATA import IATA
 from DB.SQLite import SQL
 
 def UpdateTable(NameTable, dCols, data):

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # ПреПроцессор - стартовый обработчик пользовательских запросов
 import fixer
-from Services.Yandex import Ya
-from Services.Analyzer import TextFinder
-from Services.StrMorph import String, Word
+from services.Yandex import Ya
+from services.Analyzer import TextFinder
+from services.StrMorph import String, Word
 
 # мультипроцессор, препроцессорная обработка, препроцессорное автоопределение сервиса
 # возвращаемый формат: [[текст для процессора],[предполагаемый сервис]]
@@ -26,7 +26,7 @@ def ReadMessage(text):
     Fixer.log('PreProcessor.ReadMessage', text)
     # Фиксация слов
     fix = ''
-    text = Fixer.strSpec(text)
+    text = Fixer.str_spec(text)
     if '"' in text:
         fix_start = text.find('"')
         fix_end = text.find('"', fix_start+1)
@@ -49,19 +49,19 @@ def ReadMessage(text):
     stext = stext.replace('["]', fix)
     # Поиск совпадений по первому слову
     Fixer.log('PreProcessor.Word1')
-    for word in Fixer.Word1:
+    for word in Fixer.WORD1:
         if word == stext[0:len(word)]:
             poz = len(word)
-            text = Fixer.Word1[word] + text[poz:] # убираем первое слово - добавляем сервис #
+            text = Fixer.WORD1[word] + text[poz:] # убираем первое слово - добавляем сервис #
             Fixer.log('PreProcessor.Word1', 'Найдено совпадение по первому слову: ' + text)
             break
     # Поиск совпадений по ключевым словам
     Fixer.log('PreProcessor.KeyWord')
     if Fixer.bAI:
-        for word in Fixer.KeyWord:
+        for word in Fixer.KEY_WORD:
             ktext = text.upper()
             if ktext.find(word) >= 0:
-                text = Fixer.KeyWord[word] + text # добавляем сервис #
+                text = Fixer.KEY_WORD[word] + text # добавляем сервис #
                 Fixer.log('PreProcessor.KeyWord', 'Найдено совпадение по ключевому слову [' + word + ']:' + text)
                 break
     # Анализ сообщения

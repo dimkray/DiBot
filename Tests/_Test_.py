@@ -1,9 +1,9 @@
-from Services.DefProcess import Run
+from services.DefProcess import Run
 from Profiler import Profiler
 from Tests import Testing
 from Tests.Testing import Test, Report
-from Services import _Service_
-from Services._Service_ import _Serv_
+from services import _Service_
+from services._Service_ import _Serv_
 
 
 service = '_Service_'
@@ -28,7 +28,7 @@ Test.Add('unreal', test, etalon)
 
 Testing.testService = '_Serv_'
 # Добавляем все функции класса
-for idef in Run.GetMemberList(_Serv_):
+for idef in Run.get_member_list(_Serv_):
     Test.AddDef(idef)
 
 Testing.testDef = '_Def_'

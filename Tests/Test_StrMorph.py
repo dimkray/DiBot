@@ -1,7 +1,7 @@
 from Profiler import Profiler
 from Tests import Testing
 from Tests.Testing import Test, Report
-from Services.StrMorph import String, Word, Modif
+from services.StrMorph import String, Word, Modif
 
 
 Testing.testService = 'StrMorth'

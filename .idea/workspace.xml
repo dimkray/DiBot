@@ -4,81 +4,28 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7df0a8d4-d6b2-44a6-b16b-18195551d848" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/csv-editor.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DB/create/AddRSS.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/run.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/system/file.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/system/function.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/system/logging.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/system/string.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/system/time.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="7df0a8d4-d6b2-44a6-b16b-18195551d848" name="Default" comment="step 1">
+      <change afterPath="$PROJECT_DIR$/system/SQLite.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Bot.py" beforeDir="false" afterPath="$PROJECT_DIR$/Bot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Bot_Telegram.py" beforeDir="false" afterPath="$PROJECT_DIR$/Bot_Telegram.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Chats/Chats.py" beforeDir="false" afterPath="$PROJECT_DIR$/Chats/Chats.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CreateCities.py" beforeDir="false" afterPath="$PROJECT_DIR$/CreateCities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CreateEGR.py" beforeDir="false" afterPath="$PROJECT_DIR$/CreateEGR.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CreateEGR2.py" beforeDir="false" afterPath="$PROJECT_DIR$/CreateEGR2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DB/AddRSS.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DB/CreateDB.py" beforeDir="false" afterPath="$PROJECT_DIR$/DB/CreateDB.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DB/NewDialogs.json" beforeDir="false" afterPath="$PROJECT_DIR$/DB/NewDialogs.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DB/SQLite.py" beforeDir="false" afterPath="$PROJECT_DIR$/DB/SQLite.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DB/UpdateDB.py" beforeDir="false" afterPath="$PROJECT_DIR$/DB/UpdateDB.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DB/Worker.py" beforeDir="false" afterPath="$PROJECT_DIR$/DB/Worker.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DB/YandexCatalog.csv" beforeDir="false" afterPath="$PROJECT_DIR$/DB/create/YandexCatalog.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DiApi.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiApi.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DiBot.iml" beforeDir="false" afterPath="$PROJECT_DIR$/DiBot.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DiBotik.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiBotik.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EGR2.py" beforeDir="false" afterPath="$PROJECT_DIR$/EGR2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Fixer.py" beforeDir="false" afterPath="$PROJECT_DIR$/fixer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DB/CreateDB.py" beforeDir="false" afterPath="$PROJECT_DIR$/DB/create/CreateDB.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DB/SQLite.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DB/stations.txt" beforeDir="false" afterPath="$PROJECT_DIR$/DB/create/stations.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Notification.py" beforeDir="false" afterPath="$PROJECT_DIR$/Notification.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PostProcessor.py" beforeDir="false" afterPath="$PROJECT_DIR$/PostProcessor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PreProcessor.py" beforeDir="false" afterPath="$PROJECT_DIR$/PreProcessor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/Processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Procfile" beforeDir="false" afterPath="$PROJECT_DIR$/Procfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Procfile.windows" beforeDir="false" afterPath="$PROJECT_DIR$/Procfile.windows" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Services/Analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Analyzer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Services/DaData.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/DaData.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Services/DefProcess.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/DefProcess.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Services/Fun.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Fun.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Services/Geo.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Geo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Services/Google.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Google.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Services/House.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/House.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Services/IATA.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/IATA.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Services/Kinopoisk.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Kinopoisk.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Services/RSS.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/RSS.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Services/Rates.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Rates.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Services/SMath.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/SMath.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Services/StrMorph.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/StrMorph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Services/URLParser.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/URLParser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Services/User.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/User.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Services/Weather.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Weather.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Services/Web.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Web.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Services/Wikipedia.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Wikipedia.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Services/Yandex.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Yandex.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Services/orgn.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/orgn.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/Autotest.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Autotest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/Test_Booking3.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_Booking3.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/Test_Booking4.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_Booking4.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/Test_DB.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_DB.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/Test_Error.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_Error.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/Test_Fixer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_Fixer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/Test_Fun.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_Fun.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/Test_Geo.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_Geo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/Test_RatesFull.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_RatesFull.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/Test_SQLite.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_SQLite.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/Test_Site.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_Site.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/Test_Wiki.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_Wiki.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/Test_Yandex.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_Yandex.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/Test_gsearch.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_gsearch.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/Test_subs.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_subs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/Test_worker.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_worker.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Tests/Testing.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Testing.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixer.py" beforeDir="false" afterPath="$PROJECT_DIR$/fixer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/run.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/file.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/file.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/function.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/function.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/logging.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/logging.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/string.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/string.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -197,17 +144,23 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "last_opened_file_path": "C:/Users/d.povarnitsyn/PycharmProjects/DiBot/system",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
 }]]></component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
+    <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\d.povarnitsyn\PycharmProjects\DiBot\system" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\d.povarnitsyn\PycharmProjects\DiBot\DB" />
+      <recent name="C:\Users\d.povarnitsyn\PycharmProjects\DiBot\Promo" />
       <recent name="C:\Users\d.povarnitsyn\PycharmProjects\DiBot\DB\create" />
+      <recent name="C:\Users\d.povarnitsyn\PycharmProjects\DiBot\system" />
       <recent name="C:\Users\PovarnitsynDA\Desktop\Python\Bot_Telegram\DiBot\Services" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.Bot_Telegram">
+  <component name="RunManager">
     <configuration default="true" type="Application" factoryName="Application">
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
     </configuration>
@@ -336,7 +289,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Test_Yandex" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="file" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="DiBot" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -344,12 +297,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/system" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Test_Yandex.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/system/file.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -360,18 +312,18 @@
     </configuration>
     <list>
       <item itemvalue="Python.Bot_Telegram" />
+      <item itemvalue="Python.file" />
       <item itemvalue="Python.EGR2" />
-      <item itemvalue="Python.Test_Yandex" />
       <item itemvalue="Python.Bot" />
       <item itemvalue="Python.Test_Fixer" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.file" />
         <item itemvalue="Python.Bot_Telegram" />
         <item itemvalue="Python.Bot" />
         <item itemvalue="Python.Test_Fixer" />
         <item itemvalue="Python.EGR2" />
-        <item itemvalue="Python.Test_Yandex" />
       </list>
     </recent_temporary>
   </component>
@@ -396,6 +348,14 @@
       <workItem from="1540897757970" duration="128000" />
       <workItem from="1540897903289" duration="12000" />
     </task>
+    <task id="LOCAL-00001" summary="step 1">
+      <created>1675615907138</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1675615907138</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -444,6 +404,10 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="step 1" />
+    <option name="LAST_COMMIT_MESSAGE" value="step 1" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

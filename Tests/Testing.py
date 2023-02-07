@@ -81,7 +81,7 @@ class Comp:
     # Проверка на работоспособность (для строкового ответа)
     def sWork(test):
         try:
-            bug, text = Fixer.strfind(test, ['#bug:', '#problem:', '#err:', '#critical:'])
+            bug, text = Fixer.str_find(test, ['#bug:', '#problem:', '#err:', '#critical:'])
             if bug != '':
                 return 0
             return 1
@@ -114,7 +114,7 @@ class Comp:
     # Сравнение с эталонным (для строк)
     def strEqual(stest, setalon):
         try:
-            from Services.StrMorph import String, Word
+            from services.StrMorph import String, Word
             if strEqual(stest, setalon) != 0:
                 return strEqual(stest, setalon)
             else:
@@ -246,7 +246,7 @@ class Report:
                 mreport.append(Report.Write(i))
         if items == 0:
             items = len(Tests)
-        return Fixer.mFormat(mreport, items)
+        return Fixer.list_format(mreport, items)
 
     # Универсальный отчёт по сравнению
     def WriteFails(items=0, service=''):
@@ -267,4 +267,4 @@ class Report:
                         mreport.append('- NOT! Не протестирована функция %s в сервисе %s' % (test, iservice))
         if items == 0:
             items = len(mreport)
-        return Fixer.mFormat(mreport, items, sobj='ошибок')
+        return Fixer.list_format(mreport, items, sobj='ошибок')

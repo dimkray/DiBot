@@ -6,7 +6,7 @@ import json
 from urllib.parse import quote_plus
 from geopy.distance import great_circle
 from geopy.geocoders import GoogleV3
-from Services.URLParser import URL
+from services.URLParser import URL
 
 # Локатор Google
 def Geolocator():

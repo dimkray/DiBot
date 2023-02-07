@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Сервис уведомлений
+"""Сервис уведомлений"""
 # import Bot
 import fixer
 import Processor
@@ -28,7 +28,7 @@ def Process():
         bChange = False; delKeys = []
         Tasks = Fixer.load_byte('Tasks')
         #if Tasks != {}: print(Tasks)
-        if len(Tasks) == 0: return False # print('Ошибка загрузки или пустой Tasks.db!');
+        if len(Tasks) == 0: return False # print('Ошибка загрузки или пустой Tasks.dict!');
         tdate = datetime.today()
         for t in Tasks:
             if Tasks[t][0] == False: continue # уведомление отключено
@@ -40,7 +40,7 @@ def Process():
                 request = Tasks[t][4]
                 if Tasks[t][5] != '':
                     # Процессорный обработчик
-                    request = Processor.FormMessage(Tasks[t][5])
+                    request = Processor.message_form(Tasks[t][5])
                     Fixer.log('Processor', request)
                 if request != '': 
                     Fixer.log('Notification',str(Tasks[t][1]) + ' Запуск задачи "'+t+'"!')

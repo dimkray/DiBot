@@ -8,7 +8,7 @@ import requests
 import json
 from urllib.parse import urlencode
 from urllib.parse import quote
-from Services.URLParser import URL, Parser
+from services.URLParser import URL, Parser
 
 
 # Чтение/парсинг сайта - получение основной информации
@@ -25,7 +25,7 @@ def ReadSite(url):
                     s += '...'
                     break
             s += '\n' + url
-    s = Fixer.strSpec(s)
+    s = Fixer.str_spec(s)
     print('Результат: ' + s)
     return s      
 

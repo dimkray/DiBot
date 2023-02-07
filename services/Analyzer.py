@@ -3,7 +3,7 @@
 import fixer
 import random
 from datetime import date, datetime, timedelta
-from Services.StrMorph import String, Word
+from services.StrMorph import String, Word
 from DB.SQLite import SQL
 
 class TextFinder:

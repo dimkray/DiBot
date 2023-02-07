@@ -1,3 +1,6 @@
+"""
+    Модуль логирования (журнал событий)
+"""
 from termcolor2 import c
 from system.function import get_fun
 from datetime import datetime
@@ -14,7 +17,7 @@ color_type = {
     '**': 'bold', '__': 'underline', '^^': 'blink', '%%': 'reverse', '||': 'concealed', '&&': 'dark'}
 
 # Журнал событий текущего сеанса
-Logs: list = []
+LOGS: list = []
 
 
 # Обработка цветных текстов
@@ -50,6 +53,7 @@ def colors(text: str) -> (str, str):
 
 # Запись лога без вывода на экран
 def in_log(*info: any, file: str = 'log.txt') -> str:
+    """Запись лога [*info] в файл [file] без вывода в консоль"""
     f = open(file, 'a', encoding='utf-8')
     if info:
         string = str_full = ''
@@ -64,13 +68,14 @@ def in_log(*info: any, file: str = 'log.txt') -> str:
         [module, fun, path] = get_fun()
         f.write(f"{datetime.now()} [{module}.{fun}]: {str_log}\n")
         f.close()
-        Logs.append(str_log)
+        LOGS.append(str_log)
         return string
     return 'no info'
 
 
 # Запись лога и вывод на экран
 def log(*info: any, log_type: str = None) -> bool:
+    """Запись лога [*info] определённого типа [log_type] в файл 'log.txt' и вывод в консоль"""
     string = in_log(*info)
     if log_type == 'title':
         count: int = round((100 - len(string)) / 2 - 1)
@@ -92,6 +97,7 @@ def log(*info: any, log_type: str = None) -> bool:
 
 # Запись лога ошибок
 def err_log(*info: any) -> bool:
+    """Запись лога ошибки [*info] в файл 'log_error.txt' и вывод в консоль"""
     string = in_log(*info, file='log_error.txt')
     print(c('[!!!error!!!]:', color='red'), string)
     if string == 'no info': return False

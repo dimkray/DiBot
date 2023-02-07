@@ -1,7 +1,7 @@
 from Profiler import Profiler
 from Tests import Testing
 from Tests.Testing import Test, Report
-from Services.IATA import IATA
+from services.IATA import IATA
 
 Testing.testService = 'IATA'
 

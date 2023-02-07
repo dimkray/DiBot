@@ -1,8 +1,8 @@
 from Profiler import Profiler
 from Tests import Testing
 from Tests.Testing import Test, Report
-from Services.Kinopoisk import Movies, Persons
-from Services.DefProcess import Runner
+from services.Kinopoisk import Movies, Persons
+from services.DefProcess import Runner
 
 service = 'Kinopoisk'
 print('------- Запущены тесты сервиса %s --------' % service)

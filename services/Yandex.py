@@ -4,7 +4,7 @@ import json
 # import logging
 import config
 import fixer
-from Services.Geo import Geo
+from services.Geo import Geo
 from DB.SQLite import SQL
 from Profiler import decorator
 
@@ -14,7 +14,7 @@ tformat = '%Y-%m-%d %H:%M:%S'
 path = 'rasp-yandex.json'
 
 dir_lang = []
-for item in Fixer.yaDirLang:
+for item in Fixer.YA_LANG_DIRECTIONS:
     dir_lang.append(item[0]+'-'+item[1])
 
 tr_type = [['САМОЛ', 'plane', 3], ['ПОЕЗД', 'train', 1], ['ЭЛЕКТР', 'suburban', 1],
@@ -34,8 +34,8 @@ Fixer.add_fun('FindLang', 'Поиск идентификатора языка',
 
 def FindLang(slang):
     slang = slang.strip()
-    if slang.upper() in Fixer.yaLangs:
-        return Fixer.yaLangs[slang.upper()]
+    if slang.upper() in Fixer.YA_LANGS:
+        return Fixer.YA_LANGS[slang.upper()]
     else:
         return ''
 
@@ -384,7 +384,7 @@ class Ya:
                   'lang_from': 'двухбуквенный код или "auto" - язык оригинала текста [string]',
                   'lang_to': 'двухбуквенный код или "auto" - на какой язык переводить текст [string]'},
                  'текст перевода [string]')
-    print(Fixer.Defs)
+    print(Fixer.FUNCTIONS)
 
     @decorator.benchmark
     def Translate(sText, lang_from, lang_to):

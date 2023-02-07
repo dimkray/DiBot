@@ -120,7 +120,7 @@ def SendMessage(text):
 # сервис локации
 def location(scoords):
     #from geolocation.main import GoogleMaps
-    from Services.Geo import Geo
+    from services.Geo import Geo
     try:
         poz = scoords.find(' ')
         Fixer.Y = float(scoords[:poz])
@@ -228,7 +228,7 @@ def LongPoll():
                             request = PreProcessor.ReadMessage(itext)
                             # Процессорный обработчик
                             Fixer.Process = 'Bot.Processor'
-                            request = Processor.FormMessage(request)
+                            request = Processor.message_form(request)
                             Fixer.log('Processor', request)
                             if request[0] == '#':  # Требуется постпроцессорная обработка
                                 request = PostProcessor.ErrorProcessor(request)

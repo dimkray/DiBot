@@ -85,18 +85,18 @@ if yn == 'Y':
     # База валют
 
     mval = []
-    for kval in Fixer.Valutes:
+    for kval in Fixer.CURRENCIES:
         m = []
         m.append(kval)
-        m.append(Fixer.Valutes[kval])
+        m.append(Fixer.CURRENCIES[kval])
         mval.append(m)
     AddTable('valutes', {'code':'text nn u','name':'text nn'}, mval)
 
     mval = []
-    for kval in Fixer.valutes:
+    for kval in Fixer.CURRENCIES2:
         m = []
         m.append(kval)
-        m.append(Fixer.valutes[kval])
+        m.append(Fixer.CURRENCIES2[kval])
         mval.append(m)
     AddTable('valutes2', {'code':'text nn u','name':'text nn'}, mval)    
 

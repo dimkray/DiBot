@@ -1,7 +1,7 @@
 from Profiler import Profiler
 from Tests import Testing
 from Tests.Testing import Test, Report
-from Services.DaData import strData, DData
+from services.DaData import strData, DData
 
 Testing.testService = 'DaData.strData'
 

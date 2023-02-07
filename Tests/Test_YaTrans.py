@@ -1,4 +1,4 @@
-from Services.Yandex import Ya
+from services.Yandex import Ya
 
 bwork = True
 while bwork:

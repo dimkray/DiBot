@@ -2,7 +2,7 @@
 # Сервис ОГРН.Онлайн - информация о ЮЛ и ИП
 import fixer
 import config
-from Services.URLParser import URL
+from services.URLParser import URL
 from urllib.parse import quote
 
 url = 'https://xn--c1aubj.xn--80asehdb'
