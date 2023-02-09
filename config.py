@@ -22,6 +22,10 @@ IATA_KEY = 'f09869c0-33d9-4f10-8fe3-5467b99492f7'
 # текущая база данных
 DB = 'DB\\bot.db'
 
+DATE_FORMAT = '%Y-%m-%d'
+TIME_FORMAT = ''
+DATE_TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
+
 # общие фразы
 RESPONSES = ['yesno', 'wait', 'notice']
 
@@ -54,16 +58,16 @@ INTERESTS = []  # Список интересов
 THINGS = []  # Список вещей/характеристик пользователя
 AGE = 0  # 0 - неизвестно
 MAN = 0  # 0 - неизвестно, 1 - мужчина, 2 - женщина
-Thema = ''  # текущая тема
-LastThema = []  # список последних тем
+THEME = ''  # текущая тема
+LAST_THEME = []  # список последних тем
 TIME_ZONE = 3  # часовой пояс пользователя относительно UTF
 
 PROCESS = ''  # текущий процесс
-errProcess = ''  # процесс, в котором возникла ошибка
-errMsg = ''  # сообщение об ошибке
+ERR_PROCESS = ''  # процесс, в котором возникла ошибка
+ERR_MESSAGE = ''  # сообщение об ошибке
 
-bNow = False  # признак сейчас
-Date = date.today()
+NOW = False  # признак сейчас
+DATE = date.today()
 
 SERVICE = '#'  # текущий сервис
 CONTEXT = False
@@ -72,7 +76,7 @@ LAST_SERVICES = []
 RADIUS_INTEREST = 100  # радиус интресера
 
 stxt = ''  # строка для ответа
-htext = ''  # гиперссылка
+HYPERTEXT = ''  # гиперссылка
 serv = ''  # Название текущего сервиса для добавления описания функции
 
 # сервис Локация
@@ -105,7 +109,7 @@ LastTr = []
 
 # сервис Wikipedia
 WikiStart = 0
-Page = 'Москва'
+PAGE = 'Москва'
 LastPage = []
 
 # сервис Rate
@@ -125,7 +129,7 @@ LastRSS = []
 
 WORDS = {
     '[service]': SERVICE,
-    '[thema]': Thema,
+    '[thema]': THEME,
     '[user_id]': USER_ID,
     '[chat_id]': str(CHAT_ID),
     '[name]':  NAME,

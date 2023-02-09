@@ -4,27 +4,29 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7df0a8d4-d6b2-44a6-b16b-18195551d848" name="Default" comment="step 1">
-      <change afterPath="$PROJECT_DIR$/system/SQLite.py" afterDir="false" />
+    <list default="true" id="7df0a8d4-d6b2-44a6-b16b-18195551d848" name="Default" comment="step 2">
+      <change beforePath="$PROJECT_DIR$/.idea/csv-editor.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/csv-editor.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DB/CreateDB.py" beforeDir="false" afterPath="$PROJECT_DIR$/DB/create/CreateDB.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DB/SQLite.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DB/stations.txt" beforeDir="false" afterPath="$PROJECT_DIR$/DB/create/stations.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Notification.py" beforeDir="false" afterPath="$PROJECT_DIR$/Notification.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Bot.py" beforeDir="false" afterPath="$PROJECT_DIR$/Bot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Bot_Telegram.py" beforeDir="false" afterPath="$PROJECT_DIR$/Bot_Telegram.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Chats/Chats.py" beforeDir="false" afterPath="$PROJECT_DIR$/Chats/Chats.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DiBotik.py" beforeDir="false" afterPath="$PROJECT_DIR$/DiBotik.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PostProcessor.py" beforeDir="false" afterPath="$PROJECT_DIR$/PostProcessor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PreProcessor.py" beforeDir="false" afterPath="$PROJECT_DIR$/PreProcessor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/Processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Services/DaData.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/DaData.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Services/Google.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Google.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Services/StrMorph.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/StrMorph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Services/Yandex.py" beforeDir="false" afterPath="$PROJECT_DIR$/Services/Yandex.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/Testing.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Testing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/Test_Booking3.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_Booking3.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/Test_Booking4.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/Test_Booking4.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fixer.py" beforeDir="false" afterPath="$PROJECT_DIR$/fixer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/run.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/file.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/file.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/function.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/function.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/logging.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/logging.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/Analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/Analyzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/DiBot.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/DiBot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/Google.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/Google.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/House.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/House.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/RSS.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/RSS.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/User.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/User.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/Weather.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/Weather.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/Web.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/Web.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/Wikipedia.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/Wikipedia.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/Yandex.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/Yandex.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/system/string.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/string.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -141,26 +143,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "last_opened_file_path": "C:/Users/d.povarnitsyn/PycharmProjects/DiBot/system",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/d.povarnitsyn/PycharmProjects/DiBot/system&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\d.povarnitsyn\PycharmProjects\DiBot\system" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\d.povarnitsyn\PycharmProjects\DiBot\services" />
       <recent name="C:\Users\d.povarnitsyn\PycharmProjects\DiBot\DB" />
       <recent name="C:\Users\d.povarnitsyn\PycharmProjects\DiBot\Promo" />
       <recent name="C:\Users\d.povarnitsyn\PycharmProjects\DiBot\DB\create" />
       <recent name="C:\Users\d.povarnitsyn\PycharmProjects\DiBot\system" />
-      <recent name="C:\Users\PovarnitsynDA\Desktop\Python\Bot_Telegram\DiBot\Services" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.Bot_Telegram">
     <configuration default="true" type="Application" factoryName="Application">
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
     </configuration>
@@ -355,7 +357,14 @@
       <option name="project" value="LOCAL" />
       <updated>1675615907138</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="step 2">
+      <created>1675793346930</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1675793346930</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -407,13 +416,14 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="step 1" />
-    <option name="LAST_COMMIT_MESSAGE" value="step 1" />
+    <MESSAGE value="step 2" />
+    <option name="LAST_COMMIT_MESSAGE" value="step 2" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Services/User.py</url>
+          <url>file://$PROJECT_DIR$/services/User.py</url>
           <line>2</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>

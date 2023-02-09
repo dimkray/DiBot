@@ -22,7 +22,7 @@ class Web:
                     if text[0] != '#':
                         if len(text[0]) > 500: s += text[0][:500] + '...'
                         else: s += text[0]
-                Fixer.htext = url + ftext[0] #назначаем гиперссылку
+                Fixer.HYPERTEXT = url + ftext[0] #назначаем гиперссылку
                 return s
             else:
                 print('#bug: none')

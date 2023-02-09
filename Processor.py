@@ -40,29 +40,29 @@ def service_process(response):
     # Запуск сервиса Acquaintance
     elif ser == '#acquaintance:': text_send = DiBot.acquaintance()
     # Запуск сервиса Booking
-    elif ser == '#booking:': text_send = DiBot.booking(send, send=True)
+    elif ser == '#booking:': text_send = DiBot.booking(send, wait=True)
     # Запуск сервиса Яндекс.Расписание
-    elif ser == '#timetable:': text_send = DiBot.timetable(send, send=True)
+    elif ser == '#timetable:': text_send = DiBot.timetable(send, wait=True)
     # Запуск сервиса Яндекс.Переводчик
     elif ser == '#translate:': text_send = DiBot.translate(send)
     # Запуск сервиса Яндекс поиск объектов
-    elif ser == '#object:': text_send = DiBot.yaobject(send)
+    elif ser == '#object:': text_send = DiBot.ya_object(send)
     # Запуск сервиса Яндекс.Координаты
     elif ser == '#coordinates:': text_send = DiBot.coordinates(send)
     # Запуск сервиса Яндекс.Каталог
     elif ser == '#site:': text_send = DiBot.site(send)
     # Запуск сервиса Wikipedia - поиск информации
     # #wiki: <название>
-    elif ser == '#wiki:': text_send = DiBot.wiki(send, send=True)
+    elif ser == '#wiki:': text_send = DiBot.wiki(send, wait=True)
     # Запуск сервиса Wikipedia - поиск ближайших достопримечательностей
     # #geowiki: <радиус, метры>
-    elif ser == '#geowiki:': text_send = DiBot.geowiki(send, send=True)
+    elif ser == '#geowiki:': text_send = DiBot.geo_wiki(send, wait=True)
     # Запуск сервиса Wikipedia - поиск ближайшей достопримечательности
     # #geowiki1: <радиус, метры>
-    elif ser == '#geowiki1:': text_send = DiBot.geowiki1(send, send=True)
+    elif ser == '#geowiki1:': text_send = DiBot.geowiki1(send, wait=True)
     # Запуск сервиса Wikipedia - поиск дополнительной информации
     # #wikimore: <название>
-    elif ser == '#wiki-more:': text_send = DiBot.wikimore(send)
+    elif ser == '#wiki-more:': text_send = DiBot.wiki_more(send)
     # Запуск сервиса Google
     elif ser == '#google-map:': text_send = DiBot.google(send, map=True)
     elif ser == '#google:': text_send = DiBot.google(send)
@@ -79,7 +79,7 @@ def service_process(response):
     # Запуск сервиса Elevation
     elif ser == '#elevation:': text_send = DiBot.elevation(send)
     # Запуск сервиса GeoDistance
-    elif ser == '#geodistance:': text_send = DiBot.geodistance(send)
+    elif ser == '#geodistance:': text_send = DiBot.geo_distance(send)
     # Запуск сервиса Fun
     # #Compliment:
     elif ser == '#compliment:': text_send = DiBot.compliment()
@@ -88,7 +88,7 @@ def service_process(response):
     # Запуск сервиса Rate
     # #rate:
     elif ser == '#rate:': text_send = DiBot.rate(send)
-    elif ser == '#setrate:': text_send = DiBot.setrate(send)
+    elif ser == '#setrate:': text_send = DiBot.set_rate(send)
     # Запуск локального сервиса Notes
     # #note:
     elif ser == '#note:': text_send = DiBot.note(send)
@@ -97,22 +97,22 @@ def service_process(response):
     # #location: <текст>
     elif ser == '#location:': return '#LOC! ' + send
     # Сервис установки координат
-    elif ser == '#setlocation:': text_send = DiBot.setlocation(send)
+    elif ser == '#setlocation:': text_send = DiBot.set_location(send)
     # Сервис корректировки ответов
     elif ser == '#correction:': text_send = DiBot.correction(send)
     # Сервис времени и даты
-    elif ser == '#time:': text_send = DiBot.datetime(send, 'time')
-    elif ser == '#date:': text_send = DiBot.datetime(send, 'date')
-    elif ser == '#datetime:': text_send = DiBot.datetime(send)
+    elif ser == '#time:': text_send = DiBot.date_time(send, 'time')
+    elif ser == '#date:': text_send = DiBot.date_time(send, 'date')
+    elif ser == '#datetime:': text_send = DiBot.date_time(send)
     # Сервис логов и багов
     elif ser == '#log:': text_send = DiBot.log(send)
     elif ser == '#errlog:': text_send = DiBot.log(send, etype='err')
-    elif ser == '#buglog:': text_send = DiBot.buglog(send)
+    elif ser == '#buglog:': text_send = DiBot.bug_log(send)
     # Сервис RSS
     elif ser == '#rss:': text_send = DiBot.rss(send)
-    elif ser == '#rss-news:': text_send = DiBot.rssnews(send)
-    elif ser == '#rss-all:': text_send = DiBot.rssall()
-    elif ser == '#rss-del:': text_send = DiBot.rssdel(send)
+    elif ser == '#rss-news:': text_send = DiBot.rss_news(send)
+    elif ser == '#rss-all:': text_send = DiBot.rss_all()
+    elif ser == '#rss-del:': text_send = DiBot.rss_del(send)
     # Сервис IATA
     elif ser == '#iata:': text_send = DiBot.iata(send)
     elif ser == '#iata-air:': text_send = DiBot.iata(send, 'airport')
@@ -145,6 +145,7 @@ def service_process(response):
     else: text_send = '#problem: Сервис {%s} не найден!' % config.SERVICE
     return text_send
 
+
 # ---------------------------------------------------------
 # Основной обработчик пользовательских запросов
 # ---------------------------------------------------------
@@ -154,7 +155,7 @@ def message_form(text):
     while times < 3:
         times += 1
         # Автовключение сервиса
-        if text[0] == '#': config.AI = False # принудительно отключаем ИИ
+        if text[0] == '#': config.AI = False  # принудительно отключаем ИИ
         # Включение сервиса принудительной контекстной зависимости
         if config.CONTEXT and config.SERVICE != '':
             print('Сработала контекстная зависимость! Включён сервис #' + config.SERVICE)
@@ -194,7 +195,7 @@ def message_form(text):
                 #print('Текущий сервис: {' + config.Service + '}')
                 config.Query = text  # сохраняем последний запрос пользователя
                 ### Запуск обработчика сервисов ###
-                tsend = DiBot.service_process(response)
+                tsend = service_process(response)
                 ### обработка результатов сервисов ###
                 if tsend == '': tsend = '#problem: null result'
                 if tsend == '#null': return '' # для пустых уведомлений
@@ -220,7 +221,7 @@ def message_form(text):
                 if s[0] != '#':
                     return s
                 else:
-                    config.htext = ''
+                    config.HYPERTEXT = ''
                     s = text
             # Попробуем найти в ответах
 ##            elif text.endswith('?'):
@@ -231,7 +232,7 @@ def message_form(text):
             if s[0] != '#':
                 return s
             else:
-                config.htext = ''
+                config.HYPERTEXT = ''
             s = str_cleaner(text)
             # Ищем среди новых диалогов
             for i in fixer.DIALOGS_NEW:

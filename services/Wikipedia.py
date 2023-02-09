@@ -92,8 +92,8 @@ class Wiki:
             rez = wikipedia.page(spage)
             if rez.content == '':
                 return '#problem: 404'
-            Fixer.LastPage.append(Fixer.Page)
-            Fixer.Page = spage
+            Fixer.LastPage.append(Fixer.PAGE)
+            Fixer.PAGE = spage
             num = rez.content.find('\n==')
             text = rez.content[0:num] #.encode('utf8')
             Fixer.WikiStart = num

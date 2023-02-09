@@ -57,7 +57,7 @@ class RSS:
         d = GetRSS(urlRSS)
         if d['version'][0] == '#': return d['version']
         stext = '%s\n%s\n' % (d.feed.title, d.feed.subtitle)
-        Fixer.htext = d['feed']['link']
+        Fixer.HYPERTEXT = d['feed']['link']
         i = len(d['entries'])
         if i < items: items = i
         if items == 0: items = i
@@ -75,7 +75,7 @@ class RSS:
         i = len(d['entries'])-1
         if i < item: item = i
         post = d.entries[item]
-        Fixer.htext = post.link
+        Fixer.HYPERTEXT = post.link
         sdate = ''
         if bdate: sdate = '\n' + post.published
         sdesc = ''

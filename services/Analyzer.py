@@ -39,23 +39,23 @@ class TextFinder:
             s = text.upper()
             # временные параметры
             if s.find('СЕЙЧАС') > 0:
-                Fixer.bNow = True
-                Fixer.Date = date.today()
+                Fixer.NOW = True
+                Fixer.DATE = date.today()
             if s.find('СЕГОДНЯ'):
-                Fixer.bNow = False
-                Fixer.Date = date.today()
+                Fixer.NOW = False
+                Fixer.DATE = date.today()
             if s.find('ЗАВТРА'):
-                Fixer.bNow = False
-                Fixer.Date = date.today() + timedelta(days=1)
+                Fixer.NOW = False
+                Fixer.DATE = date.today() + timedelta(days=1)
             if s.find('ПОСЛЕЗАВТРА'):
-                Fixer.bNow = False
-                Fixer.Date = date.today() + timedelta(days=2)
+                Fixer.NOW = False
+                Fixer.DATE = date.today() + timedelta(days=2)
             if s.find('ВЧЕРА'):
-                Fixer.bNow = False
-                Fixer.Date = date.today() - timedelta(days=1)
+                Fixer.NOW = False
+                Fixer.DATE = date.today() - timedelta(days=1)
             # поиск формы даты
             if s.count('-')>1 or s.count('.')>1 or s.count('/')>1:
-                Fixer.bNow = False
+                Fixer.NOW = False
                 sdate = s 
                 sdate = sdate.replace('.','-')
                 sdate = sdate.replace('/','-')

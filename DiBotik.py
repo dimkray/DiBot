@@ -202,18 +202,18 @@ def LongPoll():
                     # ------------ основная обработка пользовательских сообщений ---------------
                     else: 
                         # Мультипроцессорный обработчик - когда в одном сообщении сразу несколько запросов
-                        mProcess = PreProcessor.MultiProcessor(text)
+                        mProcess = PreProcessor.list_processor(text)
                         print(mProcess)
                         for itext in mProcess:
                             # Препроцессорный обработчик
                             Fixer.Process = 'Bot.PreProcessor'
-                            request = PreProcessor.ReadMessage(itext)
+                            request = PreProcessor.read_message(itext)
                             # Процессорный обработчик
                             Fixer.Process = 'Bot.Processor'
                             request = Processor.message_form(request)
                             Fixer.log('Processor', request)
                             if request[0] == '#': # Требуется постпроцессорная обработка
-                                request = PostProcessor.ErrorProcessor(request)
+                                request = PostProcessor.error_processor(request)
                                 if request[:6] == '#LOC! ': # Требуется определить геолокацию
                                     # !Доработать блок!
                                     request = location(str(Fixer.Y) + ' ' + str(Fixer.X))
@@ -223,13 +223,13 @@ def LongPoll():
                             else: # Постпроцессорная обработка не требуется
                                 if Fixer.Service != '': Fixer.LastService.append(Fixer.Service)
                                 SendMessage(request)
-                            if Fixer.htext != '': # если есть гипперссылка/ки
-                                Fixer.log('HiperText', Fixer.htext)
+                            if Fixer.HYPERTEXT != '': # если есть гипперссылка/ки
+                                Fixer.log('HiperText', Fixer.HYPERTEXT)
                                 slink = 'Ссылка: ' # если одна ссылка
-                                if '\n' in Fixer.htext: slink = 'Ссылки:'
-                                Fixer.htext = slink + Fixer.htext.replace(' ','%20')
-                                SendMessage(Fixer.htext)
-                                Fixer.htext = ''
+                                if '\n' in Fixer.HYPERTEXT: slink = 'Ссылки:'
+                                Fixer.HYPERTEXT = slink + Fixer.HYPERTEXT.replace(' ', '%20')
+                                SendMessage(Fixer.HYPERTEXT)
+                                Fixer.HYPERTEXT = ''
                     Chat.Save()
                     # Notification.Process() # запуск системы уведомлений
 ##                except Exception as e:

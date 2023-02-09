@@ -76,7 +76,7 @@ class Google:
         try:
             text = text.strip()
             url = URL.GetURL('https://www.google.ru/search', stext='define '+text, textparam='q')
-            Fixer.htext = url
+            Fixer.HYPERTEXT = url
             data = URL.OpenURL(url)
             mItems = ['#bug: none define']; tsend = ''
             if data[0] != '#':
@@ -100,7 +100,7 @@ class Google:
             text = text.replace(' ', '')
             #text = text.replace('+','%2B')
             url = URL.GetURL('https://www.google.ru/search', stext=text, textparam='q')
-            Fixer.htext = ''
+            Fixer.HYPERTEXT = ''
             data = URL.OpenURL(url, bsave=True)
             if data[0] != '#':
                 mItems = Parser.Parse(data, sdiv='span', sclass='cwcot', stype='text')
@@ -130,7 +130,7 @@ class Google:
                     ftext = Parser.Find(data, 'https://maps.google.ru/maps?q=', send='"', ball=False)
                     if ftext[0] != '#':
                         ftext = ftext.replace('%2B', '%20')
-                        Fixer.htext = ftext #назначаем гиперссылку
+                        Fixer.HYPERTEXT = ftext #назначаем гиперссылку
                         #Fixer.htext = Google.Short(Fixer.htext) # делаем её короткой
                         # Поиск картинки
                         #start = d.find('/maps/vt/data')
@@ -160,7 +160,7 @@ class Google:
                         i += 1
                         if i > 0: sl += '\n' + ss # '\n' + atext[i-1] + '\n' + ss
                         if i > 8: break
-                    Fixer.htext = sl #назначаем гиперссылку
+                    Fixer.HYPERTEXT = sl #назначаем гиперссылку
                 if s != '': return s
                 else:
                     print('#bug: none')

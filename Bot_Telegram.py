@@ -88,7 +88,7 @@ def default_test(message):
         if Fixer.UserID != Author: send_author(
             '~Уведомление: пользователь TL ' + Fixer.UserID + ' пишет: ' + message.text)
         # Препроцессорный обработчик
-        request = PreProcessor.ReadMessage(message.text)
+        request = PreProcessor.read_message(message.text)
         Fixer.log('PreProcessor', request)
         # Процессорный обработчик
         request = Processor.message_form(request)
@@ -118,15 +118,15 @@ def default_test(message):
                 Fixer.errlog('SendMessage', 'Проблемы с кодировкой!')
             if Fixer.Service != '': Fixer.LastService.append(Fixer.Service)
             send_message(request)
-        if Fixer.htext != '':  # если есть гипперссылка
-            Fixer.log('HiperText', Fixer.htext)
-            Fixer.htext = Fixer.htext.replace(' ', '%20')
-            ent = [types.MessageEntity('text_link', 10, 100, url=Fixer.htext)]
+        if Fixer.HYPERTEXT != '':  # если есть гипперссылка
+            Fixer.log('HiperText', Fixer.HYPERTEXT)
+            Fixer.HYPERTEXT = Fixer.HYPERTEXT.replace(' ', '%20')
+            ent = [types.MessageEntity('text_link', 10, 100, url=Fixer.HYPERTEXT)]
             message.entities = ent
             # request = 'Гиперссылка где-то рядом'
             # bot.send_message(message.chat.id, Fixer.htext)
-            send_message(Fixer.htext)
-            Fixer.htext = ''
+            send_message(Fixer.HYPERTEXT)
+            Fixer.HYPERTEXT = ''
         Chat.Save()
     except Exception as e:
         send_message('Ой! Я чуть не завис :( Есть ошибка в моём коде: ' + str(e))

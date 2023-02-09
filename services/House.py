@@ -26,7 +26,7 @@ class Booking: # Работа с booking.com
             if dorm == False: params['no_dorms'] = '1'
             if order == 'distance_from_landmark' : params['dst_landmark'] = 'cc'
             url = URL.GetURL('https://www.booking.com/searchresults.ru.html', stext=city, textparam='ss', params=params)
-            Fixer.htext = url
+            Fixer.HYPERTEXT = url
             texturl = URL.OpenURL(url)
             if texturl[0] != '#':
                 mItems = Parser.Parse(texturl, sclass='sr_item_content sr_item_content_slider_wrapper ', stype='all')

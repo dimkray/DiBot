@@ -66,7 +66,7 @@ def str_operand(value, number, operand='*'):
 
 # ---------------------------------------------------------
 # вн.сервис strfind - поиск строки и обрезка по найденному (регистронезависимый)
-def str_find(text, mfind, poz=0):
+def str_find(text: str, mfind: list, poz=0) -> (str, str):
     textU = text.upper()
     for sfind in mfind:
         ilen = len(sfind)
@@ -120,12 +120,9 @@ def str_add(value, text=''):
 
 # ---------------------------------------------------------
 # вн.сервис strPut - добавление строки, если есть
-def str_put(value, aletertext=''):
-    if value is not None:
-        s = str(value)
-    else:
-        s = aletertext
-    return s
+def str_put(value: str, alternative: str = '') -> str:
+    if value: return str(value)
+    else: return alternative
 
 
 # ---------------------------------------------------------

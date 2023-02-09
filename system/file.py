@@ -5,6 +5,8 @@ import pickle
 import json
 import os
 
+from typing import List
+
 from system.logging import err_log
 
 PATH = 'DB\\'   # Путь, где хранятся словари
@@ -67,6 +69,29 @@ def load_byte(name) -> dict:
     except Exception as e:
         err_log(f'{name}.dict - {e}')
         return dictionary
+
+
+# ---------------------------------------------------------
+# вн.сервис read_file - Чтение файла
+def read_file(file_path: str) -> str:
+    """Внутренний сервис read_file - Чтение файла [file_path]"""
+    s_file = ''
+    # if exist(file_path):
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            s_file = f.read()
+    except Exception as e:
+        err_log(e)
+    return s_file
+
+
+# ---------------------------------------------------------
+# вн.сервис file_strings - Чтение файла в строки
+def file_strings(file_path: str) -> List[str]:
+    """Внутренний сервис file_strings - Чтение файла [file_path] в строки"""
+    if exist(file_path):
+        return read_file(file_path).split('\n')
+    else: return []
 
 
 # ------------------------------------------------

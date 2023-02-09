@@ -8,9 +8,9 @@ class Chat:
             data = { 'version': 20180427,
                      'chat': [Fixer.Time, Fixer.Chat, Fixer.Response],
                      'user': [Fixer.UserID, Fixer.Name, Fixer.Family, Fixer.BirthDay, Fixer.Age,
-                     Fixer.Type, Fixer.Thema, Fixer.LastThema, Fixer.Service, Fixer.LastService,
-                     Fixer.Phone, Fixer.eMail, Fixer.Contacts, Fixer.Interests, Fixer.Things, 
-                     Fixer.bNotice, Fixer.TimeZone],
+                              Fixer.Type, Fixer.THEME, Fixer.LAST_THEME, Fixer.Service, Fixer.LastService,
+                              Fixer.Phone, Fixer.eMail, Fixer.Contacts, Fixer.Interests, Fixer.Things,
+                              Fixer.bNotice, Fixer.TimeZone],
                      'location': [Fixer.X, Fixer.Y, Fixer.LastX, Fixer.LastY, 
                                   Fixer.Address, Fixer.LastAddress,
                                   Fixer.Coords, Fixer.LastCoords],
@@ -18,7 +18,7 @@ class Chat:
                      Fixer.LastLang1, Fixer.LastLang2],
                      'rasp': [Fixer.nameSt, Fixer.region, Fixer.iTr, Fixer.St1, Fixer.St2, 
                      Fixer.trDate, Fixer.LastSt1, Fixer.LastSt2, Fixer.LastTr],
-                     'wiki': [Fixer.Page, Fixer.LastPage, Fixer.WikiStart],
+                     'wiki': [Fixer.PAGE, Fixer.LastPage, Fixer.WikiStart],
                      'rate': [Fixer.Valute, Fixer.LastValute],
                      'notes': Fixer.Notes,
                      'rss': [Fixer.RSS, Fixer.LastRSS]}
@@ -49,8 +49,8 @@ class Chat:
             Fixer.BirthDay = d[3]
             Fixer.Age = d[4]
             Fixer.Type = d[5]
-            Fixer.Thema = d[6]
-            Fixer.LastThema = d[7]
+            Fixer.THEME = d[6]
+            Fixer.LAST_THEME = d[7]
             Fixer.Service = d[8]
             Fixer.LastService = d[9]
             if Fixer.Version >= 20180320:
@@ -92,7 +92,7 @@ class Chat:
             Fixer.LastTr = [8]
             
             d = data['wiki']
-            Fixer.Page = d[0]
+            Fixer.PAGE = d[0]
             Fixer.LastPage = d[1]
             if Fixer.Version >= 20180328: Fixer.WikiStart = d[2]
             

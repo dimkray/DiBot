@@ -9,4 +9,4 @@ text = input('Введите город: ')
 mlist = Booking.List(text,'2018-05-10','2018-05-11', people=1, order='price', dorm=True)
 for item in mlist:
     print(item)
-print(Fixer.htext)
+print(Fixer.HYPERTEXT)

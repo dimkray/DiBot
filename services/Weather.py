@@ -88,7 +88,7 @@ class Weather:
             m = []
             if r.status_code == requests.codes.ok:
                 data = r.json()
-                Fixer.htext = data['Headline']['Link']
+                Fixer.HYPERTEXT = data['Headline']['Link']
                 for day in data['DailyForecasts']:
                     if day['Date'].find(edate) >= 0:
                         rsun = day['Sun']['Rise']

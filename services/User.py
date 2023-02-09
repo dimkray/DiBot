@@ -115,6 +115,6 @@ class User:
         if len(Fixer.Interests) == 0:
             Fixer.Service = 'user-interest'
             return 'Я создан для агрегации всех полезных сервисов для путешественников.\nА чем ты увлекаешься?\nПеречисли через запятую свои интересы'
-        Fixer.Service = ''; Fixer.Thema = ''
+        Fixer.Service = ''; Fixer.THEME = ''
         Fixer.bAI = True; Fixer.Context = False
         return 'Чем я тебе могу помочь?'
